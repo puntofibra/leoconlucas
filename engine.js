@@ -49,21 +49,21 @@ const ENG = (() => {
   /* ---- palabras ---- */
   const vistos = new Set();
   const PAL = [];
-  PALABRAS_RAW.trim().split('\n').forEach(l => {
+  (PALABRAS_RAW + '\n' + (typeof PALABRAS_RAW_EXTRA !== 'undefined' ? PALABRAS_RAW_EXTRA : '')).trim().split('\n').filter(l => l.trim()).forEach(l => {
     const [s, e, g] = l.split('|');
     const w = s.replace(/-/g, '');
     if (vistos.has(w)) return; vistos.add(w);
     PAL.push({ w, s: s.split('-'), e: e || '', g: g || 'm', lv: nivelPalabra(w), tr: tieneTrabada(w), id: 'p:' + w });
   });
-  PALABRAS_LECTURA.forEach(s => {
+  PALABRAS_LECTURA.concat(typeof PALABRAS_LECTURA_EXTRA !== 'undefined' ? PALABRAS_LECTURA_EXTRA : []).forEach(s => {
     const w = s.replace(/-/g, '');
     if (vistos.has(w.toLowerCase())) return; vistos.add(w.toLowerCase());
     PAL.push({ w, s: s.split('-'), e: '', g: 'm', lv: nivelPalabra(w), tr: tieneTrabada(w), id: 'p:' + w });
   });
   const CON_DIBUJO = PAL.filter(p => p.e && !/^[A-Z]/.test(p.w));
-  const FR = FRASES.map(t => ({ t, lv: nivelTexto(t), id: 'f:' + t }));
-  const VF = VERDAD.map(o => ({ t: o.t, v: o.v, lv: nivelTexto(o.t), id: 'v:' + o.t }));
-  const CU = CUENTOS.map(c => ({ ...c, lv: nivelTexto(c.x), id: 'c:' + c.t }));
+  const FR = FRASES.concat(typeof FRASES_EXTRA !== 'undefined' ? FRASES_EXTRA : []).map(t => ({ t, lv: nivelTexto(t), id: 'f:' + t }));
+  const VF = VERDAD.concat(typeof VERDAD_EXTRA !== 'undefined' ? VERDAD_EXTRA : []).map(o => ({ t: o.t, v: o.v, lv: nivelTexto(o.t), id: 'v:' + o.t }));
+  const CU = CUENTOS.concat(typeof CUENTOS_EXTRA !== 'undefined' ? CUENTOS_EXTRA : []).map(c => ({ ...c, lv: nivelTexto(c.x), id: 'c:' + c.t }));
   const PLT = PLANTILLAS.map(t => ({ t, lv: nivelTexto(t.replace(/\{[^}]+\}/g, '')) }));
 
   /* ---- azar ---- */
@@ -231,6 +231,11 @@ const ENG = (() => {
     const p = eligePalabra(lv, false); if (!p) return null;
     return { tipo: 'voz', p, id: p.id };
   };
+  G.dictado = (lv) => {
+    const p = elige(palabras(lv, false).filter(x => x.s.length >= 2 && x.s.length <= 4 && !/^[A-ZÁÉÍÓÚ]/.test(x.w) && (!x.tr || lv >= 22 || Math.random() < 0.3))); if (!p) return null;
+    const extra = shuffle(silabasNivel(lv).filter(s => !p.s.includes(s))).slice(0, p.s.length >= 3 ? 2 : 1);
+    return { tipo: 'dictado', p, piezas: shuffle([...p.s, ...extra]), id: p.id };
+  };
   G.silabas = (lv) => {
     const p = elige(palabras(lv, true).filter(x => x.s.length <= 5)); if (!p) return null;
     return { tipo: 'silabas', p, id: p.id };
@@ -243,6 +248,7 @@ const ENG = (() => {
       une: 2, inicial: lv < 4 ? 2 : 0.5, silabas: 1, traza: lv < 18 ? 1.5 : 0 };
     if (lv >= 1) t.frase = lv < 3 ? 1 : 3;
     if (lv >= 3) t.ordena = 2;
+    if (lv >= 1) t.dictado = lv < 3 ? 1.5 : 2.5;
     if (lv >= 5) t.verdad = 2.5;
     if (lv >= 1) t.cuento = lv >= 24 ? 6 : lv >= 6 ? 1.2 : 0.6;
     if (voz && lv >= 2) t.voz = 1;

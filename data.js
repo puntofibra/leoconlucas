@@ -658,6 +658,7 @@ const CUENTOS = [
 
 /* ---------- FRASES DEL NARRADOR (Lucas) ---------- */
 const NARRADOR = {
+  viaje: ['¡Agárrate fuerte! ¡Volamos al siguiente planeta!', '¡Motores a tope! ¡Rumbo al nuevo planeta!', '¡Despegamos! Nuevo planeta a la vista.'],
   saludo: [
     '¡Hola, {n}! Soy Lucas. ¿Vamos a leer juntos?',
     '¡{n}, qué alegría verte! Mis circuitos están listos para leer.',
@@ -710,6 +711,7 @@ const NARRADOR = {
     une:      ['Une cada palabra con su dibujo.', 'Toca una palabra y después su dibujo.', 'Empareja palabras y dibujos.'],
     traza:    ['Repasa la letra {x} con el dedo.', 'Dibuja la letra {x} siguiendo la guía.', '¡A escribir! Repasa la {x}.'],
     voz:      ['Lee en voz alta la palabra.', 'Toca el micrófono y lee la palabra.', '¡Léemela en voz alta!'],
+    dictado:  ['¡Dictado! Escucha la palabra y escríbela con las sílabas.', 'Te digo una palabra y tú la construyes. ¿Preparado?', 'Escucha bien y forma la palabra que te digo.', 'Modo dictado activado. ¡Escucha!'],
     silabas:  ['¿Cuántas sílabas tiene? Da una palmada por cada una.', 'Cuenta las sílabas. ¿Cuántas hay?', '¡Palmadas! ¿Cuántas sílabas tiene?']
   }
 };

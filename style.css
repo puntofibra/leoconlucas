@@ -378,3 +378,13 @@ input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:foc
 .planeta.actual .pimg { filter: drop-shadow(0 0 22px var(--c)); }
 .modal-planeta { width: 170px; height: 170px; }
 .modal-planeta .planeta { left: 50%; top: 50%; transform: scale(1.25); }
+
+/* viaje del cohete */
+.nave-mapa.viajando { animation: none; transform: var(--vuelo) scale(1.15); filter: drop-shadow(0 0 18px #17ff5f) drop-shadow(0 0 30px #ffd23f) !important; }
+.humo { position: absolute; width: 10px; height: 10px; border-radius: 50%; pointer-events: none; z-index: 2; box-shadow: 0 0 10px currentColor; animation: humo .9s ease-out forwards; }
+@keyframes humo { from { transform: scale(1); opacity: .95; } to { transform: scale(2.6); opacity: 0; } }
+.planeta.recien { animation: abre 1s cubic-bezier(.3,1.7,.5,1); }
+@keyframes abre { 0% { transform: scale(.6); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
+.btn-oir-grande { font-size: 20px; padding: 16px 26px; }
+.planeta.por-abrir .pimg { filter: grayscale(1) brightness(.45) !important; }
+.planeta.por-abrir { animation: none; }

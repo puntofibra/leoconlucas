@@ -121,6 +121,25 @@ const FX = (() => {
   };
 })();
 
+/* ---------------- estela del cohete en el mapa ---------------- */
+const ESTELA = (() => {
+  let iv = null;
+  return {
+    start(nave, M) {
+      clearInterval(iv);
+      iv = setInterval(() => {
+        const r = nave.getBoundingClientRect(), m = M.getBoundingClientRect();
+        for (let k = 0; k < 2; k++) {
+          const p = el('span', 'humo'); p.style.left = (r.left - m.left + r.width * .25 + (Math.random() - .5) * 14) + 'px'; p.style.top = (r.top - m.top + r.height * .55 + (Math.random() - .5) * 14) + 'px';
+          p.style.background = pick(['#17ff5f', '#ffd23f', '#ff8a3d', '#18e0ff', '#ffffff']);
+          M.appendChild(p); setTimeout(() => p.remove(), 900);
+        }
+      }, 40);
+    },
+    stop() { clearInterval(iv); }
+  };
+})();
+
 /* ---------------- sonido (Web Audio, sin MP3) ---------------- */
 const SFX = (() => {
   let ac = null, musGain = null, musOn = false, musTimer = null;
@@ -498,8 +517,33 @@ function pintaMapa() {
     M.appendChild(b);
   });
   const nave = el('img', 'nave-mapa'); nave.src = 'img/lucas/propulsor.png'; nave.style.filter = filtroColor(NINO.color) + ' drop-shadow(0 0 12px rgba(23,255,95,.6))';
-  nave.style.left = pos[act].x + 'px'; nave.style.top = pos[act].y + 'px'; M.appendChild(nave);
-  requestAnimationFrame(() => { $('#mapaScroll').scrollTop = Math.max(0, pos[act].y - $('#mapaScroll').clientHeight / 2); });
+  const SC = $('#mapaScroll');
+  const centra = (y, suave) => { SC.style.scrollBehavior = suave ? 'smooth' : 'auto'; SC.scrollTop = Math.max(0, y - SC.clientHeight / 2); };
+  if (VIAJE && VIAJE.h === act && VIAJE.d < act) {
+    const d = VIAJE.d; VIAJE = null;
+    const destino = M.querySelectorAll('.planeta')[act];
+    destino.classList.add('bloq', 'por-abrir'); destino.querySelector('.letra').textContent = '🔒';
+    nave.style.transition = 'none'; nave.style.left = pos[d].x + 'px'; nave.style.top = pos[d].y + 'px'; M.appendChild(nave);
+    requestAnimationFrame(() => centra(pos[d].y, false));
+    setTimeout(() => {
+      const dx = pos[act].x - pos[d].x, dy = pos[act].y - pos[d].y;
+      nave.classList.add('viajando'); nave.style.setProperty('--vuelo', dx < 0 ? 'scaleX(-1) rotate(-22deg)' : 'rotate(-22deg)');
+      nave.style.transition = 'left 2.2s cubic-bezier(.55,0,.35,1), top 2.2s cubic-bezier(.55,0,.35,1)';
+      nave.style.left = pos[act].x + 'px'; nave.style.top = pos[act].y + 'px';
+      SFX.woosh(); ESTELA.start(nave, M); centra(pos[act].y, true);
+      VOZ.decir(pick(NARRADOR.viaje));
+      setTimeout(() => {
+        ESTELA.stop(); nave.classList.remove('viajando');
+        destino.classList.remove('bloq', 'por-abrir'); destino.classList.add('recien');
+        destino.querySelector('.letra').textContent = PLANETAS[act].letra;
+        SFX.planeta(); FX.chispas(destino, 50); FX.confeti(90);
+        setTimeout(() => VOZ.decir('¡Bienvenido al ' + PLANETAS[act].nombre + '!'), 700);
+      }, 2300);
+    }, 900);
+  } else {
+    nave.style.left = pos[act].x + 'px'; nave.style.top = pos[act].y + 'px'; M.appendChild(nave);
+    requestAnimationFrame(() => centra(pos[act].y, false));
+  }
 }
 function abrePlaneta(i) {
   const p = PLANETAS[i], pl = datos().plan[i] || { m: 0, e: 0 };
@@ -524,6 +568,7 @@ $('#bDiaria').onclick = () => {
 
 /* ---------------- MISIÓN ---------------- */
 let MIS = null;
+let VIAJE = null;   // animación del cohete al desbloquear un planeta
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 function empezarMision({ lv, repaso = false, diaria = false }) {
   const n = diaria ? 10 : CFG.MISION;
@@ -838,6 +883,28 @@ RENDER.voz = (ej, E) => {
   limpiezas.push(() => { try { rec && rec.abort(); } catch (e) {} });
   narra(instr('voz'));
 };
+RENDER.dictado = (ej, E) => {
+  const oir = el('button', 'btn btn-azul btn-oir-grande', '🔊 Escuchar la palabra');
+  const decir = () => VOZ.decir(ej.p.w, { rate: .8 });
+  oir.onclick = () => { SFX.clic(); decir(); };
+  E.appendChild(el('div', 'leer l', '✍️')); E.appendChild(oir);
+  const H = el('div', 'huecos'); ej.p.s.forEach(() => H.appendChild(el('div', 'hueco'))); E.appendChild(H);
+  const P = el('div', 'piezas'); E.appendChild(P);
+  let pos = 0;
+  ej.piezas.forEach(s => {
+    const b = el('button', 'pieza', s); P.appendChild(b);
+    b.onclick = () => {
+      if (ej.resuelto || b.classList.contains('usada')) return;
+      if (s === ej.p.s[pos]) {
+        SFX.pieza(); b.classList.add('usada'); const h = H.children[pos]; h.textContent = s; h.classList.add('lleno'); VOZ.decir(sv(s), { rate: .9 }); pos++;
+        if (pos === ej.p.s.length) { if (ej.p.e) E.insertBefore(el('div', 'dibujo', pic(ej.p)), oir); oir.remove(); acierto(H, ej.p.w + '.'); }
+      } else { fallo(b); if (EJ.errores >= 2) ej.ayuda(); }
+    };
+  });
+  ej.ayuda = () => narra(pick(NARRADOR.pista) + ' ' + silabeo(ej.p), { rate: .8 });
+  ej.repetir = decir;
+  narra(instr('dictado')).then(() => VOZ.decir(ej.p.w, { rate: .8, cola: true }));
+};
 RENDER.silabas = (ej, E) => {
   E.appendChild(el('div', 'dibujo', pic(ej.p)));
   E.appendChild(el('div', 'leer l', ej.p.w));
@@ -925,7 +992,7 @@ async function finMision() {
   for (let i = 0; i < 3; i++) { await esperar(380); ests[i].className = i < est ? 'on' : 'off'; if (i < est) { SFX.estrella(i); FX.chispas(ests[i], 20, '#ffd23f'); } }
   let frase = pick(NARRADOR['fin' + est]);
   if (peg != null) { P.innerHTML = `<span>${PEGATINAS[peg].e}</span><div>¡Pegatina nueva!<br><small>${PEGATINAS[peg].n}</small></div>`; P.classList.remove('oculto'); frase += ' ' + pick(NARRADOR.pegatina); }
-  if (nuevoPlaneta) { frase += ' ' + pick(NARRADOR.planeta); SFX.planeta(); }
+  if (nuevoPlaneta) { frase += ' ' + pick(NARRADOR.planeta); SFX.planeta(); VIAJE = { d: antes, h: nivelActual() }; }
   VOZ.decir(frase);
   $('#bResOtra').onclick = () => { SFX.clic(); empezarMision({ lv: MIS.lv, repaso: MIS.repaso && !MIS.diaria }); };
 }
@@ -991,6 +1058,7 @@ function pintaPadres() {
     <div class="panel cristal"><h3>⚙️ Ajustes de ${esc(padresNino.nombre)}</h3>
       <div class="ajuste"><span>Letras MAYÚSCULAS<small>En 1º muchos coles empiezan con mayúsculas</small></span><button class="switch ${d.aj.mayus ? 'on' : ''}" data-aj="mayus"></button></div>
       <div class="ajuste"><span>Voz más lenta<small>Lucas habla más despacio</small></span><button class="switch ${d.aj.lenta ? 'on' : ''}" data-aj="lenta"></button></div>
+      <div class="ajuste"><span>Resumen semanal por correo<small>Cada domingo a ${esc(SES ? SES.email : '')}</small></span><button class="switch ${d.aj.resumen !== false ? 'on' : ''}" data-aj="resumen"></button></div>
       <div class="ajuste"><span>Música en el mapa</span><button class="switch ${d.aj.musica ? 'on' : ''}" data-aj="musica"></button></div>
       <div class="ajuste"><span>Desbloquear todos los planetas<small>Para niños que ya leen</small></span><button class="switch ${d.aj.todo ? 'on' : ''}" data-aj="todo"></button></div>
       <div class="ajuste"><span>Voz del narrador</span><select id="selVoz">${VOZ.voces().map(v => `<option ${LS.get('voz', '') === v.name ? 'selected' : ''}>${esc(v.name)}</option>`).join('') || '<option>Por defecto</option>'}</select></div>
@@ -1045,7 +1113,7 @@ addEventListener('blur', () => { setTimeout(() => { if (document.hidden) silenci
    Si los hay, recarga sola cuando el niño no está en mitad de una misión
    y vuelve a entrar directamente con el mismo lector. */
 var ACT = (() => {
-  const ARCH = ['index.html', 'app.js', 'engine.js', 'data.js', 'style.css'];
+  const ARCH = ['index.html', 'app.js', 'engine.js', 'data.js', 'data2.js', 'style.css'];
   let firma = null, pendiente = false;
   async function leeFirma() {
     try {
