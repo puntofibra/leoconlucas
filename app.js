@@ -34,6 +34,7 @@ function ir(id) {
   pantallaActual = p;
   if (p !== 'pJuego') { VOZ.callar(); }
   ON_PANTALLA[p] && ON_PANTALLA[p]();
+  if (window.ACT && ACT.pendiente() && ACT.seguro()) setTimeout(ACT.recargar, 600);
 }
 const ON_PANTALLA = {};
 
@@ -125,6 +126,7 @@ const SFX = (() => {
   let ac = null, musGain = null, musOn = false, musTimer = null;
   const ctx = () => { if (!ac) { ac = new (window.AudioContext || window.webkitAudioContext)(); } if (ac.state === 'suspended') ac.resume(); return ac; };
   function nota(f, t0, dur, tipo = 'sine', vol = .18, dest) {
+    if (document.hidden) return;
     const a = ctx(), o = a.createOscillator(), g = a.createGain();
     o.type = tipo; o.frequency.setValueAtTime(f, a.currentTime + t0);
     g.gain.setValueAtTime(0, a.currentTime + t0); g.gain.linearRampToValueAtTime(vol, a.currentTime + t0 + .015);
@@ -132,6 +134,7 @@ const SFX = (() => {
     o.connect(g); g.connect(dest || a.destination); o.start(a.currentTime + t0); o.stop(a.currentTime + t0 + dur + .05);
   }
   function barrido(f1, f2, dur, tipo = 'sine', vol = .15) {
+    if (document.hidden) return;
     const a = ctx(), o = a.createOscillator(), g = a.createGain(); o.type = tipo;
     o.frequency.setValueAtTime(f1, a.currentTime); o.frequency.exponentialRampToValueAtTime(f2, a.currentTime + dur);
     g.gain.setValueAtTime(vol, a.currentTime); g.gain.exponentialRampToValueAtTime(.0001, a.currentTime + dur);
@@ -157,7 +160,10 @@ const SFX = (() => {
       const toca = () => { if (!musOn) return; const ac2 = acordes[i++ % 4]; ac2.forEach((f, k) => { nota(f, k * .38, 1.6, 'sine', .5, musGain); nota(f * 2, k * .38 + .19, .5, 'triangle', .18, musGain); }); };
       toca(); musTimer = setInterval(toca, 1600);
     },
-    desbloquear() { ctx(); }
+    desbloquear() { ctx(); },
+    sonando() { return musOn; },
+    suspender() { musOn = false; clearInterval(musTimer); try { if (ac && ac.state === 'running') ac.suspend(); } catch (e) {} },
+    reanudar() { try { if (ac && ac.state === 'suspended') ac.resume(); } catch (e) {} }
   };
   return S;
 })();
@@ -211,7 +217,7 @@ const VOZ = (() => {
   }
   let turno = 0;
   function decir(texto, opt = {}) {
-    if (!ss || !texto) return Promise.resolve();
+    if (!ss || !texto || document.hidden) return Promise.resolve();
     if (!opt.cola) { ss.cancel(); turno++; }
     const mio = turno;
     const limpio = prepara(texto);
@@ -273,7 +279,7 @@ function aplicaAjustes() {
 
 /* ---------------- arranque ---------------- */
 window.addEventListener('load', async () => {
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => {});
   await esperar(1500);
   if (SES && SES.token) {
     const r = await api('estado', { token: SES.token });
@@ -353,6 +359,9 @@ function aceptaSesion(r) {
     return n;
   });
   LS.set('ninos', NINOS);
+  const vuelve = LS.get('volverNino', null); LS.del('volverNino');
+  const nv = vuelve && NINOS.find(n => n.id === vuelve);
+  if (nv) { NINO = nv; datos(); ENG.setMem(datos().mem); aplicaAjustes(); ir('mapa'); return; }
   ir(NINOS.length ? 'perfiles' : 'nuevo');
   if (!NINOS.length) VOZ.decir('¡Hola! Soy Lucas. Vamos a crear el perfil del lector.');
 }
@@ -1015,4 +1024,51 @@ function enlazaCuenta() {
 }
 
 /* guardar si se cierra la app */
-document.addEventListener('visibilitychange', () => { if (document.hidden && NINO && SES) { clearTimeout(tGuardar); NINO.datos._t = Date.now(); api('guardarNino', { token: SES.token, nino: NINO }); } });
+/* app oculta (pantalla apagada, segundo plano, otra pestaña): silencio total */
+function silenciar() { SFX.suspender(); VOZ.callar(); }
+function alVolver() {
+  SFX.reanudar();
+  if (pantallaActual === 'pMapa' && NINO && datos().aj.musica) SFX.musica(true);
+  ACT.comprobar();
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    silenciar();
+    if (NINO && SES) { clearTimeout(tGuardar); NINO.datos._t = Date.now(); api('guardarNino', { token: SES.token, nino: NINO }); }
+  } else alVolver();
+});
+addEventListener('pagehide', silenciar);
+addEventListener('blur', () => { setTimeout(() => { if (document.hidden) silenciar(); }, 300); });
+
+/* ---------------- actualización automática ----------------
+   Mira cada minuto (y al volver a la app) si hay archivos nuevos en GitHub.
+   Si los hay, recarga sola cuando el niño no está en mitad de una misión
+   y vuelve a entrar directamente con el mismo lector. */
+var ACT = (() => {
+  const ARCH = ['index.html', 'app.js', 'engine.js', 'data.js', 'style.css'];
+  let firma = null, pendiente = false;
+  async function leeFirma() {
+    try {
+      const r = await Promise.all(ARCH.map(f => fetch(f, { method: 'HEAD', cache: 'no-store' }).then(x => x.ok ? (x.headers.get('etag') || x.headers.get('last-modified') || '') : '')));
+      return r.join('|');
+    } catch (e) { return null; }
+  }
+  function seguro() { return !['pJuego', 'pNuevo'].includes(pantallaActual) && !document.querySelector('#modal:not(.oculto)'); }
+  function recargar() {
+    if (NINO && NINO.id) LS.set('volverNino', NINO.id);
+    location.reload();
+  }
+  async function comprobar() {
+    if (pendiente) { if (seguro()) recargar(); return; }
+    const f = await leeFirma(); if (!f) return;
+    if (firma === null) { firma = f; return; }
+    if (f !== firma) {
+      pendiente = true;
+      try { const reg = await navigator.serviceWorker.getRegistration(); if (reg) await reg.update(); } catch (e) {}
+      if (seguro()) setTimeout(recargar, 800);
+    }
+  }
+  setInterval(() => { if (!document.hidden) comprobar(); }, 60000);
+  setTimeout(comprobar, 3000);
+  return { comprobar, pendiente: () => pendiente, recargar, seguro };
+})();
