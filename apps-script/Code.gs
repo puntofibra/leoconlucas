@@ -222,3 +222,56 @@ function borrarNino_(d) {
   for (let i = v.length - 1; i >= 1; i--) if (v[i][0] === d.id && String(v[i][1]).toLowerCase() === email) h.deleteRow(i + 1);
   return { ok: true };
 }
+
+/* ---------------- resumen semanal por correo ----------------
+   Ejecuta instalarResumen() UNA vez a mano: crea un aviso automático
+   cada domingo a las 19:00 (hora de Madrid) que llama a resumenSemanal(). */
+function instalarResumen() {
+  ScriptApp.getProjectTriggers().forEach(t => { if (t.getHandlerFunction() === 'resumenSemanal') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('resumenSemanal').timeBased().onWeekDay(ScriptApp.WeekDay.SUNDAY).atHour(19).inTimezone('Europe/Madrid').create();
+  return 'Resumen semanal activado (domingos 19:00)';
+}
+function resumenSemanal() {
+  const usuarios = hUsuarios_().getDataRange().getValues().slice(1);
+  const ninos = hNinos_().getDataRange().getValues().slice(1);
+  const PL = ['a e i o u', 'm', 'p', 'l', 's', 't', 'n', 'd', 'f', 'r rr', 'ca co cu', 'b', 'v', 'ga go gu', 'j ge gi', 'ñ', 'ch', 'll y', 'z ce ci', 'que qui', 'h', 'gue gui', 'pl br tr…', 'k w x', 'cuentos'];
+  const dias = [];
+  for (let i = 0; i < 7; i++) dias.push(Utilities.formatDate(new Date(Date.now() - i * 864e5), 'Europe/Madrid', 'yyyy-MM-dd'));
+  usuarios.forEach(u => {
+    const email = String(u[0]).toLowerCase(); if (!email) return;
+    const suyos = ninos.filter(n => String(n[1]).toLowerCase() === email);
+    const bloques = [];
+    suyos.forEach(n => {
+      let d = {}; try { d = JSON.parse(n[13] || '{}') || {}; } catch (e) {}
+      if (d.aj && d.aj.resumen === false) return;
+      const st = d.st || {}, porDia = st.dias || {};
+      const minDias = dias.map(k => Math.round((porDia[k] || 0) / 60));
+      const minSemana = minDias.reduce((a, b) => a + b, 0), diasActivo = minDias.filter(x => x > 0).length;
+      let nivel = 0; const plan = d.plan || {}; Object.keys(plan).forEach(k => { if (plan[k].m >= 2) nivel = Math.max(nivel, Number(k) + 1); });
+      const dificiles = Object.keys((d.mem && d.mem.fail) || {}).filter(k => k.indexOf('p:') === 0).sort((a, b) => d.mem.fail[b] - d.mem.fail[a]).slice(0, 8).map(k => k.slice(2));
+      const pct = st.ej ? Math.round(st.ok / st.ej * 100) : 0;
+      const barras = minDias.slice().reverse().map((m, i) => '<td style="vertical-align:bottom;text-align:center;padding:0 3px"><div style="width:22px;margin:auto;height:' + Math.min(80, m * 4 + 2) + 'px;background:#17ff5f;border-radius:6px 6px 0 0"></div><div style="font-size:11px;color:#9ab">' + ['L', 'M', 'X', 'J', 'V', 'S', 'D'][(new Date(Date.now() - (6 - i) * 864e5).getDay() + 6) % 7] + '</div></td>').join('');
+      const animo = diasActivo >= 5 ? '¡Semana espectacular! 🌟' : diasActivo >= 3 ? '¡Muy buena semana! 👏' : diasActivo >= 1 ? 'Un poquito cada día marca la diferencia 💪' : 'Esta semana no ha leído. ¡Lucas le está esperando! 🤖';
+      bloques.push('<div style="background:#0f1d3d;border:1px solid #2b4a7a;border-radius:16px;padding:18px;margin:14px 0">' +
+        '<h2 style="margin:0 0 6px;color:#fff">' + n[2] + ' <span style="font-size:14px;color:#9ab">(' + n[3] + ' años)</span></h2>' +
+        '<p style="margin:0 0 12px;color:#ffd23f;font-weight:bold">' + animo + '</p>' +
+        '<table style="width:100%;color:#fff;font-size:14px"><tr>' +
+        '<td><b style="font-size:24px;color:#17ff5f">' + minSemana + '</b><br>minutos esta semana</td>' +
+        '<td><b style="font-size:24px;color:#17ff5f">' + diasActivo + '/7</b><br>días leyendo</td>' +
+        '<td><b style="font-size:24px;color:#17ff5f">' + pct + '%</b><br>aciertos</td></tr></table>' +
+        '<table style="margin:14px 0"><tr>' + barras + '</tr></table>' +
+        '<p style="color:#fff;margin:6px 0">🪐 Va por el planeta de <b>' + (PL[Math.min(nivel, 24)] || '') + '</b> · ⭐ ' + (d.est || 0) + ' estrellas · 🔥 racha de ' + ((d.racha && d.racha.n) || 0) + ' días · 📒 ' + ((d.peg || []).length) + ' pegatinas</p>' +
+        (dificiles.length ? '<p style="color:#fff;margin:6px 0">🧠 Palabras para repasar juntos: <b>' + dificiles.join(', ') + '</b></p>' : '') +
+        '</div>');
+    });
+    if (!bloques.length) return;
+    MailApp.sendEmail({
+      to: email, name: 'Leo con Lucas', subject: '📚 Resumen semanal de Leo con Lucas',
+      htmlBody: '<div style="font-family:Arial,sans-serif;background:#050a1a;color:#fff;padding:24px;border-radius:18px;max-width:560px;margin:auto">' +
+        '<h1 style="color:#17ff5f;margin:0">🚀 Leo con Lucas</h1><p style="color:#cde">Hola' + (u[1] ? ' ' + u[1] : '') + ', este es el resumen de lectura de esta semana:</p>' +
+        bloques.join('') +
+        '<p style="text-align:center;margin:20px 0"><a href="https://puntofibra.github.io/leoconlucas/" style="background:#17ff5f;color:#032b12;padding:12px 22px;border-radius:14px;text-decoration:none;font-weight:bold">Abrir Leo con Lucas</a></p>' +
+        '<p style="color:#789;font-size:12px">Puedes desactivar este correo en la Zona de papás → Ajustes. FuturMovil</p></div>'
+    });
+  });
+}
