@@ -511,7 +511,7 @@ function pintaMapa() {
     const larga = p.letra.length > 3;
     b.innerHTML = `<img class="pimg" src="img/planetas/planeta${String(i + 1).padStart(2, '0')}.png" alt="" loading="lazy" decoding="async">
       <span class="letra${larga ? ' larga' : ''}">${bloq ? '🔒' : p.letra}</span>
-      ${pl.e ? `<span class="est">${'★'.repeat(Math.min(3, pl.e))}</span>` : ''}
+      ${pl.e ? `<span class="est">${[0, 1, 2].map(k => `<img src="img/estrella-${k < pl.e ? 'on' : 'off'}.png" alt="">`).join('')}</span>` : ''}
       <span class="nombre">${p.nombre}</span>`;
     b.onclick = () => { SFX.clic(); if (bloq) { SFX.mal(); VOZ.decir('Ese planeta aún está bloqueado. ¡Completa el anterior para llegar!'); b.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'none' }], 300); return; } abrePlaneta(i); };
     M.appendChild(b);
@@ -989,9 +989,28 @@ async function finMision() {
   const ests = $$('#resEstrellas span'); ests.forEach(s => s.className = '');
   const P = $('#resPegatina'); P.classList.add('oculto');
   SFX.fanfarria(); FX.confeti(est * 60);
+  ests.forEach((s, i) => { s.querySelector('img').src = 'img/estrella-' + (i < est ? 'on' : 'off') + '.png'; });
   for (let i = 0; i < 3; i++) { await esperar(380); ests[i].className = i < est ? 'on' : 'off'; if (i < est) { SFX.estrella(i); FX.chispas(ests[i], 20, '#ffd23f'); } }
   let frase = pick(NARRADOR['fin' + est]);
-  if (peg != null) { P.innerHTML = `<span>${PEGATINAS[peg].e}</span><div>¡Pegatina nueva!<br><small>${PEGATINAS[peg].n}</small></div>`; P.classList.remove('oculto'); frase += ' ' + pick(NARRADOR.pegatina); }
+  if (peg != null) {
+    frase += ' ' + pick(NARRADOR.pegatina);
+    P.innerHTML = `<button class="cofre" id="cofreBtn" title="Abrir"><img src="img/cofre.png" alt="Cofre"></button><div class="cofre-txt">¡Has ganado un cofre!<br><small>Tócalo para abrirlo</small></div>`;
+    P.classList.remove('oculto');
+    let abierto = false;
+    const abrir = () => {
+      if (abierto) return; abierto = true;
+      const b = $('#cofreBtn'); b.classList.add('abriendo'); SFX.woosh();
+      setTimeout(() => {
+        b.querySelector('img').src = 'img/cofre-abierto.png'; b.classList.remove('abriendo'); b.classList.add('abierto');
+        SFX.fanfarria(); FX.chispas(b, 60, '#ffd23f'); FX.confeti(80);
+        const pg = el('span', 'pega-sale', PEGATINAS[peg].e); b.appendChild(pg);
+        P.querySelector('.cofre-txt').innerHTML = `¡Pegatina nueva!<br><small>${PEGATINAS[peg].n}</small>`;
+        VOZ.decir('¡Una pegatina de ' + PEGATINAS[peg].n + '! Ya está en tu álbum.');
+      }, 900);
+    };
+    $('#cofreBtn').onclick = abrir;
+    setTimeout(abrir, 4500);   // si no lo toca, se abre solo
+  }
   if (nuevoPlaneta) { frase += ' ' + pick(NARRADOR.planeta); SFX.planeta(); VIAJE = { d: antes, h: nivelActual() }; }
   VOZ.decir(frase);
   $('#bResOtra').onclick = () => { SFX.clic(); empezarMision({ lv: MIS.lv, repaso: MIS.repaso && !MIS.diaria }); };

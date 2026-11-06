@@ -388,3 +388,22 @@ input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:foc
 .btn-oir-grande { font-size: 20px; padding: 16px 26px; }
 .planeta.por-abrir .pimg { filter: grayscale(1) brightness(.45) !important; }
 .planeta.por-abrir { animation: none; }
+
+/* estrellas y cofre con dibujos */
+.planeta .est { top: -16px; display: flex; gap: 0; letter-spacing: 0; }
+.planeta .est img { width: 26px; height: 26px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.6)); }
+.planeta .est img:nth-child(2) { margin-top: -6px; }
+.res-estrellas span { font-size: 0; display: inline-block; }
+.res-estrellas span img { width: 74px; height: 74px; filter: drop-shadow(0 4px 8px rgba(0,0,0,.5)); }
+.res-estrellas span:nth-child(2) img { width: 92px; height: 92px; }
+.res-estrellas span.on img { filter: drop-shadow(0 0 14px rgba(255,210,63,.9)) drop-shadow(0 4px 6px rgba(0,0,0,.4)); }
+.res-pegatina { flex-direction: row; }
+.cofre { position: relative; width: 104px; height: 104px; background: none; padding: 0; flex: none; animation: cofreBota 1.2s ease-in-out infinite; }
+.cofre img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 12px rgba(23,255,95,.5)); }
+.cofre.abriendo { animation: cofreTiembla .12s linear infinite; }
+.cofre.abierto { animation: none; }
+.cofre.abierto img { filter: drop-shadow(0 0 22px rgba(255,210,63,.9)); }
+@keyframes cofreBota { 0%,100% { transform: translateY(0) rotate(0); } 40% { transform: translateY(-8px) rotate(-4deg); } 60% { transform: translateY(-8px) rotate(4deg); } }
+@keyframes cofreTiembla { 0% { transform: translateX(-4px) rotate(-5deg); } 50% { transform: translateX(4px) rotate(5deg); } 100% { transform: translateX(-4px) rotate(-5deg); } }
+.pega-sale { position: absolute; left: 50%; top: 10%; font-size: 54px; transform: translate(-50%, 0); animation: pegaSale .9s cubic-bezier(.3,1.6,.5,1) forwards; pointer-events: none; }
+@keyframes pegaSale { from { transform: translate(-50%, 30px) scale(.2); opacity: 0; } to { transform: translate(-50%, -62px) scale(1.15); opacity: 1; } }
