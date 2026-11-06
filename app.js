@@ -5,7 +5,7 @@
 'use strict';
 
 const CFG = {
-  API: '',   // URL /exec de Apps Script "leo con lucas"
+  API: 'https://script.google.com/macros/s/AKfycbwnOU0rZqjHtpKsUBurIv7-kkDMxQX8t9gUjNTma36sWXrPTyaV42y7fBjLldmJ5mTmMg/exec',   // URL /exec de Apps Script "leo con lucas"
   GOOGLE: '454055120059-nuhaop4r62urc3u036cc3grpqo71ulg7.apps.googleusercontent.com',
   APP_URL: 'https://puntofibra.github.io/leoconlucas/',
   MISION: 8
