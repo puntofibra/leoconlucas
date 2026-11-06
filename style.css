@@ -365,3 +365,16 @@ select { padding: 8px 10px; border-radius: 12px; background: rgba(3,8,22,.7); co
 .toast.ver { transform: translate(-50%, 0); }
 .ios-pasos { text-align: left; line-height: 1.7; }
 input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus { -webkit-text-fill-color: #fff; -webkit-box-shadow: 0 0 0 1000px #0a1430 inset; caret-color: #fff; transition: background-color 9999s; }
+
+/* planetas con imagen */
+.planeta { width: 132px; height: 132px; margin: -66px 0 0 -66px; background: none; padding: 0; }
+.planeta .pimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 14px color-mix(in srgb, var(--c) 55%, transparent)); pointer-events: none; }
+.planeta .letra { font-size: 34px; color: #fff; -webkit-text-stroke: 1.5px #0b1633; paint-order: stroke fill; text-shadow: 0 3px 0 #0b1633, 0 0 12px rgba(0,0,0,.6); }
+.planeta .letra.larga { font-size: 20px; }
+.planeta .nombre { top: 100%; }
+.planeta .est { top: -10px; }
+.planeta.bloq .pimg { filter: grayscale(1) brightness(.45); }
+.planeta.bloq .letra { -webkit-text-stroke: 0; text-shadow: none; }
+.planeta.actual .pimg { filter: drop-shadow(0 0 22px var(--c)); }
+.modal-planeta { width: 170px; height: 170px; }
+.modal-planeta .planeta { left: 50%; top: 50%; transform: scale(1.25); }

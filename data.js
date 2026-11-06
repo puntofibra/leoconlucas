@@ -10,30 +10,30 @@
 /* ---------- PLANETAS (niveles) ---------- */
 const PLANETAS = [
   { id: 0,  letra: 'a e i o u', nombre: 'Planeta Vocalia',   color: '#17ff5f', silabas: ['a','e','i','o','u'] },
-  { id: 1,  letra: 'm',  nombre: 'Planeta Mimo',      color: '#ff4fa3', silabas: ['ma','me','mi','mo','mu'] },
-  { id: 2,  letra: 'p',  nombre: 'Planeta Pupi',      color: '#ffb000', silabas: ['pa','pe','pi','po','pu'] },
-  { id: 3,  letra: 'l',  nombre: 'Planeta Lunalú',    color: '#4fc3ff', silabas: ['la','le','li','lo','lu','al','el','ol'] },
-  { id: 4,  letra: 's',  nombre: 'Planeta Solsí',     color: '#ffe14f', silabas: ['sa','se','si','so','su','as','es','os'] },
-  { id: 5,  letra: 't',  nombre: 'Planeta Tictac',    color: '#ff7a3d', silabas: ['ta','te','ti','to','tu'] },
+  { id: 1,  letra: 'm',  nombre: 'Planeta Mimo',      color: '#b388ff', silabas: ['ma','me','mi','mo','mu'] },
+  { id: 2,  letra: 'p',  nombre: 'Planeta Pupi',      color: '#ff8a3d', silabas: ['pa','pe','pi','po','pu'] },
+  { id: 3,  letra: 'l',  nombre: 'Planeta Lunalú',    color: '#18e0ff', silabas: ['la','le','li','lo','lu','al','el','ol'] },
+  { id: 4,  letra: 's',  nombre: 'Planeta Solsí',     color: '#ff4d5e', silabas: ['sa','se','si','so','su','as','es','os'] },
+  { id: 5,  letra: 't',  nombre: 'Planeta Tictac',    color: '#17ff5f', silabas: ['ta','te','ti','to','tu'] },
   { id: 6,  letra: 'n',  nombre: 'Planeta Nubená',    color: '#b388ff', silabas: ['na','ne','ni','no','nu','an','en','un'] },
-  { id: 7,  letra: 'd',  nombre: 'Planeta Dodó',      color: '#00e5c7', silabas: ['da','de','di','do','du'] },
-  { id: 8,  letra: 'f',  nombre: 'Planeta Fofi',      color: '#ff5252', silabas: ['fa','fe','fi','fo','fu'] },
-  { id: 9,  letra: 'r rr', nombre: 'Planeta Rorro',   color: '#ff9e40', silabas: ['ra','re','ri','ro','ru','rra','rre','rri','rro','ar','or'] },
-  { id: 10, letra: 'ca co cu', nombre: 'Planeta Cocú', color: '#69f0ae', silabas: ['ca','co','cu'] },
-  { id: 11, letra: 'b',  nombre: 'Planeta Burbu',     color: '#40c4ff', silabas: ['ba','be','bi','bo','bu'] },
-  { id: 12, letra: 'v',  nombre: 'Planeta Volví',     color: '#ea80fc', silabas: ['va','ve','vi','vo','vu'] },
-  { id: 13, letra: 'ga go gu', nombre: 'Planeta Gogú', color: '#c6ff00', silabas: ['ga','go','gu'] },
-  { id: 14, letra: 'j ge gi', nombre: 'Planeta Jijí', color: '#ffab40', silabas: ['ja','je','ji','jo','ju','ge','gi'] },
-  { id: 15, letra: 'ñ',  nombre: 'Planeta Ñoño',      color: '#f06292', silabas: ['ña','ñe','ñi','ño','ñu'] },
-  { id: 16, letra: 'ch', nombre: 'Planeta Chachi',    color: '#ffd740', silabas: ['cha','che','chi','cho','chu'] },
-  { id: 17, letra: 'll y', nombre: 'Planeta Llalla',  color: '#18ffff', silabas: ['lla','lle','lli','llo','llu','ya','ye','yo','yu'] },
-  { id: 18, letra: 'z ce ci', nombre: 'Planeta Zuzú', color: '#b2ff59', silabas: ['za','zo','zu','ce','ci'] },
-  { id: 19, letra: 'que qui', nombre: 'Planeta Quiqui', color: '#ff80ab', silabas: ['que','qui'] },
-  { id: 20, letra: 'h',  nombre: 'Planeta Hoho',      color: '#84ffff', silabas: ['ha','he','hi','ho','hu'] },
-  { id: 21, letra: 'gue gui', nombre: 'Planeta Guiguí', color: '#ffff00', silabas: ['gue','gui','güe','güi'] },
-  { id: 22, letra: 'pl br tr…', nombre: 'Planeta Trabalandia', color: '#ff6e40', silabas: ['pla','ple','bra','bro','tra','tre','cla','cro','fla','fre','gla','gra','dra','pri','bla'] },
-  { id: 23, letra: 'k w x', nombre: 'Planeta Kiwix',  color: '#7c4dff', silabas: ['ka','ki','ko','wi','xi'] },
-  { id: 24, letra: '📖',  nombre: 'Galaxia Cuentos',  color: '#00e676', silabas: [] }
+  { id: 7,  letra: 'd',  nombre: 'Planeta Dodó',      color: '#ff8a3d', silabas: ['da','de','di','do','du'] },
+  { id: 8,  letra: 'f',  nombre: 'Planeta Fofi',      color: '#18e0ff', silabas: ['fa','fe','fi','fo','fu'] },
+  { id: 9,  letra: 'r rr', nombre: 'Planeta Rorro',   color: '#ff4d5e', silabas: ['ra','re','ri','ro','ru','rra','rre','rri','rro','ar','or'] },
+  { id: 10, letra: 'ca co cu', nombre: 'Planeta Cocú', color: '#17ff5f', silabas: ['ca','co','cu'] },
+  { id: 11, letra: 'b',  nombre: 'Planeta Burbu',     color: '#b388ff', silabas: ['ba','be','bi','bo','bu'] },
+  { id: 12, letra: 'v',  nombre: 'Planeta Volví',     color: '#ff8a3d', silabas: ['va','ve','vi','vo','vu'] },
+  { id: 13, letra: 'ga go gu', nombre: 'Planeta Gogú', color: '#4fc3ff', silabas: ['ga','go','gu'] },
+  { id: 14, letra: 'j ge gi', nombre: 'Planeta Jijí', color: '#ff4d5e', silabas: ['ja','je','ji','jo','ju','ge','gi'] },
+  { id: 15, letra: 'ñ',  nombre: 'Planeta Ñoño',      color: '#17ff5f', silabas: ['ña','ñe','ñi','ño','ñu'] },
+  { id: 16, letra: 'ch', nombre: 'Planeta Chachi',    color: '#b388ff', silabas: ['cha','che','chi','cho','chu'] },
+  { id: 17, letra: 'll y', nombre: 'Planeta Llalla',  color: '#ff4fa3', silabas: ['lla','lle','lli','llo','llu','ya','ye','yo','yu'] },
+  { id: 18, letra: 'z ce ci', nombre: 'Planeta Zuzú', color: '#18e0ff', silabas: ['za','zo','zu','ce','ci'] },
+  { id: 19, letra: 'que qui', nombre: 'Planeta Quiqui', color: '#ff4d5e', silabas: ['que','qui'] },
+  { id: 20, letra: 'h',  nombre: 'Planeta Hoho',      color: '#17ff5f', silabas: ['ha','he','hi','ho','hu'] },
+  { id: 21, letra: 'gue gui', nombre: 'Planeta Guiguí', color: '#b388ff', silabas: ['gue','gui','güe','güi'] },
+  { id: 22, letra: 'pl br tr…', nombre: 'Planeta Trabalandia', color: '#ff8a3d', silabas: ['pla','ple','bra','bro','tra','tre','cla','cro','fla','fre','gla','gra','dra','pri','bla'] },
+  { id: 23, letra: 'k w x', nombre: 'Planeta Kiwix',  color: '#18e0ff', silabas: ['ka','ki','ko','wi','xi'] },
+  { id: 24, letra: '📖',  nombre: 'Galaxia Cuentos',  color: '#ff4d5e', silabas: [] }
 ];
 
 /* ---------- PALABRAS: 'sí-la-bas|emoji|género(m/f)' ---------- */
@@ -227,7 +227,7 @@ glo-bo|🎈|m
 bra-zo|💪|m
 bru-ja|🧙‍♀️|f
 li-bro|📚|m
-cro-co-di-lo|🐊|m
+co-co-dri-lo|🐊|m
 gri-llo|🦗|m
 tri-go|🌾|m
 pla-ne-ta|🪐|m

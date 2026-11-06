@@ -13,6 +13,8 @@ const ENG = (() => {
   const SIMPLE = { m: 1, p: 2, l: 3, s: 4, t: 5, n: 6, d: 7, f: 8, r: 9, b: 11, v: 12, j: 14, 'ñ': 15, z: 18, h: 20, x: 23, k: 23, w: 23 };
 
   /* Nivel (planeta) mínimo necesario para leer una palabra */
+  let TRAB = false;
+  function tieneTrabada(pal) { TRAB = false; nivelPalabra(pal); return TRAB; }
   function nivelPalabra(pal) {
     const w = pal.toLowerCase().replace(/[^a-záéíóúüñ]/g, '');
     if (!w) return 0;
@@ -33,8 +35,10 @@ const ENG = (() => {
       else if (c === 'y') lv = 17;
       else lv = SIMPLE[c] || 0;
       /* sílabas trabadas: pl, pr, bl, br, cl, cr, dr, fl, fr, gl, gr, tr */
+      /* trabadas (bra, pla, tre…): se pueden leer en cuanto se conocen sus dos letras;
+         salen poco y alternadas (ver peso) hasta llegar a Trabalandia */
       if ('pbcfgtd'.includes(c) && (n1 === 'l' || n1 === 'r') && n2 !== n1 && esVoc(n2) && !(c === 'd' && n1 === 'l') && !(c === 't' && n1 === 'l')) {
-        if (!(n1 === 'l' && w[i + 2] === 'l')) lv = Math.max(lv, 22);
+        if (!(n1 === 'l' && w[i + 2] === 'l')) { lv = Math.max(lv, n1 === 'r' ? 9 : 3, 10); TRAB = true; }
       }
       if (lv > max) max = lv;
     }
@@ -49,12 +53,12 @@ const ENG = (() => {
     const [s, e, g] = l.split('|');
     const w = s.replace(/-/g, '');
     if (vistos.has(w)) return; vistos.add(w);
-    PAL.push({ w, s: s.split('-'), e: e || '', g: g || 'm', lv: nivelPalabra(w), id: 'p:' + w });
+    PAL.push({ w, s: s.split('-'), e: e || '', g: g || 'm', lv: nivelPalabra(w), tr: tieneTrabada(w), id: 'p:' + w });
   });
   PALABRAS_LECTURA.forEach(s => {
     const w = s.replace(/-/g, '');
     if (vistos.has(w.toLowerCase())) return; vistos.add(w.toLowerCase());
-    PAL.push({ w, s: s.split('-'), e: '', g: 'm', lv: nivelPalabra(w), id: 'p:' + w });
+    PAL.push({ w, s: s.split('-'), e: '', g: 'm', lv: nivelPalabra(w), tr: tieneTrabada(w), id: 'p:' + w });
   });
   const CON_DIBUJO = PAL.filter(p => p.e && !/^[A-Z]/.test(p.w));
   const FR = FRASES.map(t => ({ t, lv: nivelTexto(t), id: 'f:' + t }));
@@ -71,6 +75,7 @@ const ENG = (() => {
      mem.seen[id] = marca de tiempo de la última vez visto
      mem.fail[id] = fallos acumulados (se repiten más las palabras difíciles) */
   let MEM = { seen: {}, fail: {} };
+  let NIVEL_ACT = 0;
   const usadosSesion = new Set();
   function setMem(m) { MEM = m; MEM.seen = MEM.seen || {}; MEM.fail = MEM.fail || {}; }
   function peso(it) {
@@ -80,6 +85,7 @@ const ENG = (() => {
     else { const dias = (Date.now() - t) / 864e5; w = Math.min(8, 0.2 + dias * 1.6); }
     if (MEM.fail[it.id]) w += Math.min(6, MEM.fail[it.id] * 2);
     if (usadosSesion.has(it.id)) w *= 0.02;
+    if (it.tr && NIVEL_ACT < 22) w *= 0.7;      // trabadas: pocas y alternadas
     return w;
   }
   function elige(lista, n = 1, filtro) {
@@ -115,7 +121,7 @@ const ENG = (() => {
   function eligePalabra(lv, conDibujo, excluir = []) {
     const base = palabras(lv, conDibujo).filter(p => !excluir.includes(p.w) && !excluir.includes(p.e));
     if (!base.length) return null;
-    const foco = base.filter(p => p.lv === lv);
+    const foco = base.filter(p => p.lv === lv && (!p.tr || lv >= 22));
     const usarFoco = foco.length >= 2 && Math.random() < 0.6;
     return elige(usarFoco ? foco : base);
   }
@@ -253,7 +259,7 @@ const ENG = (() => {
   }
   /* Genera una misión. lv = planeta; repaso = mezcla de todos los niveles desbloqueados */
   function mision({ lv, edad = 6, n = 8, repaso = false, voz = false, maxLv }) {
-    nuevaSesion();
+    nuevaSesion(); NIVEL_ACT = lv;
     const op = edad <= 5 ? 3 : edad >= 7 ? 4 : 3 + (lv >= 6 ? 1 : 0);
     const out = []; let prev = null, tries = 0, cuentos = 0;
     while (out.length < n && tries++ < 200) {

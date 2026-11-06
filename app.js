@@ -472,7 +472,7 @@ ON_PANTALLA.pMapa = () => {
   pintaMapa();
 };
 function pintaMapa() {
-  const M = $('#mapa'), W = Math.min($('#mapaScroll').clientWidth, 560), PASO = 150, N = PLANETAS.length;
+  const M = $('#mapa'), W = Math.min($('#mapaScroll').clientWidth, 560), PASO = 165, N = PLANETAS.length;
   const H = N * PASO + 160; M.style.height = H + 'px'; M.innerHTML = '';
   const pos = PLANETAS.map((p, i) => ({ x: W / 2 + Math.sin(i * 1.15) * (W * .3), y: H - 110 - i * PASO }));
   let path = `M${pos[0].x},${pos[0].y}`;
@@ -490,7 +490,7 @@ function pintaMapa() {
     const b = el('button', 'planeta' + (bloq ? ' bloq' : '') + (i === act ? ' actual' : ''));
     b.style.left = pos[i].x + 'px'; b.style.top = pos[i].y + 'px'; b.style.setProperty('--c', p.color);
     const larga = p.letra.length > 3;
-    b.innerHTML = `${i % 3 === 1 ? '<span class="anillo"></span>' : ''}<span class="bola"></span>
+    b.innerHTML = `<img class="pimg" src="img/planetas/planeta${String(i + 1).padStart(2, '0')}.png" alt="" loading="lazy" decoding="async">
       <span class="letra${larga ? ' larga' : ''}">${bloq ? '🔒' : p.letra}</span>
       ${pl.e ? `<span class="est">${'★'.repeat(Math.min(3, pl.e))}</span>` : ''}
       <span class="nombre">${p.nombre}</span>`;
@@ -504,7 +504,7 @@ function pintaMapa() {
 function abrePlaneta(i) {
   const p = PLANETAS[i], pl = datos().plan[i] || { m: 0, e: 0 };
   const esCuentos = i === 24;
-  modal(`<div class="modal-planeta"><div class="planeta" style="--c:${p.color}"><span class="anillo"></span><span class="bola"></span><span class="letra${p.letra.length > 3 ? ' larga' : ''}">${p.letra}</span></div></div>
+  modal(`<div class="modal-planeta"><div class="planeta" style="--c:${p.color}"><img class="pimg" src="img/planetas/planeta${String(i + 1).padStart(2, '0')}.png" alt=""><span class="letra${p.letra.length > 3 ? ' larga' : ''}">${p.letra}</span></div></div>
     <h2>${p.nombre}</h2>
     <p style="margin:0;color:var(--txt2)">${esCuentos ? 'Cuentos y lecturas largas' : i === 0 ? 'Las vocales' : 'Aprendemos: ' + p.letra}</p>
     ${p.silabas.length ? `<div class="silabas-muestra">${p.silabas.slice(0, 10).map(s => `<button data-s="${s}">${s}</button>`).join('')}</div>` : ''}

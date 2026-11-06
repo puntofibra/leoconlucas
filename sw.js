@@ -1,5 +1,5 @@
 /* Leo con Lucas · service worker: red primero para el código, caché para imágenes */
-const V = 'lcl-v6';
+const V = 'lcl-v8';
 const BASE = ['./', 'index.html', 'style.css', 'app.js', 'engine.js', 'data.js', 'manifest.json', 'img/icon-192.png', 'img/logo-futurmovil.png',
   'img/lucas/senala.png', 'img/lucas/propulsor.png', 'img/lucas/vuela.png', 'img/lucas/caido.png', 'img/lucas/senala-capa.png', 'img/lucas/gamer.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(BASE.map(u => new Request(u, { cache: 'no-cache' })))).then(() => self.skipWaiting())); });
