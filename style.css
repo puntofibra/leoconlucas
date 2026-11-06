@@ -193,9 +193,16 @@ input:focus { border-color: var(--verde); box-shadow: 0 0 0 3px rgba(23,255,95,.
 .btn-oir { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border-radius: 12px; background: #e7fff0; font-size: 19px; }
 @media (min-width: 900px) and (orientation: landscape) {
   .juego-cuerpo { flex-direction: row; gap: 20px; }
-  .narrador { width: 280px; flex-direction: column; align-items: center; justify-content: center; }
-  .burbuja { order: 0; margin: 0 0 14px; border-radius: 20px 20px 20px 20px; width: 100%; }
-  .lucas-narra { width: 210px; }
+  .narrador { width: 300px; flex: none; flex-direction: column; align-items: center; justify-content: center; gap: 0; }
+  .burbuja { order: 0; flex: none; width: 100%; margin: 0 0 22px; border-radius: 22px; font-size: 19px; padding: 16px 52px 16px 18px; }
+  .burbuja::after { content: ''; position: absolute; left: 50%; bottom: -14px; transform: translateX(-50%); border: 14px solid transparent; border-bottom: 0; border-top-color: #fff; filter: drop-shadow(0 3px 0 rgba(23,255,95,.5)); }
+  .lucas-narra { order: 1; width: 220px; }
+  .escenario .opciones { max-width: 680px; }
+  .traza-wrap { width: min(58vh, 460px); }
+}
+@media (min-width: 900px) and (orientation: landscape) and (min-height: 780px) {
+  .narrador { width: 330px; }
+  .lucas-narra { width: 270px; }
 }
 
 /* texto para leer */
