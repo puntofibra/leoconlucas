@@ -357,3 +357,4 @@ select { padding: 8px 10px; border-radius: 12px; background: rgba(3,8,22,.7); co
 .toast { position: fixed; left: 50%; bottom: calc(30px + var(--safe-b)); transform: translate(-50%, 140px); z-index: 80; padding: 12px 20px; border-radius: 16px; background: #0f2147; border: 1.5px solid var(--verde); font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,.5); transition: transform .35s cubic-bezier(.3,1.5,.5,1); max-width: 90vw; text-align: center; }
 .toast.ver { transform: translate(-50%, 0); }
 .ios-pasos { text-align: left; line-height: 1.7; }
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus { -webkit-text-fill-color: #fff; -webkit-box-shadow: 0 0 0 1000px #0a1430 inset; caret-color: #fff; transition: background-color 9999s; }
