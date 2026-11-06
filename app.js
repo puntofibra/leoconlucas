@@ -163,37 +163,77 @@ const SFX = (() => {
 })();
 
 /* ---------------- narrador (voz de Lucas) ---------------- */
+/* letras sueltas → su nombre (si no, la voz dice «metro» por «m») */
+const NOMBRE_LETRA = { b: 'be', c: 'ce', d: 'de', f: 'efe', g: 'ge', h: 'hache', j: 'jota', k: 'ka', l: 'ele', m: 'eme', n: 'ene', 'ñ': 'eñe', p: 'pe', q: 'cu', r: 'erre', s: 'ese', t: 'te', v: 'uve', w: 'uve doble', x: 'equis', z: 'zeta', ch: 'che', ll: 'elle', rr: 'erre doble' };
+function nombresLetras(t) {
+  return t.replace(/(^|[^\p{L}])(ch|ll|rr|[bcdfghjklmnñpqrstvwxz])(?=$|[^\p{L}])/giu, (m, a, l) => a + NOMBRE_LETRA[l.toLowerCase()]);
+}
+/* sílaba suelta con tilde para que la voz la lea en español («to» → «tó», no «tu») */
+const TILDE = { a: 'á', e: 'é', i: 'í', o: 'ó', u: 'ú' };
+function sv(s) {
+  if (/[áéíóú]/.test(s)) return s;
+  const m = s.match(/[aeiou](?!.*[aeiou])/);
+  return m ? s.slice(0, m.index) + TILDE[m[0]] + s.slice(m.index + 1) : s;
+}
 const VOZ = (() => {
   const ss = window.speechSynthesis;
-  let voces = [], voz = null, rate = 0.92;
+  let voces = [], voz = null, rate = 0.95;
+  function puntua(v) {
+    let p = 0;
+    if (/es[-_]ES/i.test(v.lang)) p += 50; else if (/es[-_](MX|US|419)/i.test(v.lang)) p += 20;
+    if (/natural|neural|online|premium|enhanced|mejorad/i.test(v.name)) p += 40;
+    if (/google/i.test(v.name)) p += 25;
+    if (/(elvira|alvaro|ximena|dalia|m[oó]nica|paulina|marisol|lucia|lucía|helena|laura)/i.test(v.name)) p += 10;
+    if (/compact|eloquence|espeak|robot/i.test(v.name)) p -= 60;
+    if (!v.localService) p += 5;
+    return p;
+  }
   function cargar() {
     if (!ss) return;
-    voces = ss.getVoices().filter(v => /^es/i.test(v.lang));
+    voces = ss.getVoices().filter(v => /^es/i.test(v.lang)).sort((a, b) => puntua(b) - puntua(a));
     const pref = LS.get('voz', '');
-    voz = voces.find(v => v.name === pref)
-      || voces.find(v => /es-ES/i.test(v.lang) && /google/i.test(v.name))
-      || voces.find(v => /es-ES/i.test(v.lang) && /(m[oó]nica|helena|elvira|alvaro|pablo|laura|dalia)/i.test(v.name))
-      || voces.find(v => /es[-_]ES/i.test(v.lang)) || voces[0] || null;
+    voz = voces.find(v => v.name === pref) || voces[0] || null;
   }
   if (ss) { cargar(); ss.onvoiceschanged = cargar; }
   let anim = null;
   function habla(on) { const l = $('#lucasNarra'); if (l) l.classList.toggle('habla', on); }
+  /* limpia el texto para que suene natural */
+  function prepara(t) {
+    return nombresLetras(String(t)
+      .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}️‍]/gu, '')   // emojis fuera
+      .replace(/\.{3}/g, '…').replace(/\s+/g, ' ').trim());
+  }
+  /* trocea en frases para que respete puntos y pausas (y no se corte en Android) */
+  function trozos(t) {
+    const out = []; const re = /[^.!?…;:]+[.!?…;:]*["»)]?\s*/g; let m;
+    while ((m = re.exec(t))) { if (m[0].trim()) out.push({ t: m[0].trim(), off: m.index }); }
+    return out.length ? out : [{ t, off: 0 }];
+  }
+  let turno = 0;
   function decir(texto, opt = {}) {
-    return new Promise(res => {
-      if (!ss || !texto) { res(); return; }
-      if (!opt.cola) ss.cancel();
-      const u = new SpeechSynthesisUtterance(texto.replace(/[🔊⭐⚡]/g, ''));
-      u.lang = 'es-ES'; if (voz) u.voice = voz;
-      u.rate = (opt.rate || 1) * rate; u.pitch = opt.pitch || 1.12; u.volume = 1;
-      let hecho = false; const fin = () => { if (hecho) return; hecho = true; habla(false); res(); };
+    if (!ss || !texto) return Promise.resolve();
+    if (!opt.cola) { ss.cancel(); turno++; }
+    const mio = turno;
+    const limpio = prepara(texto);
+    const partes = trozos(limpio);
+    const hablaUno = ({ t, off }) => new Promise(res => {
+      if (mio !== turno) { res(); return; }
+      const u = new SpeechSynthesisUtterance(t);
+      u.lang = (voz && voz.lang) || 'es-ES'; if (voz) u.voice = voz;
+      u.rate = Math.min(1.3, (opt.rate || 1) * rate); u.pitch = opt.pitch || 1; u.volume = 1;
+      let hecho = false; const fin = () => { if (hecho) return; hecho = true; res(); };
       u.onstart = () => habla(true); u.onend = fin; u.onerror = fin;
-      if (opt.onBoundary) u.onboundary = opt.onBoundary;
-      setTimeout(fin, 1500 + texto.length * 140);   // seguridad si el navegador no avisa
+      if (opt.onBoundary) u.onboundary = e => opt.onBoundary({ charIndex: e.charIndex + off, name: e.name });
+      setTimeout(fin, 2500 + t.length * 160);   // seguridad si el navegador no avisa
       ss.speak(u);
     });
+    return (async () => {
+      for (const p of partes) { if (mio !== turno) break; await hablaUno(p); }
+      if (mio === turno) habla(false);
+    })();
   }
   return {
-    decir, callar() { if (ss) ss.cancel(); habla(false); },
+    decir, callar() { turno++; if (ss) ss.cancel(); habla(false); },
     setRate(r) { rate = r; }, voces: () => voces, setVoz(n) { LS.set('voz', n); cargar(); }, disponible: !!ss
   };
 })();
@@ -228,7 +268,7 @@ function nivelActual() { let i = 0; while (i < PLANETAS.length - 1 && desbloquea
 function aplicaAjustes() {
   const d = datos();
   document.body.classList.toggle('mayus', !!d.aj.mayus);
-  VOZ.setRate(d.aj.lenta || NINO.edad <= 5 ? 0.8 : 0.92);
+  VOZ.setRate(d.aj.lenta || NINO.edad <= 5 ? 0.85 : 0.95);
 }
 
 /* ---------------- arranque ---------------- */
@@ -463,9 +503,9 @@ function abrePlaneta(i) {
     <small style="color:var(--txt2)">${pl.m >= 2 ? '¡Planeta conquistado! Sigue practicando para ganar estrellas.' : 'Completa 2 misiones para abrir el siguiente planeta'}</small>
     <button class="btn btn-verde btn-grande" id="bDespegar">🚀 ¡DESPEGAR!</button>
     <button class="btn btn-mini" onclick="cerrarModal()">Volver</button>`);
-  $$('.silabas-muestra button').forEach(b => b.onclick = () => { SFX.pieza(); VOZ.decir(b.dataset.s, { rate: .8 }); });
+  $$('.silabas-muestra button').forEach(b => b.onclick = () => { SFX.pieza(); VOZ.decir(sv(b.dataset.s), { rate: .8 }); });
   $('#bDespegar').onclick = () => { cerrarModal(); empezarMision({ lv: i }); };
-  VOZ.decir(`${p.nombre}. ${esCuentos ? '¡Aquí leeremos cuentos!' : i === 0 ? 'Aquí aprendemos las vocales: a, e, i, o, u.' : 'Aquí aprendemos ' + p.silabas.slice(0, 5).join(', ') + '.'}`);
+  VOZ.decir(`${p.nombre}. ${esCuentos ? '¡Aquí leeremos cuentos!' : i === 0 ? 'Aquí aprendemos las vocales: a, e, i, o, u.' : 'Aquí aprendemos ' + p.silabas.slice(0, 5).map(sv).join(', ') + '.'}`);
 }
 $('#bDiaria').onclick = () => {
   SFX.clic();
@@ -541,7 +581,7 @@ function fallo(elm) {
 }
 function lucasCruza() { const i = el('img', 'lucas-cruza'); i.src = 'img/lucas/propulsor.png'; i.style.filter = filtroColor(NINO.color); document.body.appendChild(i); SFX.woosh(); setTimeout(() => i.remove(), 1400); }
 function lucasCaido() { const i = el('img', 'lucas-caido'); i.src = 'img/lucas/caido.png'; i.style.filter = filtroColor(NINO.color); document.body.appendChild(i); setTimeout(() => i.remove(), 1500); }
-const silabeo = p => p.s.join('... ') + '... ' + p.w;
+const silabeo = p => p.s.map(sv).join('... ') + '... ' + p.w;
 function pic(p) {
   const slug = ENG.quitaTildes(p.w.toLowerCase()).replace('ñ', 'n');
   if (IMAGENES.includes(slug)) return `<img src="img/palabras/${slug}.png" alt="">`;
@@ -565,7 +605,7 @@ function opciones(lista, cls, contenido, esCorrecta, alAcertar) {
 }
 RENDER.escucha = (ej, E) => {
   const big = el('button', 'btn btn-azul', '🔊 Escuchar otra vez'); big.style.fontSize = '20px';
-  const decirX = () => VOZ.decir(ej.x, { rate: .75 });
+  const decirX = () => VOZ.decir(sv(ej.x), { rate: .75 });
   big.onclick = () => { SFX.clic(); decirX(); };
   E.appendChild(el('div', 'leer m', '👂')); E.appendChild(big);
   E.appendChild(opciones(ej.opts, ej.opts.length === 3 ? 'tres' : '', o => `<span class="opt-txt">${o}</span>`, o => o === ej.x));
@@ -592,15 +632,15 @@ RENDER.globos = (ej, E) => {
     b.onpointerdown = () => {
       if (ej.resuelto) return;
       an.pause(); b.classList.add('pop'); setTimeout(() => b.remove(), 300);
-      if (s === ej.x) { SFX.pop(); FX.chispas(b, 16); cuenta++; $('#gCont').textContent = cuenta; VOZ.decir(s, { rate: .9 });
+      if (s === ej.x) { SFX.pop(); FX.chispas(b, 16); cuenta++; $('#gCont').textContent = cuenta; VOZ.decir(sv(s), { rate: .9 });
         if (cuenta >= META) { clearInterval(iv); acierto(marc, '¡Las has atrapado todas!'); } }
       else { fallo(null); }
     };
   };
   const iv = setInterval(lanza, 850); lanza();
   limpiezas.push(() => clearInterval(iv));
-  ej.repetir = () => VOZ.decir(ej.x, { rate: .75 });
-  narra(instr('globos', ej.x));
+  ej.repetir = () => VOZ.decir(sv(ej.x), { rate: .75 });
+  narra(instr('globos', sv(ej.x)));
 };
 RENDER.palimg = (ej, E) => {
   E.appendChild(el('div', 'tarjeta', `<div class="leer xl">${ej.p.w}</div>`));
@@ -624,7 +664,7 @@ RENDER.forma = (ej, E) => {
     b.onclick = () => {
       if (ej.resuelto) return;
       if (s === ej.p.s[pos]) {
-        SFX.pieza(); b.classList.add('usada'); const h = H.children[pos]; h.textContent = s; h.classList.add('lleno'); VOZ.decir(s, { rate: .9 }); pos++;
+        SFX.pieza(); b.classList.add('usada'); const h = H.children[pos]; h.textContent = s; h.classList.add('lleno'); VOZ.decir(sv(s), { rate: .9 }); pos++;
         if (pos === ej.p.s.length) acierto(H, ej.p.w + '.');
       } else { fallo(b); if (EJ.errores >= 2) ej.ayuda(); }
     };
@@ -759,7 +799,7 @@ RENDER.traza = (ej, E) => {
     if (cobertura > .5 && derrame < .62) acierto(W, '¡Qué bien escribes la ' + ej.x + '!');
     else { fallo(W); narra(cobertura <= .5 ? 'Repasa toda la letra, por encima de la línea verde.' : 'Intenta no salirte mucho de la letra.'); c.clearRect(0, 0, S, S); }
   };
-  ej.repetir = () => VOZ.decir(ej.x);
+  ej.repetir = () => VOZ.decir('la letra ' + ej.x);
   narra(instr('traza', ej.x));
 };
 RENDER.voz = (ej, E) => {
@@ -795,7 +835,7 @@ RENDER.silabas = (ej, E) => {
   const pal = el('div', 'palmas', ej.p.s.map(() => '<span class="palma">👏</span>').join('')); pal.style.visibility = 'hidden'; E.appendChild(pal);
   const opts = [1, 2, 3, 4].concat(ej.p.s.length >= 4 ? [5] : []);
   E.appendChild(opciones(opts.slice(0, 4).includes(ej.p.s.length) ? opts.slice(0, 4) : opts.slice(1, 5), '', o => `<span class="opt-txt">${o}</span>`, o => o === ej.p.s.length,
-    async b => { pal.style.visibility = 'visible'; const ps = [...pal.children]; for (let i = 0; i < ps.length; i++) { ps[i].classList.add('on'); SFX.pieza(); VOZ.decir(ej.p.s[i], { rate: .9 }); await esperar(520); } acierto(b, ej.p.s.join(', ') + '.'); }));
+    async b => { pal.style.visibility = 'visible'; const ps = [...pal.children]; for (let i = 0; i < ps.length; i++) { ps[i].classList.add('on'); SFX.pieza(); VOZ.decir(sv(ej.p.s[i]), { rate: .9 }); await esperar(520); } acierto(b, ej.p.s.map(sv).join(', ') + '.'); }));
   ej.ayuda = () => narra(pick(NARRADOR.pista) + ' ' + silabeo(ej.p), { rate: .75 });
   ej.repetir = () => VOZ.decir(ej.p.w);
   narra(instr('silabas')).then(() => VOZ.decir(ej.p.w, { cola: true }));
