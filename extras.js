@@ -48,9 +48,10 @@ function decora(r) {
 }
 function decoraTodo() { ['.nave-mapa > .robot', '#lucasNarra', '#resLucas', '#tallerRobot > .robot'].forEach(s => { const r = $(s); if (r) decora(r); }); }
 function aplicaFondo() {
-  const sc = $('#mapaScroll'); if (!sc || !NINO) return;
+  const pm = $('#pMapa'); if (!pm || !NINO) return;
   const f = talItem('fondo', talDatos().fondo);
-  sc.style.backgroundImage = f ? f.bg : '';
+  pm.style.backgroundImage = f ? f.bg : '';   // toda la pantalla, sin cortes
+  pm.style.backgroundAttachment = 'fixed'; pm.style.backgroundSize = 'cover';
 }
 /* estela del vuelo entre planetas (lo usa ESTELA en app.js) */
 window.estelaCfg = () => { if (!NINO) return null; const e = talItem('est', talDatos().est); return e || null; };

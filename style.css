@@ -567,7 +567,7 @@ body, button, input, select, .btn, .titulo-pantalla, .cabecera h2, .btn-grande, 
 @keyframes auraGal { 0%,100% { filter: drop-shadow(0 0 12px #6a5cff) drop-shadow(0 0 26px #18e0ff); } 50% { filter: drop-shadow(0 0 16px #ff4fd8) drop-shadow(0 0 32px #6a5cff); } }
 @keyframes auraArco { 0% { filter: drop-shadow(0 0 12px #ff4d5e) drop-shadow(0 0 24px #ff4d5e); } 20% { filter: drop-shadow(0 0 12px #ff8a3d) drop-shadow(0 0 24px #ffd23f); } 40% { filter: drop-shadow(0 0 12px #17ff5f) drop-shadow(0 0 24px #17ff5f); } 60% { filter: drop-shadow(0 0 12px #18e0ff) drop-shadow(0 0 24px #18e0ff); } 80% { filter: drop-shadow(0 0 12px #8b5cff) drop-shadow(0 0 24px #ff4fd8); } 100% { filter: drop-shadow(0 0 12px #ff4d5e) drop-shadow(0 0 24px #ff4d5e); } }
 .humo-e { width: auto; height: auto; background: none !important; box-shadow: none; font-size: 18px; line-height: 1; }
-.mapa-scroll { transition: background-image .6s; }
+#pMapa { transition: background-image .6s; }
 
 /* ================= TALLER ================= */
 .tal-escena { position: relative; height: 170px; display: grid; place-items: center; flex-shrink: 0; overflow: visible; }
