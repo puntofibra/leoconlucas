@@ -34,6 +34,7 @@ function accion_(d) {
     case 'borrarNino': return borrarNino_(d);
     case 'pagoAviso': return pagoAviso_(d);
     case 'nfcEstado': return nfcEstado_();
+    case 'config': return { ok: true, pjNuevos: PropertiesService.getScriptProperties().getProperty('PJ_NUEVOS') === '1' };
     case 'nfcRegistrar': return nfcRegistrar_(d);
     case 'nfcLogin': return nfcLogin_(d);
     case 'admin': return admin_(d);
@@ -122,6 +123,7 @@ function sesion_(u, token) {
   const aviso = u.v[U.pagoAviso] ? new Date(u.v[U.pagoAviso]) : null;
   const licencia = email === ADMIN || !!u.v[U.licencia];
   return { ok: true, token, email, nombre: u.v[U.nombre], ninos: ninosDe_(email), admin: email === ADMIN,
+    pjNuevos: PropertiesService.getScriptProperties().getProperty('PJ_NUEVOS') === '1',
     lic: { ok: licencia, dias, prueba: DIAS_PRUEBA, bloqueo: !licencia && dias >= DIAS_PRUEBA,
       avisado: !!aviso, espera: !!aviso && (Date.now() - aviso.getTime()) < 48 * 3600e3, precio: PRECIO } };
 }
@@ -340,6 +342,7 @@ function nfcToken_() {
 function admin_(d) {
   if (!d.adminToken || !CacheService.getScriptCache().get('adm_' + d.adminToken)) return { ok: false, error: 'Sesión de admin caducada o no válida' };
   const hoy = Utilities.formatDate(new Date(), 'Europe/Madrid', 'yyyy-MM-dd');
+  if (d.op === 'pjNuevos') { PropertiesService.getScriptProperties().setProperty('PJ_NUEVOS', d.valor ? '1' : '0'); return { ok: true }; }
   if (d.op === 'nfcBorrar') { PropertiesService.getScriptProperties().deleteProperty('NFC_HASH'); return { ok: true }; }
   if (d.op === 'resumen') { resumenSemanal(ADMIN); return { ok: true, a: ADMIN }; }
   if (d.op === 'stats') {
