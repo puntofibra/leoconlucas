@@ -299,6 +299,7 @@ function nombresLetras(t) {
 /* sílaba suelta con tilde para que la voz la lea en español («to» → «tó», no «tu») */
 const TILDE = { a: 'á', e: 'é', i: 'í', o: 'ó', u: 'ú' };
 function sv(s) {
+  if (/^[aeiouáéíóú]$/i.test(s)) return s.normalize('NFD').replace(/[\u0301]/g, '');   // vocal sola: «i», no «i con tilde»
   if (/[áéíóú]/.test(s)) return s;
   const m = s.match(/[aeiou](?!.*[aeiou])/);
   return m ? s.slice(0, m.index) + TILDE[m[0]] + s.slice(m.index + 1) : s;
