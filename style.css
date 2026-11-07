@@ -657,3 +657,11 @@ body, button, input, select, .btn, .titulo-pantalla, .cabecera h2, .btn-grande, 
 .dip-img img { width: 100%; height: 100%; display: block; }
 .dip-bts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 .modal-caja:has(.dip-modal) { max-width: 640px; }
+
+/* botones del mapa más bajos */
+.fila-mapa .btn-mision, .fila-mapa .btn-cuento { padding-top: 9px; padding-bottom: 9px; min-height: 0; line-height: 1.15; }
+.fila-mapa .btn-mision span { white-space: nowrap; font-size: 18px; }
+.fila-mapa .btn-cuento > span { font-size: 18px; line-height: 1.05; }
+.fila-mapa .btn-cuento > small { white-space: nowrap; font-size: 12px; }
+@media (max-width: 380px) { .fila-mapa .btn-mision span, .fila-mapa .btn-cuento > span { font-size: 16px; } }
+.fila-mapa .cuento-ico { width: 54px; margin-top: -30px; }

@@ -661,8 +661,8 @@ ON_PANTALLA.pMapa = () => {
   $('#mEstrellas').textContent = d.est;
   const hecha = d.diaria === hoy();
   $('#bDiaria').classList.toggle('hecha', hecha);
-  $('#bDiariaSub').textContent = hecha ? '¡Completada! Vuelve mañana 😉' : 'Repaso sorpresa · premio seguro 🎁';
-  { const hc = (d.cuentos || {})[hoy()]; $('#bCuentoSub').textContent = hc != null ? 'escuchado ⭐' + hc : 'de hoy'; $('#bCuento').classList.toggle('hecha', hc != null); }
+  $('#bDiariaTxt').textContent = 'MISIÓN DEL DÍA ' + (hecha ? '✅' : '🎁');
+  { const hc = (d.cuentos || {})[hoy()]; $('#bCuentoSub').textContent = hc != null ? 'antes de dormir ✅' : 'antes de dormir'; $('#bCuento').classList.toggle('hecha', hc != null); }
   pintaMapa();
 };
 function pintaMapa() {
