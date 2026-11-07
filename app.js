@@ -145,8 +145,9 @@ const ESTELA = (() => {
       iv = setInterval(() => {
         const r = nave.getBoundingClientRect(), m = M.getBoundingClientRect();
         for (let k = 0; k < 2; k++) {
-          const p = el('span', 'humo'); p.style.left = (r.left - m.left + r.width * .25 + (Math.random() - .5) * 14) + 'px'; p.style.top = (r.top - m.top + r.height * .55 + (Math.random() - .5) * 14) + 'px';
-          p.style.background = pick(['#17ff5f', '#ffd23f', '#ff8a3d', '#18e0ff', '#ffffff']);
+          const cfg = window.estelaCfg ? window.estelaCfg() : null;
+          const p = cfg && cfg.e ? el('span', 'humo humo-e', pick(cfg.e)) : el('span', 'humo'); p.style.left = (r.left - m.left + r.width * .25 + (Math.random() - .5) * 14) + 'px'; p.style.top = (r.top - m.top + r.height * .55 + (Math.random() - .5) * 14) + 'px';
+          if (cfg && cfg.e) { if (k) continue; } else p.style.background = pick(cfg && cfg.c ? cfg.c : ['#17ff5f', '#ffd23f', '#ff8a3d', '#18e0ff', '#ffffff']);
           M.appendChild(p); setTimeout(() => p.remove(), 900);
         }
       }, 40);
