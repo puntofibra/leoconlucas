@@ -1,0 +1,4202 @@
+[
+ {
+  "d": 1,
+  "t": "La mona de Pascua del abuelo Paco",
+  "e": "🥚",
+  "tema": "pascua",
+  "p": [
+   {
+    "x": "Llegaba la Pascua y en casa del abuelo Paco olía a azúcar y a limón. El abuelo había sido panadero toda su vida y cada año preparaba una mona de Pascua para su nieta Elena. Este año, por primera vez, Elena iba a ayudarle a hacerla.",
+    "i": "👴👧🍞"
+   },
+   {
+    "x": "El abuelo le puso un delantal que le llegaba hasta los pies y un gorro de cocinero que se le caía sobre los ojos. Elena se rio. En la mesa había harina, huevos, azúcar, aceite, levadura y la ralladura de un limón amarillo que olía a primavera.",
+    "i": "👨‍🍳👧🍋"
+   },
+   {
+    "x": "Primero mezclaron todo en un bol grande. Elena removía con una cuchara de madera mientras el abuelo le contaba que, cuando él era pequeño, su padre también le enseñó a hacer monas en un horno de leña. —Las recetas pasan de abuelos a nietos, como un tesoro —le dijo.",
+    "i": "🥣🥄👴"
+   },
+   {
+    "x": "Después amasaron la masa sobre la mesa. Elena apretaba con sus manitas, la estiraba y la doblaba. El abuelo le enseñó a darle forma de rosca, redonda como un sol. Luego la taparon con un paño para que descansara y creciera.",
+    "i": "✋🍩🧺"
+   },
+   {
+    "x": "Mientras esperaban, el abuelo sacó una caja con huevos duros. —Una mona de Pascua tiene que llevar un huevo encima —explicó—. ¿Lo pintamos? Elena pintó el huevo de color azul con puntitos amarillos y le dibujó una carita sonriente.",
+    "i": "🥚🎨😊"
+   },
+   {
+    "x": "Cuando la masa creció, pusieron el huevo pintado en el centro y la sujetaron con dos tiras de masa en forma de cruz. Después la pintaron con huevo batido y le echaron azúcar y anisillos de colores por encima, como si fuera confeti.",
+    "i": "🥚🍩🎊"
+   },
+   {
+    "x": "El abuelo metió la mona en el horno con mucho cuidado. Elena se sentó delante del cristal y la vio hincharse poco a poco y ponerse dorada. Toda la cocina se llenó de un olor tan rico que hasta el gato Garbanzo vino a ver qué pasaba.",
+    "i": "🔥🍞🐱"
+   },
+   {
+    "x": "Al día siguiente, lunes de Pascua, toda la familia fue al campo a comerse la mona. Pusieron un mantel de cuadros bajo un pino, sacaron chocolate y zumos, y los primos jugaron a volar cometas. Elena enseñó orgullosa la mona que había hecho con el abuelo.",
+    "i": "🧺🌲🪁"
+   },
+   {
+    "x": "Todos dijeron que era la mona más rica que habían probado nunca. Elena le dio el primer trozo al abuelo Paco. —Gracias por enseñarme —le dijo. El abuelo tenía los ojos brillantes. —Ahora el tesoro también es tuyo —contestó.",
+    "i": "👧🍰👴"
+   },
+   {
+    "x": "Esa noche, Elena guardó la cáscara del huevo azul en una cajita, como recuerdo. Se acurrucó en la cama todavía oliendo a limón y azúcar, y pensó que algún día ella también enseñaría a sus nietos. Y con ese pensamiento tan dulce, se durmió.",
+    "i": "🌙📦💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Cómo se llamaba el abuelo?",
+    "o": [
+     "👴 Paco",
+     "👴 Pepe",
+     "👴 Pedro"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué había sido el abuelo toda su vida?",
+    "o": [
+     "👨‍🌾 Agricultor",
+     "👨‍🍳 Panadero",
+     "👨‍🏫 Maestro"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué fruta usaron para la mona?",
+    "o": [
+     "🍊 Naranja",
+     "🍎 Manzana",
+     "🍋 Limón"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Con qué removía Elena?",
+    "o": [
+     "🥄 Una cuchara de madera",
+     "🍴 Un tenedor",
+     "🔪 Un cuchillo"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué forma le dieron a la mona?",
+    "o": [
+     "⭐ De estrella",
+     "🍩 De rosca",
+     "❤️ De corazón"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿De qué color pintó Elena el huevo?",
+    "o": [
+     "🔴 Rojo",
+     "🟢 Verde",
+     "🔵 Azul con puntitos amarillos"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cómo se llamaba el gato?",
+    "o": [
+     "🐱 Garbanzo",
+     "🐱 Lenteja",
+     "🐱 Judía"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Dónde se comieron la mona?",
+    "o": [
+     "🏖️ En la playa",
+     "🌲 En el campo",
+     "🏠 En casa"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿A qué jugaron los primos?",
+    "o": [
+     "⚽ Al fútbol",
+     "🙈 Al escondite",
+     "🪁 A volar cometas"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué guardó Elena como recuerdo?",
+    "o": [
+     "🥚 La cáscara del huevo",
+     "🍞 Un trozo de mona",
+     "🪁 Una cometa"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 2,
+  "t": "El patito que salió del libro",
+  "e": "📖",
+  "tema": "cuentos",
+  "p": [
+   {
+    "x": "El dos de abril es el Día del Libro Infantil, porque ese día nació Hans Christian Andersen, un señor de Dinamarca que escribió cuentos preciosos como La sirenita o El patito feo. Ese día, en el cole de Olga, cada niño llevó su cuento favorito.",
+    "i": "📚🎂🇩🇰"
+   },
+   {
+    "x": "Olga llevó un libro viejo de tapas verdes que había sido de su madre: El patito feo. Le encantaba ese cuento, aunque al principio le daba un poco de pena el patito, porque los demás no querían jugar con él por ser diferente.",
+    "i": "👧📗🦆"
+   },
+   {
+    "x": "Por la noche, en su cuarto, Olga abrió el libro para leerlo otra vez. Y entonces pasó algo mágico: de entre las páginas salió una lucecita dorada y, de un salto, apareció sobre la colcha un patito gris, pequeño y con plumas despeinadas.",
+    "i": "📖✨🐥"
+   },
+   {
+    "x": "—Hola —dijo el patito con voz tímida—. Me llamo Pato. Me he escapado del cuento un ratito porque allí dentro todos se ríen de mí. Olga lo cogió con cuidado en sus manos. Era suave y estaba temblando un poquito.",
+    "i": "🐥😟👧"
+   },
+   {
+    "x": "—Yo no me voy a reír de ti —le dijo Olga—. A mí me pareces precioso. Y además, conozco tu cuento entero. ¿Sabes cómo termina? Pato negó con la cabeza. Nunca había llegado a la última página porque siempre se escapaba antes.",
+    "i": "👧💛🐥"
+   },
+   {
+    "x": "Olga le enseñó los dibujos del libro. Pasaron juntos por el invierno frío, por el lago helado, por la casita de la anciana. Y al llegar al final, Pato vio un dibujo de un cisne blanco, elegante y precioso, nadando en un lago azul.",
+    "i": "📖❄️🦢"
+   },
+   {
+    "x": "—¿Quién es ese? —preguntó Pato. —Eres tú —sonrió Olga—. Cuando creces, te conviertes en un cisne precioso. Pero yo creo que ya eres especial ahora, siendo un patito. Cada uno es bonito a su manera, aunque los demás no sepan verlo.",
+    "i": "👧🦢💬"
+   },
+   {
+    "x": "Pato se miró en el espejo del armario. Seguía siendo gris y despeinado, pero ya no se veía feo. Se veía como un patito con un futuro precioso y con una amiga nueva. Dio un saltito de alegría y movió sus alitas.",
+    "i": "🪞🐥😊"
+   },
+   {
+    "x": "—Ya puedo volver a mi cuento —dijo—. Ahora sé que todo saldrá bien. Gracias, Olga. Y de un salto, se metió de nuevo entre las páginas, que brillaron un segundo y se quedaron quietas. Olga cerró el libro con mucho cuidado.",
+    "i": "🐥📖✨"
+   },
+   {
+    "x": "Olga se metió en la cama con el libro de tapas verdes junto a la almohada. Pensó que los cuentos son mágicos porque nos enseñan cosas bonitas. Y antes de dormirse, le pareció oír un pequeño cua, cua de felicidad que salía de dentro del libro.",
+    "i": "🌙📗💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Quién nació el dos de abril?",
+    "o": [
+     "📖 Hans Christian Andersen",
+     "🎨 Un pintor",
+     "🎵 Un cantante"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿De qué color eran las tapas del libro de Olga?",
+    "o": [
+     "🔴 Rojas",
+     "🟢 Verdes",
+     "🔵 Azules"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿De quién había sido el libro?",
+    "o": [
+     "👴 De su abuelo",
+     "👩‍🏫 De su maestra",
+     "👩 De su madre"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿De qué color era el patito?",
+    "o": [
+     "🩶 Gris",
+     "💛 Amarillo",
+     "⚪ Blanco"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba el patito?",
+    "o": [
+     "🐥 Patín",
+     "🐥 Pato",
+     "🐥 Pío"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Por qué se escapó del cuento?",
+    "o": [
+     "🍽️ Tenía hambre",
+     "😴 Tenía sueño",
+     "😟 Se reían de él"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿En qué se convierte el patito al crecer?",
+    "o": [
+     "🦢 En un cisne",
+     "🦅 En un águila",
+     "🦆 En un pato grande"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Dónde se miró Pato?",
+    "o": [
+     "💧 En un charco",
+     "🪞 En el espejo del armario",
+     "🪟 En la ventana"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué aprendió Pato?",
+    "o": [
+     "🏊 A nadar",
+     "🎵 A cantar",
+     "💛 Que cada uno es bonito a su manera"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué oyó Olga antes de dormirse?",
+    "o": [
+     "🦆 Un cua, cua",
+     "🐶 Un guau",
+     "🐱 Un miau"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 3,
+  "t": "La búsqueda de los huevos de chocolate",
+  "e": "🍫",
+  "tema": "pascua",
+  "p": [
+   {
+    "x": "Aquella mañana de Pascua, Nico y su prima Alma se despertaron temprano en la casa del pueblo de los tíos. En la mesa de la cocina encontraron una nota misteriosa escrita con letras de colores: Hay doce huevos de chocolate escondidos en el jardín. ¿Sabréis encontrarlos?",
+    "i": "👦👧📜"
+   },
+   {
+    "x": "Debajo de la nota había un mapa dibujado a mano con pistas: un árbol, un pozo, una caseta y una maceta. Nico y Alma se miraron emocionados, se pusieron las botas y salieron corriendo al jardín con una cesta de mimbre cada uno.",
+    "i": "🗺️🧺👢"
+   },
+   {
+    "x": "El jardín estaba precioso. Los cerezos tenían flores blancas y rosas, había tulipanes rojos junto a la valla y las abejas zumbaban entre las lavandas. El sol calentaba suave y los pájaros cantaban sin parar.",
+    "i": "🌸🌷🐝"
+   },
+   {
+    "x": "Nico corrió hacia el gran cerezo y encontró dos huevos envueltos en papel dorado entre las raíces. Alma buscó junto al pozo y encontró uno azul debajo de una piedra. —¡Tres! —gritaron a la vez, chocando las manos.",
+    "i": "🌳🥚✨"
+   },
+   {
+    "x": "Siguieron buscando. En la caseta del perro Bigotes había dos huevos de papel rojo, y Bigotes los vigilaba moviendo la cola, como si fuera su trabajo. En la maceta grande de geranios encontraron otros tres. ¡Ya tenían ocho!",
+    "i": "🐕🥚🌺"
+   },
+   {
+    "x": "Pero entonces empezó lo difícil. Nico había encontrado seis huevos y Alma solo dos. Alma se puso un poco triste, porque era más pequeña y no llegaba a los sitios altos. Nico la miró y pensó un momento.",
+    "i": "👦🧺👧"
+   },
+   {
+    "x": "—Alma, ven —le dijo—. Tú buscas abajo y yo te subo a hombros para mirar arriba. ¡Seremos un equipo! Alma sonrió de oreja a oreja. Subida a los hombros de Nico, encontró dos huevos escondidos en el nido vacío de un árbol.",
+    "i": "👦🤝👧"
+   },
+   {
+    "x": "Y con sus ojos atentos, Alma vio algo brillante debajo de un arbusto, donde Nico nunca habría mirado: ¡los dos últimos huevos! Ya tenían los doce. Juntaron todos en una sola cesta y entraron corriendo en casa a enseñárselos a los tíos.",
+    "i": "🌿🥚🧺"
+   },
+   {
+    "x": "Los tíos les felicitaron. Nico y Alma repartieron los huevos a partes iguales, seis para cada uno, y además le dieron uno a cada tío. Habían aprendido que trabajando en equipo se llega más lejos, y que compartir hace todo más dulce que el chocolate.",
+    "i": "👨‍👩‍👧‍👦🍫💛"
+   },
+   {
+    "x": "Esa noche, con la barriga llena de chocolate y los dientes bien lavados, Nico y Alma se durmieron en la misma habitación. El perro Bigotes roncaba junto a la puerta. Y los dos primos soñaron con jardines llenos de huevos dorados.",
+    "i": "🌙🐕💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Cómo se llamaba la prima de Nico?",
+    "o": [
+     "👧 Ana",
+     "👧 Alma",
+     "👧 Alba"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cuántos huevos había escondidos?",
+    "o": [
+     "🔟 Diez",
+     "1️⃣2️⃣ Doce",
+     "2️⃣0️⃣ Veinte"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué llevaba cada uno para recoger los huevos?",
+    "o": [
+     "🧺 Una cesta de mimbre",
+     "🎒 Una mochila",
+     "🪣 Un cubo"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué árbol tenía flores blancas y rosas?",
+    "o": [
+     "🌲 El pino",
+     "🌴 La palmera",
+     "🌸 El cerezo"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué encontró Alma junto al pozo?",
+    "o": [
+     "🥚 Un huevo azul",
+     "🥚 Dos huevos rojos",
+     "🧸 Un juguete"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba el perro?",
+    "o": [
+     "🐕 Pelusa",
+     "🐕 Bigotes",
+     "🐕 Canela"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Por qué estaba triste Alma?",
+    "o": [
+     "😴 Tenía sueño",
+     "🍫 No le gustaba el chocolate",
+     "🧍 No llegaba a los sitios altos"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cómo ayudó Nico a Alma?",
+    "o": [
+     "👦 La subió a hombros",
+     "🪜 Le trajo una escalera",
+     "🍫 Le dio sus huevos"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Dónde estaban los dos últimos huevos?",
+    "o": [
+     "🌳 En un árbol",
+     "🌿 Debajo de un arbusto",
+     "🏠 En la casa"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cuántos huevos se quedó cada uno al repartir?",
+    "o": [
+     "3️⃣ Tres",
+     "1️⃣0️⃣ Diez",
+     "6️⃣ Seis"
+    ],
+    "k": 2
+   }
+  ]
+ },
+ {
+  "d": 4,
+  "t": "Lucas y la cometa de Pascua",
+  "e": "🪁",
+  "tema": "pascua",
+  "p": [
+   {
+    "x": "Lucas, el robot plateado con capa roja y ojos verdes, volaba una mañana de Pascua sobre los campos de Valencia. Abajo vio algo que le hizo sonreír: el cielo estaba lleno de cometas de colores, y en el campo había familias comiendo sentadas sobre mantas.",
+    "i": "🤖🪁🌾"
+   },
+   {
+    "x": "Bajó junto a un pino grande y allí encontró a Marcos, un niño de seis años que miraba triste su cometa. Era una cometa de papel amarillo con forma de pez, pero tenía una varilla rota y no podía volar. —La hice yo con mi madre —explicó—, y se ha roto.",
+    "i": "🤖👦🪁"
+   },
+   {
+    "x": "Lucas observó la cometa con sus ojos verdes, que funcionaban como una lupa. —Creo que puedo ayudarte —dijo—. Pero lo haremos juntos, así aprenderás a arreglarla tú también. Marcos asintió, secándose una lágrima con la manga.",
+    "i": "🔍🤖👦"
+   },
+   {
+    "x": "Buscaron una caña fina junto a una acequia. Lucas la cortó con cuidado y Marcos la ató con hilo a la cometa, haciendo un nudo muy fuerte como le enseñó el robot. Después, con un poco de cinta adhesiva, taparon un agujerito del papel.",
+    "i": "🎋🧵🪁"
+   },
+   {
+    "x": "La madre de Marcos se acercó con un trozo de mona de Pascua y se lo ofreció a Lucas. El robot no podía comer, pero le dio las gracias muy contento y dijo que olía de maravilla. A cambio, le contó a la familia un cuento corto sobre un pez que volaba.",
+    "i": "👩🍞📖"
+   },
+   {
+    "x": "Por fin, la cometa estaba lista. Marcos corrió por el campo con el hilo en la mano y Lucas soltó la cometa en el momento justo. Una brisa suave la levantó y el pez amarillo subió, subió y subió hasta bailar en el cielo entre las demás cometas.",
+    "i": "🏃🪁🌬️"
+   },
+   {
+    "x": "—¡Vuela, vuela! —gritaba Marcos, saltando de alegría. Lucas también voló a su lado, sujetando con cuidado la cola de la cometa para que no se enredara con las otras. Los niños del campo señalaban al cielo: ¡un robot jugando con una cometa!",
+    "i": "🤖🪁😄"
+   },
+   {
+    "x": "Al rato, otros niños se acercaron con sus cometas rotas. Marcos, que ya sabía cómo arreglarlas, les ayudó con cañas e hilo, igual que había hecho Lucas con él. Pronto, el cielo estaba todavía más lleno de colores.",
+    "i": "👦🤝🪁"
+   },
+   {
+    "x": "Lucas se sintió muy orgulloso. Había aprendido que enseñar a alguien a hacer algo es todavía mejor que hacerlo por él, porque después esa persona también podrá ayudar a otros. Y así, la ayuda va pasando de mano en mano.",
+    "i": "🤖💚✨"
+   },
+   {
+    "x": "Al atardecer, Lucas se despidió y voló hacia las estrellas. Marcos, ya en casa, colgó su cometa amarilla en la pared de su cuarto. Mirándola, cerró los ojos y soñó que volaba con Lucas sobre los campos, entre cometas de todos los colores.",
+    "i": "🌅🪁💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Sobre qué campos volaba Lucas?",
+    "o": [
+     "🌾 Los de Valencia",
+     "❄️ Los del Polo Norte",
+     "🏜️ Los del desierto"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba el niño?",
+    "o": [
+     "👦 Mario",
+     "👦 Marcos",
+     "👦 Manuel"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué forma tenía la cometa?",
+    "o": [
+     "⭐ De estrella",
+     "🐦 De pájaro",
+     "🐟 De pez"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿De qué color era la cometa?",
+    "o": [
+     "💛 Amarilla",
+     "🔴 Roja",
+     "🔵 Azul"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué estaba roto en la cometa?",
+    "o": [
+     "🧵 El hilo",
+     "🎋 Una varilla",
+     "🎀 La cola"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Dónde encontraron la caña?",
+    "o": [
+     "🏠 En casa",
+     "🏪 En una tienda",
+     "💧 Junto a una acequia"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué le ofreció la madre a Lucas?",
+    "o": [
+     "🍞 Un trozo de mona",
+     "🥤 Un zumo",
+     "🍫 Chocolate"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué sujetaba Lucas mientras volaba?",
+    "o": [
+     "🧵 El hilo",
+     "🎀 La cola de la cometa",
+     "👦 A Marcos"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿A quién ayudó Marcos después?",
+    "o": [
+     "🐕 A un perro",
+     "👴 A su abuelo",
+     "👧 A otros niños con cometas rotas"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué aprendió Lucas?",
+    "o": [
+     "🤝 Que enseñar es mejor que hacerlo por otro",
+     "🪁 Que las cometas son fáciles",
+     "🍞 Que la mona es rica"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 5,
+  "t": "Pincel, el conejo que pintaba huevos",
+  "e": "🐰",
+  "tema": "pascua",
+  "p": [
+   {
+    "x": "Detrás de una colina llena de flores vivía un conejo blanco llamado Pincel. Tenía las orejas muy largas, una colita como una bola de algodón y un trabajo muy importante: pintar los huevos de Pascua para todos los niños del valle.",
+    "i": "🐰⛰️🌼"
+   },
+   {
+    "x": "Su taller estaba dentro de una madriguera grande, con botes de pintura de todos los colores, pinceles de pelo suave y cestas llenas de huevos blancos esperando. Pincel trabajaba silbando, y cada huevo que pintaba era diferente: con rayas, con lunares, con flores.",
+    "i": "🎨🥚🖌️"
+   },
+   {
+    "x": "Aquel año, Pincel tenía un problema. Se había hecho mayor y le temblaban un poco las patas. Faltaban solo tres días para Pascua y todavía le quedaban cien huevos por pintar. —No llegaré a tiempo —suspiró, mirando las cestas.",
+    "i": "🐰😟🥚"
+   },
+   {
+    "x": "Por la ventana de la madriguera asomaron tres cabecitas: eran sus nietos, Brote, Trébol y Margarita, tres conejitos curiosos. —Abuelo, ¿podemos ayudarte? —preguntaron. Pincel dudó. Nunca había dejado a nadie pintar sus huevos.",
+    "i": "🐰🐰🐰"
+   },
+   {
+    "x": "Pero al ver sus caritas ilusionadas, aceptó. —Está bien, os enseñaré. Pintar huevos es fácil, solo hace falta paciencia y mucho cariño. Les dio a cada uno un pincel pequeño y un delantal, y se sentaron alrededor de la mesa.",
+    "i": "🐰🖌️👨‍🏫"
+   },
+   {
+    "x": "Brote pintó huevos con rayas verdes como la hierba. Trébol los pintó con estrellas doradas. Y Margarita, la más pequeña, los pintó con flores rosas, aunque a veces se salía un poquito del dibujo. Pincel no les regañaba nunca; les animaba y les enseñaba trucos.",
+    "i": "🥚⭐🌸"
+   },
+   {
+    "x": "Algunos huevos les salieron un poco torcidos, y uno de Margarita acabó con más pintura en la nariz de ella que en la cáscara. Todos se rieron muchísimo. El taller, que antes era tan tranquilo, ahora estaba lleno de risas y colores.",
+    "i": "🐰😂🎨"
+   },
+   {
+    "x": "La noche antes de Pascua, los cien huevos estaban terminados. Eran los huevos más variados y alegres que el valle había visto nunca. Juntos, el abuelo y los nietos los repartieron por los jardines mientras los niños dormían.",
+    "i": "🥚🧺🌙"
+   },
+   {
+    "x": "A la mañana siguiente, los niños del valle encontraron los huevos y gritaron de alegría. Pincel, escondido tras un arbusto con sus nietos, sonrió. Había aprendido que pedir ayuda no es malo, y que compartir lo que sabes hace que el trabajo sea mucho más divertido.",
+    "i": "👧👦🥚"
+   },
+   {
+    "x": "Esa noche, los tres conejitos se quedaron dormidos en la madriguera del abuelo, todavía con manchitas de pintura en las orejas. Pincel los tapó con una manta y apagó la lámpara. Mañana empezarían a pensar en los colores del año siguiente.",
+    "i": "🐰🛏️💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿De qué color era el conejo Pincel?",
+    "o": [
+     "🤎 Marrón",
+     "⚪ Blanco",
+     "🩶 Gris"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cuál era su trabajo?",
+    "o": [
+     "🥚 Pintar huevos de Pascua",
+     "🥕 Cultivar zanahorias",
+     "🍞 Hacer pan"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Dónde estaba su taller?",
+    "o": [
+     "🌳 En un árbol",
+     "🏠 En una casa",
+     "🕳️ En una madriguera"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cuántos huevos le quedaban por pintar?",
+    "o": [
+     "💯 Cien",
+     "🔟 Diez",
+     "5️⃣0️⃣ Cincuenta"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cuántos nietos tenía?",
+    "o": [
+     "2️⃣ Dos",
+     "3️⃣ Tres",
+     "5️⃣ Cinco"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo pintó Brote los huevos?",
+    "o": [
+     "⭐ Con estrellas",
+     "🌸 Con flores",
+     "🟢 Con rayas verdes"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Quién pintó estrellas doradas?",
+    "o": [
+     "🐰 Trébol",
+     "🐰 Margarita",
+     "🐰 Brote"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Dónde acabó la pintura de Margarita?",
+    "o": [
+     "👂 En las orejas",
+     "👃 En su nariz",
+     "🐾 En las patas"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cuándo repartieron los huevos?",
+    "o": [
+     "🌅 Por la mañana",
+     "☀️ Al mediodía",
+     "🌙 La noche antes de Pascua"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué aprendió Pincel?",
+    "o": [
+     "🤝 Que pedir ayuda no es malo",
+     "🎨 Que pintar es difícil",
+     "😴 Que hay que descansar"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 6,
+  "t": "Canelo, el ternero curioso",
+  "e": "🐄",
+  "tema": "granja",
+  "p": [
+   {
+    "x": "En una granja verde, al pie de unas montañas, nació en primavera un ternero de color canela con una mancha blanca en forma de estrella en la frente. Lo llamaron Canelo, y desde el primer día demostró que era el ternero más curioso del mundo.",
+    "i": "🐄⭐🏔️"
+   },
+   {
+    "x": "Canelo quería saberlo todo. ¿Por qué las gallinas ponen huevos? ¿Por qué el gallo canta tan temprano? ¿Adónde va el río? Su madre, la vaca Rosalía, le respondía con paciencia, pero Canelo siempre tenía una pregunta nueva.",
+    "i": "🐄❓🐔"
+   },
+   {
+    "x": "Un día, mientras su madre dormía la siesta bajo un árbol, Canelo vio una mariposa azul y decidió seguirla. Saltó por el prado, cruzó un puentecito de madera y atravesó un campo de trigo. Cuando se dio cuenta, ya no veía la granja.",
+    "i": "🦋🌾🌉"
+   },
+   {
+    "x": "Canelo miró a su alrededor. Todo era nuevo y desconocido. Empezó a sentir un nudo en la barriga. —¿Mamá? —llamó con un mugido pequeñito. Pero solo le respondió el viento, que movía las espigas de trigo, susurrando.",
+    "i": "🐄😟🌾"
+   },
+   {
+    "x": "Entonces apareció un perro pastor grande y peludo llamado Lobo, que cuidaba de las ovejas de la granja vecina. Aunque se llamaba así, era bueno y cariñoso. —¿Te has perdido, pequeño? —le preguntó, moviendo la cola.",
+    "i": "🐕🐑💛"
+   },
+   {
+    "x": "Canelo le contó lo de la mariposa. Lobo se rio con cariño. —La curiosidad es buena, pero hay que saber volver. Te enseñaré un truco: fíjate siempre en las cosas que ves por el camino. Así sabrás regresar. ¿Qué viste antes de llegar aquí?",
+    "i": "🐕💬🐄"
+   },
+   {
+    "x": "Canelo pensó. —Vi un campo de trigo… un puentecito de madera… y un árbol grande con un columpio. —¡Perfecto! —dijo Lobo—. Vamos a buscarlos al revés. Y juntos desanduvieron el camino: el trigo, el puente, el columpio.",
+    "i": "🌾🌉🌳"
+   },
+   {
+    "x": "Al llegar al árbol del columpio, Canelo oyó un mugido conocido. Era su madre, Rosalía, que lo buscaba preocupada. Canelo corrió hacia ella y se acurrucó contra su costado. Ella le lamió la estrella de la frente, muy aliviada.",
+    "i": "🐄💕🐄"
+   },
+   {
+    "x": "Canelo dio las gracias a Lobo y le prometió a su madre que la próxima vez le avisaría antes de ir a explorar. Rosalía sonrió. —Me encanta que seas curioso —le dijo—, pero me gusta todavía más que estés a mi lado.",
+    "i": "🐄🙏🐕"
+   },
+   {
+    "x": "Esa noche, en el establo, Canelo se tumbó sobre la paja junto a su madre. Por la ventana entraba la luz de la luna. Canelo repasó en su cabeza el camino: trigo, puente, columpio. Y con una pregunta nueva rondándole, se quedó dormido.",
+    "i": "🌙🐄💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿De qué color era el ternero?",
+    "o": [
+     "🟤 Canela",
+     "⚫ Negro",
+     "⚪ Blanco"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué forma tenía la mancha de su frente?",
+    "o": [
+     "❤️ De corazón",
+     "⭐ De estrella",
+     "🌙 De luna"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba la vaca madre?",
+    "o": [
+     "🐄 Margarita",
+     "🐄 Rosa",
+     "🐄 Rosalía"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué siguió Canelo?",
+    "o": [
+     "🦋 Una mariposa azul",
+     "🐦 Un pájaro",
+     "🐰 Un conejo"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué estaba haciendo su madre?",
+    "o": [
+     "🍽️ Comiendo",
+     "😴 La siesta",
+     "🚶 Paseando"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba el perro pastor?",
+    "o": [
+     "🐕 Oso",
+     "🐕 Tigre",
+     "🐕 Lobo"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué cuidaba el perro?",
+    "o": [
+     "🐑 Ovejas",
+     "🐔 Gallinas",
+     "🐷 Cerdos"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué truco le enseñó el perro?",
+    "o": [
+     "🏃 Correr muy rápido",
+     "👀 Fijarse en las cosas del camino",
+     "🗺️ Usar un mapa"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué había en el árbol grande?",
+    "o": [
+     "🪺 Un nido",
+     "🍎 Manzanas",
+     "🪢 Un columpio"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué prometió Canelo a su madre?",
+    "o": [
+     "📢 Avisar antes de explorar",
+     "🌙 Dormir más",
+     "🍼 Comer todo"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 7,
+  "t": "El paraguas mágico de la abuela Julia",
+  "e": "☂️",
+  "tema": "lluvia",
+  "p": [
+   {
+    "x": "En abril llueve mucho, y aquella semana no había parado ni un solo día. Iker miraba por la ventana del piso de su abuela Julia, aburrido, viendo cómo las gotas resbalaban por el cristal como si hicieran carreras.",
+    "i": "🌧️👦🪟"
+   },
+   {
+    "x": "—¿Quieres que te enseñe algo especial? —le preguntó la abuela con una sonrisa misteriosa. Fue al armario del pasillo y sacó un paraguas antiguo, de color amarillo con lunares blancos y un mango de madera con forma de pato.",
+    "i": "👵☂️🦆"
+   },
+   {
+    "x": "—Este paraguas es mágico —susurró—. Cuando lo abres bajo la lluvia, te enseña cosas que normalmente no ves. Iker no se lo creyó mucho, pero se puso las botas rojas y el chubasquero y bajaron a la calle con el paraguas amarillo.",
+    "i": "👢🧥☂️"
+   },
+   {
+    "x": "Al abrir el paraguas, Iker escuchó algo diferente. Las gotas que caían encima sonaban como una canción: tin, tan, tin, tin, tan. Era como un xilófono de lluvia. Iker se quedó quieto, escuchando, y empezó a mover los pies al ritmo.",
+    "i": "☂️🎵💧"
+   },
+   {
+    "x": "Después, al mirar un charco, vio reflejado el cielo, las nubes y los edificios al revés. Parecía una ciudad dentro del agua. Un gorrión bajó a beber y su reflejo también bebía, como si fueran dos pájaros saludándose.",
+    "i": "💧🏙️🐦"
+   },
+   {
+    "x": "En el parque, bajo el paraguas, Iker vio cómo los caracoles salían a pasear, cómo las lombrices asomaban de la tierra y cómo las flores abrían sus pétalos para recoger el agua. —La lluvia es como una fiesta para ellos —dijo la abuela.",
+    "i": "🐌🪱🌷"
+   },
+   {
+    "x": "Iker saltó en un charco con sus botas rojas, ¡chof!, y salpicó a su abuela. Ella, en lugar de enfadarse, saltó también en otro charco, ¡chof!, más grande todavía. Los dos se rieron tanto que tuvieron que sentarse en un banco, empapados y felices.",
+    "i": "👢💦😂"
+   },
+   {
+    "x": "Cuando volvían a casa, la lluvia paró y salió un poco de sol. En el cielo apareció un arcoíris precioso. Iker miró el paraguas. —Abuela, ¿de verdad es mágico? La abuela le guiñó un ojo. —La magia está en saber mirar las cosas con ojos nuevos.",
+    "i": "🌈☀️👵"
+   },
+   {
+    "x": "Iker comprendió que los días de lluvia no tienen por qué ser aburridos. Solo hay que fijarse bien para descubrir todo lo que esconden: canciones, ciudades al revés, caracoles paseando y charcos para saltar.",
+    "i": "👦💡🌧️"
+   },
+   {
+    "x": "Esa noche volvió a llover. Iker, ya en la cama, escuchó las gotas en la ventana: tin, tan, tin, tin, tan. Era la misma canción del paraguas mágico. Sonriendo, se tapó con la manta y dejó que la lluvia le cantara hasta quedarse dormido.",
+    "i": "🌙🌧️💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Cómo se llamaba el niño?",
+    "o": [
+     "👦 Iker",
+     "👦 Iván",
+     "👦 Ismael"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿De qué color era el paraguas?",
+    "o": [
+     "🔴 Rojo",
+     "💛 Amarillo con lunares blancos",
+     "🔵 Azul"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué forma tenía el mango del paraguas?",
+    "o": [
+     "🐱 De gato",
+     "🐶 De perro",
+     "🦆 De pato"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿De qué color eran las botas de Iker?",
+    "o": [
+     "🔴 Rojas",
+     "🟢 Verdes",
+     "🟡 Amarillas"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿A qué sonaban las gotas sobre el paraguas?",
+    "o": [
+     "🥁 A un tambor",
+     "🎵 A un xilófono",
+     "🎺 A una trompeta"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué pájaro bajó a beber al charco?",
+    "o": [
+     "🦆 Un pato",
+     "🕊️ Una paloma",
+     "🐦 Un gorrión"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué animales salieron en el parque?",
+    "o": [
+     "🐌 Caracoles y lombrices",
+     "🐶 Perros",
+     "🐱 Gatos"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué hizo la abuela cuando Iker la salpicó?",
+    "o": [
+     "😠 Se enfadó",
+     "💦 Saltó en otro charco",
+     "🏠 Se fue a casa"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué apareció cuando paró de llover?",
+    "o": [
+     "⭐ Una estrella",
+     "🌙 La luna",
+     "🌈 Un arcoíris"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Dónde estaba la magia, según la abuela?",
+    "o": [
+     "👀 En mirar con ojos nuevos",
+     "☂️ En el paraguas",
+     "🌧️ En la lluvia"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 8,
+  "t": "Púas y la fresa más roja",
+  "e": "🦔",
+  "tema": "bosque",
+  "p": [
+   {
+    "x": "En un rincón del bosque, bajo un montón de hojas, vivía un erizo llamado Púas. Era pequeño, redondito, con la nariz negra y brillante y cientos de púas en la espalda. Su comida favorita del mundo eran las fresas silvestres.",
+    "i": "🦔🍂🍓"
+   },
+   {
+    "x": "Aquella primavera, Púas descubrió una mata de fresas junto al tronco de un haya. Casi todas estaban verdes todavía, pero había una, solo una, roja, grande y brillante. —Es la fresa más bonita que he visto nunca —suspiró.",
+    "i": "🍓🌳😍"
+   },
+   {
+    "x": "Púas decidió esperar al día siguiente para comérsela con calma en el desayuno. Pero por la noche no paraba de pensar: ¿y si se la come otro? Así que se levantó muy temprano, cuando el rocío todavía brillaba en la hierba, y corrió hacia la mata.",
+    "i": "🦔🌅💧"
+   },
+   {
+    "x": "Al llegar, vio a una ratita de campo llamada Mimí mirando la fresa con ojos tristes. Estaba muy delgadita y le temblaban los bigotes. —Hace días que no encuentro comida —dijo—. Mis hijitos me esperan en casa con hambre.",
+    "i": "🐭😢🍓"
+   },
+   {
+    "x": "Púas miró la fresa. La deseaba muchísimo. Pero después miró a Mimí y pensó en sus ratoncitos esperando. Se le encogió el corazón. Respiró hondo, cogió la fresa con cuidado entre sus patitas y se la ofreció. —Toma, para tus hijos.",
+    "i": "🦔🍓🐭"
+   },
+   {
+    "x": "Mimí no se lo podía creer. —¿De verdad? ¿Me la das? —Claro —respondió Púas—. Tus hijos la necesitan más que yo. La ratita le dio las gracias mil veces y se fue corriendo con la fresa, saltando de alegría entre la hierba.",
+    "i": "🐭💛🏃"
+   },
+   {
+    "x": "Púas se quedó un poco triste, mirando las fresas verdes. Pero, para su sorpresa, notaba algo calentito dentro del pecho, como si hubiera comido algo muy dulce. Era la alegría de haber ayudado a alguien.",
+    "i": "🦔💚🌿"
+   },
+   {
+    "x": "Unos días después, alguien llamó a la puerta de su casa de hojas. Era Mimí con sus cuatro ratoncitos, que llevaban una cesta llena de fresas rojas y maduras. —Hemos encontrado un campo entero —dijo Mimí—. Y queríamos compartirlo contigo.",
+    "i": "🐭🧺🍓"
+   },
+   {
+    "x": "Aquella tarde, Púas, Mimí y los ratoncitos merendaron juntos fresas hasta que no pudieron más. Púas aprendió que cuando compartes lo que tienes, muchas veces la vida te devuelve todavía más, y además ganas buenos amigos.",
+    "i": "🦔🐭🍓"
+   },
+   {
+    "x": "Al caer la noche, Púas se hizo una bolita en su casa de hojas, con la barriga llena y el corazón contento. Afuera cantaban los grillos y brillaban las luciérnagas. Y el pequeño erizo se durmió soñando con campos infinitos de fresas rojas.",
+    "i": "🌙🦔💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Qué animal era Púas?",
+    "o": [
+     "🦔 Un erizo",
+     "🐿️ Una ardilla",
+     "🐭 Un ratón"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cuál era su comida favorita?",
+    "o": [
+     "🍎 Manzanas",
+     "🍓 Fresas silvestres",
+     "🌰 Castañas"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Junto a qué árbol estaba la mata de fresas?",
+    "o": [
+     "🌲 Un pino",
+     "🌳 Un roble",
+     "🌳 Un haya"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cuántas fresas rojas había al principio?",
+    "o": [
+     "1️⃣ Solo una",
+     "3️⃣ Tres",
+     "🔟 Diez"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cuándo fue Púas a buscar la fresa?",
+    "o": [
+     "🌙 Por la noche",
+     "🌅 Muy temprano",
+     "☀️ Al mediodía"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba la ratita?",
+    "o": [
+     "🐭 Lulú",
+     "🐭 Fifí",
+     "🐭 Mimí"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Por qué necesitaba comida la ratita?",
+    "o": [
+     "🐭 Sus hijos tenían hambre",
+     "🎂 Para una fiesta",
+     "🎁 Para regalarla"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué sintió Púas después de ayudar?",
+    "o": [
+     "😠 Enfado",
+     "💚 Algo calentito en el pecho",
+     "😴 Sueño"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cuántos ratoncitos tenía Mimí?",
+    "o": [
+     "2️⃣ Dos",
+     "6️⃣ Seis",
+     "4️⃣ Cuatro"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué le llevaron a Púas?",
+    "o": [
+     "🧺 Una cesta de fresas",
+     "🧀 Queso",
+     "🌰 Nueces"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 9,
+  "t": "Delfina y el barco perdido",
+  "e": "🐬",
+  "tema": "mar",
+  "p": [
+   {
+    "x": "En el mar Mediterráneo, cerca de una costa llena de calas y faros, vivía una delfina llamada Delfina. Era gris y brillante, con una sonrisa que nunca se le borraba y una aleta con una manchita blanca. Le encantaba saltar entre las olas y hacer piruetas.",
+    "i": "🐬🌊🏝️"
+   },
+   {
+    "x": "Cada mañana, Delfina acompañaba a los barcos de pescadores que salían del puerto. Nadaba a su lado, saltaba delante de la proa y los pescadores la saludaban con la mano. El pescador Andrés y su hija Noa eran sus mejores amigos.",
+    "i": "🐬⛵👋"
+   },
+   {
+    "x": "Una tarde de abril, el cielo se cubrió de una niebla espesa, blanca como la leche. Andrés y Noa estaban en el mar con su barquita azul y, de repente, no veían nada a su alrededor. No sabían hacia dónde estaba el puerto.",
+    "i": "🌫️⛵😟"
+   },
+   {
+    "x": "—Papá, ¿cómo volveremos a casa? —preguntó Noa, agarrada a su chaleco salvavidas. Andrés intentaba tranquilizarla, pero él tampoco estaba seguro. La niebla lo tapaba todo, hasta la luz del faro.",
+    "i": "👧🦺🌫️"
+   },
+   {
+    "x": "Entonces, entre la niebla, oyeron un sonido conocido: ¡clic, clic, clic! Era Delfina. Los delfines usan esos sonidos para orientarse bajo el agua, como si vieran con los oídos. Delfina sabía perfectamente dónde estaba el puerto.",
+    "i": "🐬🎵🌊"
+   },
+   {
+    "x": "Delfina se puso delante de la barca y dio un salto para que la vieran. Después empezó a nadar despacio, asomando la aleta con la manchita blanca cada pocos segundos. —¡Sigámosla, papá! —gritó Noa, señalando la aleta.",
+    "i": "🐬⛵👧"
+   },
+   {
+    "x": "Andrés encendió el motor muy despacio y siguió a Delfina. La delfina nadaba, esperaba y volvía a nadar, sin dejarles nunca atrás. Así, poco a poco, atravesaron la niebla, escuchando su clic, clic como una brújula musical.",
+    "i": "⛵🐬🧭"
+   },
+   {
+    "x": "Por fin, entre la niebla apareció una luz parpadeante: ¡el faro del puerto! Y enseguida, el muelle con otras barcas y la gente que les esperaba preocupada. Noa saltó a tierra y corrió a abrazar a su madre.",
+    "i": "🗼⚓👩‍👧"
+   },
+   {
+    "x": "Después, Noa volvió al borde del muelle. Delfina asomó la cabeza del agua y le salpicó un poquito, como diciendo: de nada. Noa le prometió que siempre cuidaría del mar y que nunca tiraría basura al agua, para que Delfina y su familia vivieran felices.",
+    "i": "👧🐬💙"
+   },
+   {
+    "x": "Esa noche, la niebla desapareció y el mar quedó tranquilo bajo las estrellas. Noa, en su cama, escuchaba las olas por la ventana. Y allá en el agua, Delfina se dormía flotando, con un ojo abierto y otro cerrado, como hacen los delfines.",
+    "i": "🌙🌊💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿En qué mar vivía Delfina?",
+    "o": [
+     "🌊 En el Mediterráneo",
+     "❄️ En el Ártico",
+     "🌴 En el Caribe"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué tenía en la aleta?",
+    "o": [
+     "⭐ Una estrella",
+     "⚪ Una manchita blanca",
+     "🔴 Un punto rojo"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba la hija del pescador?",
+    "o": [
+     "👧 Nora",
+     "👧 Nerea",
+     "👧 Noa"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿De qué color era la barquita?",
+    "o": [
+     "🔵 Azul",
+     "🔴 Roja",
+     "🟢 Verde"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué cubrió el cielo?",
+    "o": [
+     "🌧️ Lluvia",
+     "🌫️ Una niebla espesa",
+     "❄️ Nieve"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué sonido hacía Delfina?",
+    "o": [
+     "🔔 Tilín",
+     "🎺 Tuu",
+     "🎵 Clic, clic"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué siguieron para volver?",
+    "o": [
+     "🐬 La aleta de Delfina",
+     "⭐ Las estrellas",
+     "🐦 Una gaviota"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué luz vieron al final?",
+    "o": [
+     "🌙 La luna",
+     "🗼 La del faro",
+     "☀️ El sol"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿A quién abrazó Noa en el muelle?",
+    "o": [
+     "👴 A su abuelo",
+     "👦 A su hermano",
+     "👩 A su madre"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué prometió Noa?",
+    "o": [
+     "🌊 Cuidar del mar",
+     "🎣 Pescar mucho",
+     "🏊 Nadar cada día"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 10,
+  "t": "Lento, el perezoso que veía todo",
+  "e": "🦥",
+  "tema": "selva",
+  "p": [
+   {
+    "x": "En la selva, colgado boca abajo de una rama altísima, vivía un perezoso llamado Lento. Tenía el pelo largo y verdoso, unas garras curvas para agarrarse y una sonrisa tranquila. Se movía tan despacio que los pájaros a veces anidaban en su pelo.",
+    "i": "🦥🌳🐦"
+   },
+   {
+    "x": "Los demás animales de la selva siempre tenían prisa. Los monos saltaban sin parar, los jaguares corrían como el viento y los colibríes batían sus alas tan rápido que casi no se veían. —Lento, ¿no te aburres ahí colgado? —le preguntaban.",
+    "i": "🐒🐆🐦"
+   },
+   {
+    "x": "—No —respondía Lento con su voz pausada—. Desde aquí veo muchas cosas. Y era verdad: Lento veía cómo crecían las orquídeas, cómo las hormigas llevaban hojas en fila y cómo cambiaban de color las nubes al atardecer.",
+    "i": "🦥🌺🐜"
+   },
+   {
+    "x": "Un día, el mono Chispas perdió su plátano favorito. Era un plátano dorado, el más dulce de la selva, que guardaba para una ocasión especial. Lo buscó por todas partes, saltando de árbol en árbol, pero no lo encontraba.",
+    "i": "🐒🍌😟"
+   },
+   {
+    "x": "Le preguntó al jaguar, que estaba demasiado ocupado corriendo. Le preguntó al colibrí, que iba demasiado rápido para fijarse. Nadie lo había visto. Al final, triste y cansado, Chispas se sentó en una rama cerca de Lento.",
+    "i": "🐆🐦🐒"
+   },
+   {
+    "x": "—Lento, ¿has visto un plátano dorado? —preguntó sin mucha esperanza. Lento pensó un rato largo, muy largo. Chispas casi se duerme esperando. Por fin dijo: —Sí. Esta mañana un tucán lo llevó hasta el árbol del río y lo dejó en un hueco del tronco.",
+    "i": "🦥💬🍌"
+   },
+   {
+    "x": "Chispas corrió al árbol del río y allí estaba su plátano dorado, guardado en el hueco. El tucán lo había encontrado en el suelo y lo había puesto a salvo de las hormigas. Chispas dio un grito de alegría que se oyó en toda la selva.",
+    "i": "🌳🍌🎉"
+   },
+   {
+    "x": "Chispas volvió con Lento y partió el plátano en dos. —Toma, la mitad es para ti. Si no fuera por ti, nunca lo habría encontrado. Lento lo cogió despacito y se lo comió en, más o menos, una hora entera.",
+    "i": "🐒🍌🦥"
+   },
+   {
+    "x": "Desde entonces, cuando alguien perdía algo en la selva, iba a preguntarle a Lento. Todos aprendieron que ir despacio no es malo, porque quien va con calma se fija en todo lo que los demás se pierden por ir con prisa.",
+    "i": "🦥💡🌴"
+   },
+   {
+    "x": "Al llegar la noche, la selva se llenó de sonidos suaves: ranas, grillos y el viento entre las hojas. Lento cerró los ojos despacito, muy despacito, y se quedó dormido colgado de su rama, meciéndose como en una hamaca.",
+    "i": "🌙🦥💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Cómo se llamaba el perezoso?",
+    "o": [
+     "🦥 Lento",
+     "🦥 Tranqui",
+     "🦥 Calma"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿De qué color era su pelo?",
+    "o": [
+     "⚫ Negro",
+     "🟢 Verdoso",
+     "🟠 Naranja"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué hacían a veces los pájaros en su pelo?",
+    "o": [
+     "🎵 Cantar",
+     "🍽️ Comer",
+     "🪺 Anidar"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué veía Lento desde su rama?",
+    "o": [
+     "🌺 Cómo crecían las orquídeas",
+     "🌊 El mar",
+     "🏙️ La ciudad"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba el mono?",
+    "o": [
+     "🐒 Chuli",
+     "🐒 Chispas",
+     "🐒 Charly"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué había perdido el mono?",
+    "o": [
+     "🥥 Un coco",
+     "🥭 Un mango",
+     "🍌 Un plátano dorado"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Quién se llevó el plátano?",
+    "o": [
+     "🦜 Un tucán",
+     "🐍 Una serpiente",
+     "🐆 El jaguar"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Dónde estaba el plátano?",
+    "o": [
+     "🪨 Bajo una piedra",
+     "🌳 En un hueco del árbol del río",
+     "🌿 Entre las hojas"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cuánto tardó Lento en comerse su mitad?",
+    "o": [
+     "⏱️ Un minuto",
+     "🌙 Toda la noche",
+     "⏰ Una hora entera"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué aprendieron los animales?",
+    "o": [
+     "🐢 Que ir despacio no es malo",
+     "🏃 Que hay que correr",
+     "🍌 Que los plátanos son ricos"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 11,
+  "t": "Marta, la astronauta valiente",
+  "e": "👩‍🚀",
+  "tema": "espacio",
+  "p": [
+   {
+    "x": "Marta tenía siete años y un sueño enorme: viajar al espacio. Su cuarto estaba lleno de pósteres de planetas, un cohete de cartón y estrellas que brillaban en el techo. Cada noche le decía buenas noches a la Luna desde la ventana.",
+    "i": "👧🚀🌙"
+   },
+   {
+    "x": "Aquella noche, al apagar la luz, ocurrió algo extraordinario. Su cohete de cartón empezó a brillar, se hizo grande, grandísimo, y la puerta se abrió con un silbido. Dentro había un traje de astronauta blanco justo de su talla, con su nombre bordado.",
+    "i": "🚀✨👩‍🚀"
+   },
+   {
+    "x": "Marta se puso el traje, el casco y las botas, se sentó en el asiento del piloto y pulsó un botón rojo. —¡Diez, nueve, ocho…! —contó una voz. Al llegar a cero, el cohete salió por la ventana como un rayo de luz hacia el cielo.",
+    "i": "🔴🔟🚀"
+   },
+   {
+    "x": "Primero pasó junto a la Luna, gris y llena de cráteres. Marta la saludó con la mano, como cada noche, y le pareció que la Luna le sonreía. Después vio Marte, rojo como un tomate, y Júpiter, enorme y con rayas de colores, como un caramelo gigante.",
+    "i": "🌙🔴🪐"
+   },
+   {
+    "x": "De pronto, una luz de la nave empezó a parpadear. ¡Se había soltado una pieza de la antena! Sin ella, el cohete no podría volver a casa. Marta sintió un nudo en la barriga, pero respiró hondo tres veces, como le enseñó su madre.",
+    "i": "🚨📡😟"
+   },
+   {
+    "x": "—Puedo hacerlo —se dijo. Se ató una cuerda a la cintura, abrió la compuerta y salió flotando al espacio. Todo estaba en silencio y las estrellas brillaban a su alrededor como miles de luciérnagas. Despacito, llegó hasta la antena.",
+    "i": "👩‍🚀🪢✨"
+   },
+   {
+    "x": "Con una llave inglesa, apretó la pieza suelta, una vuelta, dos, tres. La luz dejó de parpadear y se puso verde. ¡Lo había arreglado! Marta volvió a la nave flotando y dando una voltereta de alegría en el aire, porque en el espacio no hay gravedad.",
+    "i": "🔧💚🤸"
+   },
+   {
+    "x": "Desde la ventana del cohete, Marta miró la Tierra: azul, blanca y verde, redonda como una canica preciosa. Pensó en sus padres, en su cole y en su gato Lunares, y sintió que era el lugar más bonito de todo el universo.",
+    "i": "🌍💙🐱"
+   },
+   {
+    "x": "Marta pulsó el botón de volver y el cohete bajó despacito hasta entrar por su ventana. Volvió a ser un cohete de cartón. Marta se quitó el traje y descubrió que había aprendido algo: ser valiente no es no tener miedo, sino respirar hondo y hacerlo de todas formas.",
+    "i": "🚀🏠💪"
+   },
+   {
+    "x": "Se metió en la cama y miró por la ventana. La Luna seguía allí, como siempre. —Buenas noches, Luna —susurró—. Mañana volveré. Y abrazada a su almohada, la astronauta más valiente del mundo se quedó dormida entre estrellas.",
+    "i": "🌙👧💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Cuántos años tenía Marta?",
+    "o": [
+     "5️⃣ Cinco",
+     "7️⃣ Siete",
+     "9️⃣ Nueve"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿De qué era el cohete de su cuarto?",
+    "o": [
+     "📦 De cartón",
+     "🪵 De madera",
+     "🧱 De plástico"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué tenía bordado el traje?",
+    "o": [
+     "⭐ Una estrella",
+     "🌙 Una luna",
+     "✍️ Su nombre"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿De qué color era el botón que pulsó?",
+    "o": [
+     "🔴 Rojo",
+     "🔵 Azul",
+     "🟢 Verde"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿A qué se parecía Júpiter?",
+    "o": [
+     "🍅 A un tomate",
+     "🍬 A un caramelo gigante",
+     "⚽ A un balón"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué se había soltado de la nave?",
+    "o": [
+     "🚪 La puerta",
+     "🪑 El asiento",
+     "📡 Una pieza de la antena"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cuántas veces respiró hondo?",
+    "o": [
+     "3️⃣ Tres",
+     "1️⃣ Una",
+     "🔟 Diez"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Con qué arregló la antena?",
+    "o": [
+     "🔨 Un martillo",
+     "🔧 Una llave inglesa",
+     "🩹 Una tirita"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba su gato?",
+    "o": [
+     "🐱 Rayas",
+     "🐱 Manchas",
+     "🐱 Lunares"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué es ser valiente para Marta?",
+    "o": [
+     "💪 Respirar hondo y hacerlo",
+     "🙈 No tener nunca miedo",
+     "🏃 Huir rápido"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 12,
+  "t": "La excursión al huerto de Tomás",
+  "e": "🥕",
+  "tema": "cole",
+  "p": [
+   {
+    "x": "Aquel martes, la clase de primero subió a un autobús amarillo para ir de excursión. Iban a visitar el huerto del señor Tomás, un agricultor que vivía en el campo, rodeado de naranjos y acequias. Pablo llevaba su gorra azul y una mochila con el almuerzo.",
+    "i": "🚌👦🧢"
+   },
+   {
+    "x": "El señor Tomás les esperaba en la puerta con un sombrero de paja y una sonrisa enorme. —Bienvenidos al huerto —dijo—. Hoy vais a descubrir de dónde viene lo que coméis. Y les dio a cada uno unos guantes de jardinero y una pequeña pala.",
+    "i": "👨‍🌾👒🧤"
+   },
+   {
+    "x": "Primero les enseñó las hortalizas. Había lechugas verdes como abanicos, tomateras que trepaban por unas cañas, cebollas escondidas bajo la tierra y unas plantas con hojas largas y plumosas. —¿Qué creéis que hay debajo? —preguntó el señor Tomás.",
+    "i": "🥬🍅🧅"
+   },
+   {
+    "x": "Pablo tiró de las hojas plumosas con fuerza y, ¡zas!, salió una zanahoria naranja y larguísima, llena de tierra. Todos aplaudieron. A Pablo no le gustaban mucho las zanahorias, pero aquella la había sacado él mismo, y la miró con otros ojos.",
+    "i": "🥕👦👏"
+   },
+   {
+    "x": "Después fueron al gallinero, donde las gallinas picoteaban el suelo. Lucía encontró dos huevos todavía calentitos en la paja. Luego visitaron la colmena, desde lejos, y vieron a las abejas entrar y salir. —Sin ellas no habría frutas —explicó el señor Tomás.",
+    "i": "🐔🥚🐝"
+   },
+   {
+    "x": "Más tarde, cada niño plantó una semilla de calabaza en una maceta pequeña para llevársela a casa. Tenían que regarla cada día y ponerla al sol. El señor Tomás les dijo que, con cuidado y paciencia, en verano tendrían una calabaza enorme.",
+    "i": "🌱🪴🎃"
+   },
+   {
+    "x": "A la hora del almuerzo, el señor Tomás preparó una ensalada con las verduras recién cogidas. Pablo, que nunca comía zanahoria, probó un trocito de la suya. Abrió mucho los ojos. —¡Está dulcísima! —exclamó, y se comió toda la zanahoria.",
+    "i": "🥗🥕😋"
+   },
+   {
+    "x": "La maestra se rio. —Las cosas saben mejor cuando sabes de dónde vienen y el trabajo que cuestan —dijo—. Pablo pensó en todas las verduras que dejaba en el plato y decidió que, a partir de ahora, las probaría todas al menos una vez.",
+    "i": "👩‍🏫💬👦"
+   },
+   {
+    "x": "Antes de irse, los niños dieron las gracias al señor Tomás con un dibujo enorme del huerto, firmado por todos. Él lo colgó en la puerta del almacén, emocionado. En el autobús de vuelta, todos cantaban canciones con su maceta en las manos.",
+    "i": "🎨🙏🚌"
+   },
+   {
+    "x": "Esa noche, Pablo puso su maceta en la ventana de su cuarto, donde por la mañana daría el sol. Le dio las buenas noches a la semilla y se metió en la cama. Soñó con un huerto lleno de zanahorias gigantes y calabazas tan grandes como casas.",
+    "i": "🌙🪴💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿De qué color era el autobús?",
+    "o": [
+     "🔵 Azul",
+     "💛 Amarillo",
+     "🔴 Rojo"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba el agricultor?",
+    "o": [
+     "👨‍🌾 Tomás",
+     "👨‍🌾 Andrés",
+     "👨‍🌾 Julián"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué llevaba en la cabeza el agricultor?",
+    "o": [
+     "🧢 Una gorra",
+     "🎩 Un sombrero de copa",
+     "👒 Un sombrero de paja"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué sacó Pablo de la tierra?",
+    "o": [
+     "🥕 Una zanahoria",
+     "🥔 Una patata",
+     "🧅 Una cebolla"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Quién encontró dos huevos?",
+    "o": [
+     "👦 Pablo",
+     "👧 Lucía",
+     "👩‍🏫 La maestra"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué semilla plantó cada niño?",
+    "o": [
+     "🌻 De girasol",
+     "🍅 De tomate",
+     "🎃 De calabaza"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cómo le supo la zanahoria a Pablo?",
+    "o": [
+     "😋 Dulcísima",
+     "🤢 Muy mala",
+     "🌶️ Picante"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué decidió Pablo sobre las verduras?",
+    "o": [
+     "🙅 No comerlas nunca",
+     "🥦 Probarlas todas",
+     "🍬 Cambiarlas por dulces"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué le regalaron al señor Tomás?",
+    "o": [
+     "🎁 Una caja",
+     "🌸 Flores",
+     "🎨 Un dibujo enorme del huerto"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Dónde puso Pablo su maceta?",
+    "o": [
+     "🪟 En la ventana",
+     "🛏️ Bajo la cama",
+     "🚪 Junto a la puerta"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 13,
+  "t": "Pluma y su primer vuelo",
+  "e": "🦅",
+  "tema": "montaña",
+  "p": [
+   {
+    "x": "En lo alto de un acantilado, en un nido grande hecho de ramas, vivía un aguilucho llamado Pluma. Tenía el plumón marrón, los ojos dorados y un pico curvo que todavía era pequeño. Desde su nido se veían los valles, los ríos y los pueblos diminutos.",
+    "i": "🦅🪺⛰️"
+   },
+   {
+    "x": "Su madre, el águila Aurora, volaba cada día por el cielo con sus enormes alas abiertas, planeando sobre el viento sin esfuerzo. Pluma la miraba con admiración. —Algún día volaré como tú —decía—. Pero cada vez que se asomaba al borde del nido, le temblaban las patas.",
+    "i": "🦅☁️😟"
+   },
+   {
+    "x": "—Está muy alto, mamá —decía Pluma—. ¿Y si me caigo? Aurora le acariciaba con el ala. —Todos los pájaros sienten eso la primera vez. Cuando estés preparado, el viento te sujetará. Tus alas saben volar, aunque tú todavía no lo sepas.",
+    "i": "🦅💬🌬️"
+   },
+   {
+    "x": "Durante días, Pluma practicó en el nido. Abría las alas y las movía con fuerza, arriba y abajo, para hacerlas más fuertes. Daba saltitos de un lado a otro. Sus hermanos, que ya volaban, le animaban desde las rocas cercanas.",
+    "i": "🦅💪🪺"
+   },
+   {
+    "x": "Una mañana de primavera, el viento soplaba suave y constante desde el valle. Aurora se posó junto al nido. —Hoy es un buen día —dijo—. Yo volaré debajo de ti. Si te cansas, estaré allí. Pluma tragó saliva y se acercó al borde.",
+    "i": "🌅🦅🌬️"
+   },
+   {
+    "x": "Miró hacia abajo y sintió el corazón latiendo muy rápido. Cerró los ojos, respiró hondo, abrió las alas todo lo que pudo y… saltó. Durante un segundo cayó, pero entonces sintió algo maravilloso: el viento le empujaba hacia arriba, como una mano gigante y suave.",
+    "i": "🦅😮🌬️"
+   },
+   {
+    "x": "¡Estaba volando! Abrió los ojos y vio el mundo como nunca lo había visto: el río brillaba como una cinta de plata, los árboles parecían brócolis y un rebaño de cabras pastaba en la ladera. Su madre volaba a su lado, chillando de alegría.",
+    "i": "🦅🏞️🐐"
+   },
+   {
+    "x": "Pluma dio una vuelta, después otra, y planeó sobre el valle con las alas quietas, dejándose llevar. No era tan difícil como pensaba. Lo más difícil había sido atreverse a dar el primer salto.",
+    "i": "🦅🔄☁️"
+   },
+   {
+    "x": "Cuando volvió al nido, cansado y feliz, sus hermanos lo recibieron con chillidos de alegría. Aurora le dijo: —Estoy muy orgullosa de ti. Has tenido miedo y aun así lo has hecho. Eso es ser valiente. Pluma se sintió el aguilucho más feliz del mundo.",
+    "i": "🪺🦅💛"
+   },
+   {
+    "x": "Esa noche, acurrucado bajo el ala de su madre, Pluma miró las estrellas que brillaban sobre el acantilado. Mañana volvería a volar, más alto todavía. Pero ahora, con las alas cansadas y el corazón contento, cerró sus ojos dorados y se durmió.",
+    "i": "🌙🦅💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Dónde estaba el nido de Pluma?",
+    "o": [
+     "⛰️ En lo alto de un acantilado",
+     "🌳 En un árbol bajo",
+     "🏠 En un tejado"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿De qué color eran sus ojos?",
+    "o": [
+     "🔵 Azules",
+     "🟡 Dorados",
+     "🟢 Verdes"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba su madre?",
+    "o": [
+     "🦅 Alba",
+     "🦅 Estrella",
+     "🦅 Aurora"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué le pasaba a Pluma al asomarse al borde?",
+    "o": [
+     "🦵 Le temblaban las patas",
+     "😴 Le daba sueño",
+     "🍽️ Le daba hambre"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Quiénes le animaban desde las rocas?",
+    "o": [
+     "🐐 Las cabras",
+     "🦅 Sus hermanos",
+     "🐦 Unos gorriones"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué le prometió su madre?",
+    "o": [
+     "🍖 Comida",
+     "🎁 Un regalo",
+     "🦅 Volar debajo de él"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué le empujó hacia arriba?",
+    "o": [
+     "🌬️ El viento",
+     "🦅 Su madre",
+     "☁️ Una nube"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿A qué se parecían los árboles desde arriba?",
+    "o": [
+     "🍄 A setas",
+     "🥦 A brócolis",
+     "🌂 A paraguas"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué fue lo más difícil para Pluma?",
+    "o": [
+     "🔄 Dar vueltas",
+     "🪺 Volver al nido",
+     "🦘 Atreverse a dar el primer salto"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué es ser valiente, según Aurora?",
+    "o": [
+     "💪 Tener miedo y hacerlo igual",
+     "🙈 No tener miedo nunca",
+     "🏃 Volar muy rápido"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 14,
+  "t": "Rodolfo, el autobús de la noche",
+  "e": "🚌",
+  "tema": "ciudad",
+  "p": [
+   {
+    "x": "En una gran ciudad, cuando todos los autobuses se iban a dormir a la cochera, salía uno muy especial: Rodolfo, el autobús de la noche. Era azul oscuro, con estrellitas pintadas en los lados, faros redondos como ojos y un claxon que sonaba bajito para no despertar a nadie.",
+    "i": "🚌🌃⭐"
+   },
+   {
+    "x": "Su conductora se llamaba Rocío. Llevaba una gorra azul y siempre saludaba a cada pasajero con una sonrisa. Juntos recorrían las calles silenciosas, llevando a casa a las personas que trabajaban de noche o que volvían tarde.",
+    "i": "👩‍✈️🧢😊"
+   },
+   {
+    "x": "En la primera parada subió una enfermera muy cansada después de cuidar a los enfermos del hospital. Rodolfo encendió una luz suave y templada para que pudiera descansar. La enfermera cerró los ojos y sonrió por primera vez en toda la noche.",
+    "i": "👩‍⚕️💡🏥"
+   },
+   {
+    "x": "En la segunda parada subió un panadero que iba a trabajar muy temprano para que, por la mañana, todo el mundo tuviera pan calentito. Le contó a Rocío que ese día iba a hacer cruasanes. A Rodolfo se le encendieron los faros de alegría.",
+    "i": "👨‍🍳🥐🚌"
+   },
+   {
+    "x": "En la tercera parada subió una abuela con un niño pequeño llamado Héctor, que se había quedado dormido en sus brazos. Volvían de visitar a su papá, que estaba de viaje. Rodolfo frenó y arrancó despacito, para que Héctor no se despertara.",
+    "i": "👵👶💤"
+   },
+   {
+    "x": "Pero a mitad del camino, Héctor abrió los ojos y miró por la ventana. La ciudad estaba llena de luces: farolas amarillas, semáforos que cambiaban de color y la luna enorme reflejada en el río. —Abuela, la ciudad de noche es preciosa —susurró.",
+    "i": "👶🌃🌙"
+   },
+   {
+    "x": "Rocío, que lo oyó, le dijo: —La ciudad nunca duerme del todo. Mientras tú duermes, hay muchas personas trabajando para cuidarte: enfermeras, panaderos, barrenderos, policías. Y Rodolfo y yo los llevamos a todos.",
+    "i": "👩‍✈️💬🧹"
+   },
+   {
+    "x": "Héctor miró a la enfermera, al panadero y a un barrendero que limpiaba una plaza. Les dijo adiós con la manita y todos le devolvieron el saludo. Pensó que eran como superhéroes de la noche, aunque no llevaran capa.",
+    "i": "👶👋🦸"
+   },
+   {
+    "x": "Cuando llegaron a su parada, la abuela bajó con Héctor y Rodolfo hizo sonar su claxon bajito: piii. Héctor aprendió aquella noche que hay que dar las gracias a todas las personas que nos cuidan, aunque no las veamos.",
+    "i": "🚌👵👶"
+   },
+   {
+    "x": "Ya en su cama, Héctor escuchó a lo lejos el motor de Rodolfo recorriendo las calles. Pensó en el panadero haciendo cruasanes y en Rocío con su gorra azul. Y sabiendo que la ciudad le cuidaba, cerró los ojos y se durmió tranquilo.",
+    "i": "🌙🛏️💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿De qué color era Rodolfo?",
+    "o": [
+     "🟡 Amarillo",
+     "🔵 Azul oscuro",
+     "🔴 Rojo"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué tenía pintado en los lados?",
+    "o": [
+     "⭐ Estrellitas",
+     "🌸 Flores",
+     "🐟 Peces"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba la conductora?",
+    "o": [
+     "👩 Rosa",
+     "👩 Raquel",
+     "👩 Rocío"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Quién subió en la primera parada?",
+    "o": [
+     "👩‍⚕️ Una enfermera",
+     "👨‍🍳 Un panadero",
+     "👮 Un policía"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué iba a hacer el panadero ese día?",
+    "o": [
+     "🍞 Barras de pan",
+     "🥐 Cruasanes",
+     "🎂 Pasteles"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba el niño pequeño?",
+    "o": [
+     "👶 Hugo",
+     "👶 Héctor",
+     "👶 Hernán"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿De dónde volvían el niño y su abuela?",
+    "o": [
+     "🏖️ De la playa",
+     "🎪 Del circo",
+     "👨 De visitar a su papá"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué vio el niño reflejado en el río?",
+    "o": [
+     "🌙 La luna",
+     "☀️ El sol",
+     "🚌 El autobús"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿A qué se parecían los trabajadores de la noche para Héctor?",
+    "o": [
+     "🤖 A robots",
+     "🦸 A superhéroes",
+     "👻 A fantasmas"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué aprendió Héctor?",
+    "o": [
+     "🚌 A conducir",
+     "🌃 Que la noche es aburrida",
+     "🙏 A dar las gracias a quien nos cuida"
+    ],
+    "k": 2
+   }
+  ]
+ },
+ {
+  "d": 15,
+  "t": "El reloj dormido del castillo",
+  "e": "🕰️",
+  "tema": "castillo",
+  "p": [
+   {
+    "x": "En un castillo antiguo, rodeado de un foso con patos y nenúfares, había una torre con un reloj enorme. Sus campanadas marcaban las horas de todo el reino: cuándo abrir el mercado, cuándo comer y cuándo irse a dormir. Pero una mañana, el reloj se paró.",
+    "i": "🏰🕰️🦆"
+   },
+   {
+    "x": "Sin campanadas, todo se volvió un lío. El panadero no sabía cuándo sacar el pan del horno y se le quemó. Los niños no sabían cuándo ir a la escuela. Y el rey se quedó dormido hasta la hora de comer, con la corona torcida.",
+    "i": "🍞🔥👑"
+   },
+   {
+    "x": "La princesa Blanca, que tenía seis años y era muy decidida, subió a la torre a ver qué pasaba. Subió ciento veinte escalones de piedra, contándolos uno a uno, hasta llegar a la sala del reloj, llena de ruedas dentadas y polvo.",
+    "i": "👸🪜🏰"
+   },
+   {
+    "x": "Allí encontró a un ratón con gafas y bata llamado Engranaje, que era el relojero del castillo. Estaba sentado en una rueda, muy triste. —Una rueda pequeñita se ha salido de su sitio —explicó—, y yo solo no tengo fuerza para colocarla.",
+    "i": "🐭👓⚙️"
+   },
+   {
+    "x": "Blanca miró la rueda. Era del tamaño de una galleta, pero pesaba mucho para un ratón. —Te ayudo —dijo—. Tú me dices dónde va y yo la empujo. Engranaje le explicó con paciencia cómo encajaba cada pieza con las demás.",
+    "i": "👸⚙️🐭"
+   },
+   {
+    "x": "No fue fácil. La primera vez, la rueda no encajó. La segunda, se resbaló. Blanca empezaba a desanimarse, pero Engranaje le dijo: —Los relojes nos enseñan paciencia. Tic, tac, poco a poco. Blanca respiró y lo intentó de nuevo.",
+    "i": "⚙️😓🐭"
+   },
+   {
+    "x": "A la tercera, la rueda hizo clic y encajó perfectamente. Todas las demás ruedas empezaron a girar, una detrás de otra, como si se despertaran. Tic, tac, tic, tac. Y de repente, ¡dong, dong, dong!, el reloj dio las campanadas.",
+    "i": "⚙️🔔✨"
+   },
+   {
+    "x": "Abajo, en el reino, todos levantaron la cabeza. El panadero sacó el pan a tiempo, los niños corrieron a la escuela y el rey se colocó bien la corona. La gente aplaudía mirando hacia la torre, donde la princesa y el ratón saludaban desde la ventana.",
+    "i": "🍞👑👏"
+   },
+   {
+    "x": "El rey nombró a Engranaje relojero real y a Blanca su ayudante oficial. Blanca aprendió que las cosas pequeñas son importantes, porque una rueda diminuta puede parar un reloj entero, y que con paciencia y ayuda casi todo se puede arreglar.",
+    "i": "👑🐭👸"
+   },
+   {
+    "x": "Esa noche, el reloj dio nueve campanadas: era hora de dormir. Blanca se metió en su cama con dosel y escuchó el tic, tac que llegaba desde la torre. Contando los tic tacs, como si fueran ovejitas, se quedó dormida enseguida.",
+    "i": "🌙🕰️💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Qué había en el foso del castillo?",
+    "o": [
+     "🦆 Patos y nenúfares",
+     "🐊 Cocodrilos",
+     "🐟 Tiburones"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué le pasó al pan del panadero?",
+    "o": [
+     "🧊 Se congeló",
+     "🔥 Se quemó",
+     "💧 Se mojó"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba la princesa?",
+    "o": [
+     "👸 Rosa",
+     "👸 Nieves",
+     "👸 Blanca"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cuántos escalones subió?",
+    "o": [
+     "1️⃣2️⃣0️⃣ Ciento veinte",
+     "🔟 Diez",
+     "5️⃣0️⃣ Cincuenta"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué animal era el relojero?",
+    "o": [
+     "🐱 Un gato",
+     "🐭 Un ratón",
+     "🦉 Un búho"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba el relojero?",
+    "o": [
+     "🐭 Tornillo",
+     "🐭 Tuerca",
+     "🐭 Engranaje"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿De qué tamaño era la rueda?",
+    "o": [
+     "🍪 Como una galleta",
+     "🏠 Como una casa",
+     "🍉 Como una sandía"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿A la cuántas encajó la rueda?",
+    "o": [
+     "1️⃣ A la primera",
+     "3️⃣ A la tercera",
+     "🔟 A la décima"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿En qué nombró el rey a Blanca?",
+    "o": [
+     "👑 Reina",
+     "🏰 Guardiana",
+     "🕰️ Ayudante oficial del relojero"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cuántas campanadas sonaron a la hora de dormir?",
+    "o": [
+     "9️⃣ Nueve",
+     "1️⃣2️⃣ Doce",
+     "3️⃣ Tres"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 16,
+  "t": "Copo y las luces del cielo",
+  "e": "🐻‍❄️",
+  "tema": "polo norte",
+  "p": [
+   {
+    "x": "En el Polo Norte, donde el hielo cruje y el viento sopla frío, vivía un osito polar llamado Copo. Era blanco como la nieve, con la nariz negra como un botón y unas patas grandes y peludas que no resbalaban en el hielo.",
+    "i": "🐻‍❄️❄️🧊"
+   },
+   {
+    "x": "Su abuela, la osa Nevada, le había contado una historia mágica: algunas noches, el cielo del Polo se llena de luces verdes, rosas y moradas que bailan como cintas. Se llaman auroras boreales. Copo nunca las había visto y soñaba con ello.",
+    "i": "👵🌌💚"
+   },
+   {
+    "x": "Pero en abril, en el Polo Norte, los días son cada vez más largos y las noches más cortas. —Si no las ves pronto —le dijo su abuela—, tendrás que esperar hasta el próximo invierno. Copo decidió que esa misma noche se quedaría despierto para verlas.",
+    "i": "☀️🌙🐻‍❄️"
+   },
+   {
+    "x": "Se acurrucó en un montículo de nieve y miró al cielo. Esperó y esperó. Pasó un zorro ártico, blanco y de cola esponjosa, llamado Fiordo. —¿Qué haces aquí tan tarde? —preguntó. —Espero las luces del cielo —respondió Copo.",
+    "i": "🐻‍❄️🦊🌌"
+   },
+   {
+    "x": "Fiordo se sentó a su lado. Al rato llegó una lechuza blanca llamada Escarcha, y después una morsa grandota con bigotes largos llamada Bigotón. Todos querían ver las auroras. Hacían bromas para no dormirse y se calentaban juntos.",
+    "i": "🦉🦭🦊"
+   },
+   {
+    "x": "Pasó la medianoche y el cielo seguía oscuro. Copo empezó a bostezar y a desanimarse. —Quizá esta noche no vengan —suspiró. Escarcha le dijo con voz suave: —La naturaleza tiene su propio reloj. Hay que tener paciencia.",
+    "i": "🥱🌑🦉"
+   },
+   {
+    "x": "Y justo entonces, en el horizonte, apareció una línea verde muy fina. Después se hizo más grande y empezó a ondular. Luego llegó el rosa, y el morado, y el cielo entero se llenó de cortinas de luz que bailaban en silencio sobre el hielo.",
+    "i": "💚💗💜"
+   },
+   {
+    "x": "Copo se quedó con la boca abierta. Era todavía más bonito de lo que había imaginado. Las luces se reflejaban en el hielo y en los ojos de sus amigos. Nadie decía nada; solo miraban, abrazados para no tener frío.",
+    "i": "🐻‍❄️🌌✨"
+   },
+   {
+    "x": "Copo pensó que, si hubiera esperado solo, quizá se habría rendido. Pero con sus amigos la espera había sido divertida. Las cosas bonitas merecen la pena, y son todavía más bonitas cuando se comparten con los que quieres.",
+    "i": "🐻‍❄️🤝🦊"
+   },
+   {
+    "x": "Cuando las luces se apagaron, Copo volvió a la cueva de su abuela. —¡Las he visto, abuela! —susurró. Ella sonrió medio dormida y le hizo un hueco a su lado. Copo se acurrucó en su pelaje calentito y soñó con cintas de colores bailando en el cielo.",
+    "i": "🌙🐻‍❄️💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Cómo se llamaba el osito polar?",
+    "o": [
+     "🐻‍❄️ Nieve",
+     "🐻‍❄️ Copo",
+     "🐻‍❄️ Hielo"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo era su nariz?",
+    "o": [
+     "⚫ Negra como un botón",
+     "🩷 Rosa",
+     "🔴 Roja"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba la abuela?",
+    "o": [
+     "🐻‍❄️ Blanca",
+     "🐻‍❄️ Polar",
+     "🐻‍❄️ Nevada"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cómo se llaman las luces del cielo?",
+    "o": [
+     "🌌 Auroras boreales",
+     "⭐ Estrellas fugaces",
+     "🌈 Arcoíris"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba el zorro ártico?",
+    "o": [
+     "🦊 Glaciar",
+     "🦊 Fiordo",
+     "🦊 Iglú"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué animal era Escarcha?",
+    "o": [
+     "🦭 Una foca",
+     "🐧 Un pingüino",
+     "🦉 Una lechuza blanca"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué tenía la morsa Bigotón?",
+    "o": [
+     "🥸 Bigotes largos",
+     "🎩 Un sombrero",
+     "🧣 Una bufanda"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿De qué color fue la primera luz?",
+    "o": [
+     "💗 Rosa",
+     "💚 Verde",
+     "💜 Morada"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué le dijo Escarcha?",
+    "o": [
+     "😴 Que se fuera a dormir",
+     "🏃 Que corriera",
+     "⏳ Que había que tener paciencia"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué pensó Copo al final?",
+    "o": [
+     "🤝 Que las cosas bonitas se comparten mejor",
+     "❄️ Que hacía mucho frío",
+     "🌙 Que la noche es larga"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 17,
+  "t": "Escarabajo Kiko y la flor del cactus",
+  "e": "🌵",
+  "tema": "desierto",
+  "p": [
+   {
+    "x": "En un desierto de arena rojiza, donde el sol brilla fuerte todo el día, vivía un escarabajo llamado Kiko. Era negro y brillante como una canica, con seis patitas rápidas y dos antenas que se movían cuando estaba contento.",
+    "i": "🪲🏜️☀️"
+   },
+   {
+    "x": "Kiko vivía junto a un cactus muy viejo llamado Don Espino. Era alto, verde y estaba lleno de pinchos. Los demás animales no se acercaban a él porque decían que era antipático y que pinchaba. Pero Kiko sabía que Don Espino tenía un gran corazón.",
+    "i": "🌵🪲💚"
+   },
+   {
+    "x": "Cada día, Kiko le hacía compañía. Le contaba lo que pasaba en el desierto: que la lagartija Lola había tenido crías, que el viento había movido una duna o que había visto pasar un camello. Don Espino le escuchaba encantado.",
+    "i": "🪲💬🦎"
+   },
+   {
+    "x": "Un día, Don Espino le confesó un secreto. —Una vez al año, en primavera, me sale una flor. Es lo único bonito que tengo. Pero solo dura una noche, y nadie la ha visto nunca porque todos se van cuando oscurece.",
+    "i": "🌵🌸🌙"
+   },
+   {
+    "x": "Kiko pensó que eso era muy triste. Una flor tan especial y nadie para verla. Así que decidió hacer algo. Fue a ver a la lagartija Lola, a la liebre Dunita, a la tortuga Arena y a un búho pequeño que vivía en un agujero del cactus.",
+    "i": "🪲🦎🐇"
+   },
+   {
+    "x": "—Esta noche, Don Espino va a florecer —les dijo—. ¿Venís a verlo? Al principio dudaron. —Es un cactus gruñón y pincha —dijo la liebre. —No es gruñón, solo está solo —respondió Kiko—. Dadle una oportunidad.",
+    "i": "🪲💬🌵"
+   },
+   {
+    "x": "Al caer la noche, todos se sentaron alrededor de Don Espino, sin acercarse demasiado a los pinchos. La luna salió grande y blanca. Y entonces, en lo alto del cactus, un capullo empezó a abrirse muy despacio.",
+    "i": "🌕🌵🦎"
+   },
+   {
+    "x": "Era una flor enorme, blanca como la luna, con pétalos suaves y un perfume dulcísimo que llenó todo el desierto. Brillaba en la oscuridad como una lámpara. Todos se quedaron sin palabras. —Es lo más bonito que he visto nunca —susurró la tortuga.",
+    "i": "🌸✨🐢"
+   },
+   {
+    "x": "Don Espino estaba tan feliz que casi lloraba de emoción. Desde aquella noche, los animales del desierto le visitaban a menudo y descubrieron que era sabio y amable. Kiko había enseñado a todos que no hay que juzgar a nadie por su aspecto.",
+    "i": "🌵💛🪲"
+   },
+   {
+    "x": "Cuando amaneció, la flor se cerró despacito. Pero nadie estaba triste, porque el año que viene volverían a verla juntos. Kiko se acurrucó en la arena tibia, a la sombra de su amigo, y se quedó dormido muy contento.",
+    "i": "🌅🪲💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿De qué color era Kiko?",
+    "o": [
+     "🔴 Rojo",
+     "⚫ Negro y brillante",
+     "🟢 Verde"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cuántas patitas tenía?",
+    "o": [
+     "6️⃣ Seis",
+     "4️⃣ Cuatro",
+     "8️⃣ Ocho"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba el cactus?",
+    "o": [
+     "🌵 Don Pincho",
+     "🌵 Don Verde",
+     "🌵 Don Espino"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué animal había tenido crías?",
+    "o": [
+     "🦎 La lagartija Lola",
+     "🐇 La liebre",
+     "🐢 La tortuga"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cuánto dura la flor del cactus?",
+    "o": [
+     "📅 Un mes",
+     "🌙 Una noche",
+     "☀️ Una semana"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba la liebre?",
+    "o": [
+     "🐇 Arena",
+     "🐇 Rocío",
+     "🐇 Dunita"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Por qué decía Kiko que el cactus parecía gruñón?",
+    "o": [
+     "😔 Porque estaba solo",
+     "😠 Porque era malo",
+     "😴 Porque tenía sueño"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿De qué color era la flor?",
+    "o": [
+     "🔴 Roja",
+     "⚪ Blanca como la luna",
+     "🟡 Amarilla"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Quién dijo que era lo más bonito que había visto?",
+    "o": [
+     "🦉 El búho",
+     "🐇 La liebre",
+     "🐢 La tortuga"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué enseñó Kiko a todos?",
+    "o": [
+     "👀 A no juzgar por el aspecto",
+     "🌵 A plantar cactus",
+     "🏃 A correr por la arena"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 18,
+  "t": "Gonzalo y el hermanito nuevo",
+  "e": "👶",
+  "tema": "familia",
+  "p": [
+   {
+    "x": "Gonzalo tenía cinco años y, desde hacía una semana, ya no era hijo único. En casa había llegado un bebé pequeñito llamado Adrián, con la cara redonda, los puños apretados y una voz enorme para llorar cuando tenía hambre.",
+    "i": "👦👶🏠"
+   },
+   {
+    "x": "Al principio, Gonzalo estaba muy contento. Pero después de unos días empezó a sentirse un poco raro. Todos los que venían a casa decían: ¡qué bebé tan bonito! Y nadie le preguntaba a él qué había dibujado en el cole o cómo le había ido el día.",
+    "i": "👦😕👶"
+   },
+   {
+    "x": "Además, mamá estaba siempre cansada y papá siempre ocupado cambiando pañales. Gonzalo se fue a su cuarto, se sentó en la alfombra con su dinosaurio de peluche, Rex, y le dijo bajito: —Creo que ya nadie se acuerda de mí.",
+    "i": "👦🦖😔"
+   },
+   {
+    "x": "Su padre, que pasaba por el pasillo, le oyó. Entró, se sentó a su lado en la alfombra y le dio un abrazo grande. —Gonzalo, te quiero muchísimo, igual que siempre —le dijo—. El amor no se reparte como una tarta, se multiplica. Ahora hay más amor en casa, no menos.",
+    "i": "👨🤗👦"
+   },
+   {
+    "x": "Después le contó un secreto: —Adrián todavía no sabe hacer nada. No sabe hablar, ni andar, ni jugar. Pero tiene un hermano mayor que sí sabe. ¿Te gustaría enseñarle cosas? Gonzalo lo pensó y se le iluminó la cara.",
+    "i": "👨💬👦"
+   },
+   {
+    "x": "Esa tarde, Gonzalo se acercó a la cuna de Adrián con Rex en la mano. —Este es Rex —le explicó—. Es un dinosaurio, pero es bueno. Hace grrr, pero muy flojito. El bebé abrió mucho los ojos y movió los bracitos, como si le hubiera entendido.",
+    "i": "👦🦖👶"
+   },
+   {
+    "x": "Luego le cantó la canción de los cinco lobitos y le enseñó un cuento con dibujos de animales. Cuando Gonzalo hacía muu como una vaca, Adrián hacía un ruidito parecido a una risa. —¡Mamá, se ha reído conmigo! —gritó Gonzalo emocionado.",
+    "i": "🎵📖😄"
+   },
+   {
+    "x": "Mamá se acercó y les hizo una foto a los dos juntos. —Eres el mejor hermano mayor del mundo —dijo, y le dio un beso en la frente. Gonzalo se sintió importante, querido y orgulloso, todo a la vez.",
+    "i": "👩📸💛"
+   },
+   {
+    "x": "Desde entonces, cada tarde, Gonzalo le contaba a Adrián cómo le había ido en el cole. El bebé no entendía las palabras, pero le miraba con mucha atención. Gonzalo aprendió que en una familia siempre hay sitio para uno más, y que el cariño crece cuando se comparte.",
+    "i": "👦💬👶"
+   },
+   {
+    "x": "Aquella noche, antes de dormir, Gonzalo dejó a Rex junto a la cuna de Adrián, para que le hiciera compañía. —Solo esta noche —le dijo al dinosaurio—. Cuídale bien. Después se metió en su cama, feliz, y se durmió pensando en todo lo que le iba a enseñar a su hermanito.",
+    "i": "🌙🦖💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Cuántos años tenía Gonzalo?",
+    "o": [
+     "5️⃣ Cinco",
+     "3️⃣ Tres",
+     "8️⃣ Ocho"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba el bebé?",
+    "o": [
+     "👶 Álvaro",
+     "👶 Adrián",
+     "👶 Andrés"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba el peluche de Gonzalo?",
+    "o": [
+     "🦖 Dino",
+     "🐻 Osito",
+     "🦖 Rex"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué animal era el peluche?",
+    "o": [
+     "🦖 Un dinosaurio",
+     "🐶 Un perro",
+     "🦁 Un león"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Quién oyó a Gonzalo en su cuarto?",
+    "o": [
+     "👩 Su madre",
+     "👨 Su padre",
+     "👵 Su abuela"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué dijo papá del amor?",
+    "o": [
+     "🍰 Que se reparte como una tarta",
+     "😴 Que se cansa",
+     "✖️ Que se multiplica"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué canción le cantó Gonzalo al bebé?",
+    "o": [
+     "🐺 Los cinco lobitos",
+     "🐘 Un elefante",
+     "🎂 Cumpleaños feliz"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué animal imitaba Gonzalo cuando el bebé se rió?",
+    "o": [
+     "🐶 Un perro",
+     "🐄 Una vaca",
+     "🐱 Un gato"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué hizo mamá con los dos hermanos?",
+    "o": [
+     "🍰 Un pastel",
+     "🎵 Una canción",
+     "📸 Una foto"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Dónde dejó Gonzalo a Rex esa noche?",
+    "o": [
+     "👶 Junto a la cuna",
+     "🛏️ En su cama",
+     "📦 En una caja"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 19,
+  "t": "Lucas en el planeta de las flores",
+  "e": "🌺",
+  "tema": "espacio",
+  "p": [
+   {
+    "x": "Lucas, el robot plateado con capa roja y ojos verdes, viajaba por una galaxia lejana cuando vio un planeta que brillaba de todos los colores. No era rojo como Marte ni azul como la Tierra: era rosa, amarillo, violeta y naranja a la vez. —¡Qué planeta tan alegre! —pensó.",
+    "i": "🤖🌌🌈"
+   },
+   {
+    "x": "Aterrizó con suavidad y descubrió por qué: todo el planeta estaba cubierto de flores gigantes, tan altas como árboles. Había margaritas como paraguas, tulipanes como casas y girasoles que giraban siguiendo a sus tres soles.",
+    "i": "🌼🌷🌻"
+   },
+   {
+    "x": "Entre las flores vivían unos seres pequeñitos con alas transparentes, como mariposas con cara de niño. Se llamaban floritos. El más pequeño de todos, llamado Pistilo, se acercó a Lucas volando y le dijo: —Bienvenido. ¿Te gustan los cuentos? Aquí nos encantan.",
+    "i": "🧚🌸🤖"
+   },
+   {
+    "x": "Lucas casi da un salto de alegría. ¡Un planeta donde también adoraban los cuentos! Pero Pistilo le contó que tenían un problema. Las flores más grandes, las que daban néctar a todos, se estaban quedando dormidas y no se abrían.",
+    "i": "🤖😮🌺"
+   },
+   {
+    "x": "—Las flores se abren cuando escuchan una historia bonita —explicó Pistilo—. Pero ya les hemos contado todos nuestros cuentos muchas veces y se aburren. Necesitan historias nuevas. Lucas sonrió con sus ojos verdes brillando. —Creo que puedo ayudar.",
+    "i": "🧚💬🌸"
+   },
+   {
+    "x": "Lucas se sentó en el centro del jardín y empezó a contar. Les contó el cuento de un almendro valiente, el de una pulpo que pintaba y el de un dragón que quería ser jardinero. Los floritos se sentaron a su alrededor, con la boca abierta.",
+    "i": "🤖📖🧚"
+   },
+   {
+    "x": "Con cada cuento, una flor gigante despertaba. Primero se abrió una rosa enorme, luego una campanilla azul y después una orquídea morada que olía a fresa. El planeta entero se llenó de un perfume tan dulce que Lucas sintió cosquillas en sus circuitos.",
+    "i": "🌹💙💜"
+   },
+   {
+    "x": "Cuando terminó, todas las flores estaban abiertas y los floritos bailaban de alegría, bebiendo néctar. Pistilo le dio a Lucas un regalo: una semilla brillante. —Plántala donde haya alguien que necesite un cuento —le dijo—. Florecerá con cada historia que le cuentes.",
+    "i": "🧚🎁✨"
+   },
+   {
+    "x": "Lucas guardó la semilla en el bolsillo de su capa roja. Había aprendido que las historias son como el agua y el sol para el corazón: hacen que todo florezca. Y que compartir los cuentos que conocemos es un regalo precioso.",
+    "i": "🤖❤️🌱"
+   },
+   {
+    "x": "Se despidió de los floritos y voló hacia las estrellas, bajo la luz de los tres soles que se ponían. Y si esta noche alguien te cuenta un cuento, imagina que en algún planeta lejano, una flor gigante se abre para escucharlo contigo. Dulces sueños.",
+    "i": "🌅🌺😴"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿De qué colores era el planeta?",
+    "o": [
+     "🔴 Solo rojo",
+     "🌈 Rosa, amarillo, violeta y naranja",
+     "🔵 Solo azul"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿De qué estaba cubierto el planeta?",
+    "o": [
+     "🌺 De flores gigantes",
+     "🏔️ De montañas",
+     "🌊 De agua"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cuántos soles tenía el planeta?",
+    "o": [
+     "1️⃣ Uno",
+     "2️⃣ Dos",
+     "3️⃣ Tres"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cómo se llamaban los seres del planeta?",
+    "o": [
+     "🧚 Floritos",
+     "🧚 Hojitas",
+     "🧚 Petalitos"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba el más pequeño?",
+    "o": [
+     "🧚 Polen",
+     "🧚 Pistilo",
+     "🧚 Pétalo"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué hacía que las flores se abrieran?",
+    "o": [
+     "💧 El agua",
+     "🎵 La música",
+     "📖 Escuchar una historia bonita"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Por qué se aburrían las flores?",
+    "o": [
+     "📚 Ya conocían todos los cuentos",
+     "🌧️ Llovía mucho",
+     "🌙 Era de noche"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿A qué olía la orquídea morada?",
+    "o": [
+     "🍋 A limón",
+     "🍓 A fresa",
+     "🍫 A chocolate"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué le regaló Pistilo a Lucas?",
+    "o": [
+     "🌸 Una flor",
+     "🍯 Néctar",
+     "🌱 Una semilla brillante"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué aprendió Lucas sobre las historias?",
+    "o": [
+     "🌱 Que hacen florecer el corazón",
+     "😴 Que dan sueño",
+     "📚 Que son largas"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 20,
+  "t": "La abeja Zumbi y la colmena",
+  "e": "🐝",
+  "tema": "abejas",
+  "p": [
+   {
+    "x": "En una colmena de madera, en medio de un campo de lavanda, vivía una abeja joven llamada Zumbi. Tenía rayas negras y amarillas, alas brillantes y muchísima energía. Aquella primavera, por fin, iba a salir por primera vez a buscar néctar.",
+    "i": "🐝🏠💜"
+   },
+   {
+    "x": "La abeja más vieja de la colmena, la abuela Melina, le dio unos consejos. —Vuela de flor en flor, recoge el néctar con cuidado y recuerda siempre el camino de vuelta. Y sobre todo, nunca olvides que trabajamos todas juntas, como un equipo.",
+    "i": "🐝👵💬"
+   },
+   {
+    "x": "Zumbi salió volando, emocionada. El campo de lavanda olía de maravilla, pero a lo lejos vio un jardín con flores de todos los colores. —Allí habrá muchísimo néctar —pensó—, y lo traeré yo sola para que todas vean lo buena que soy.",
+    "i": "🐝🌷🌻"
+   },
+   {
+    "x": "En el jardín había rosas, amapolas y margaritas. Zumbi iba de una a otra recogiendo néctar sin parar, hasta que se llenó tanto que casi no podía volar. Pero cuando quiso volver, se dio cuenta de que no recordaba el camino.",
+    "i": "🌹🐝😟"
+   },
+   {
+    "x": "Zumbi voló en círculos, cansada y un poco asustada. Entonces oyó un zumbido conocido. Era Rayitas, otra abeja de su colmena. —¡Zumbi! ¡Te estábamos buscando! —dijo—. Vamos, yo te enseño el camino. ¿Por qué te fuiste tan lejos sola?",
+    "i": "🐝🐝💛"
+   },
+   {
+    "x": "Zumbi le explicó que quería traer más néctar que nadie. Rayitas sonrió. —En la colmena no competimos. Cada una trae un poquito y, juntas, hacemos toda la miel. Cuando hay un buen jardín, volvemos y hacemos un baile para que las demás sepan dónde está.",
+    "i": "🐝💬🍯"
+   },
+   {
+    "x": "—¿Un baile? —preguntó Zumbi sorprendida. —Sí —dijo Rayitas—. Las abejas bailamos moviendo el cuerpo de un lado a otro para indicar el camino a las flores. Así nadie se pierde y todas encuentran néctar.",
+    "i": "🐝💃🧭"
+   },
+   {
+    "x": "Cuando llegaron a la colmena, Zumbi entregó su néctar y después, con un poco de vergüenza, hizo su primer baile para contar dónde estaba el jardín de colores. Lo hizo un poco torcido, pero las demás abejas la entendieron y salieron volando hacia allí.",
+    "i": "🐝💃🌸"
+   },
+   {
+    "x": "Aquella tarde, la colmena recogió más néctar que nunca. La abuela Melina le dio a Zumbi una gotita de la primera miel. —¿Ves? —le dijo—. Una sola abeja hace poco, pero muchas juntas hacen maravillas. Zumbi sonrió: había aprendido la lección más importante.",
+    "i": "🍯👵🐝"
+   },
+   {
+    "x": "Al anochecer, todas las abejas se acurrucaron en sus celdillas. La colmena olía a miel y a lavanda, y se oía un zumbido suave, como una nana. Zumbi cerró los ojos y se durmió, cansada y feliz, soñando con campos llenos de flores.",
+    "i": "🌙🐝💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿En qué campo estaba la colmena?",
+    "o": [
+     "🌻 De girasoles",
+     "💜 De lavanda",
+     "🌾 De trigo"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba la abeja joven?",
+    "o": [
+     "🐝 Zumbi",
+     "🐝 Maya",
+     "🐝 Mimi"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Quién le dio consejos?",
+    "o": [
+     "🐝 La reina",
+     "🐝 Su hermana",
+     "🐝 La abuela Melina"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Por qué quería ir sola?",
+    "o": [
+     "🏆 Para traer más néctar que nadie",
+     "😴 Para descansar",
+     "🎵 Para cantar"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué flores había en el jardín?",
+    "o": [
+     "🌵 Cactus",
+     "🌹 Rosas, amapolas y margaritas",
+     "🌲 Pinos"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué le pasó a Zumbi?",
+    "o": [
+     "🌧️ Se mojó",
+     "💤 Se durmió",
+     "🧭 No recordaba el camino"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cómo se llamaba la abeja que la encontró?",
+    "o": [
+     "🐝 Rayitas",
+     "🐝 Puntitos",
+     "🐝 Alitas"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué hacen las abejas para indicar el camino?",
+    "o": [
+     "🎤 Cantan",
+     "💃 Bailan",
+     "🗺️ Dibujan un mapa"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo le salió a Zumbi su primer baile?",
+    "o": [
+     "⭐ Perfecto",
+     "❌ No le salió",
+     "↪️ Un poco torcido"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué aprendió Zumbi?",
+    "o": [
+     "🤝 Que juntas se hacen maravillas",
+     "🏃 Que hay que volar rápido",
+     "🍯 Que la miel es dulce"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 21,
+  "t": "Ramona, la rana del concierto",
+  "e": "🐸",
+  "tema": "río",
+  "p": [
+   {
+    "x": "En la orilla de un río, entre juncos y nenúfares, vivía una rana verde llamada Ramona. Tenía los ojos saltones, las patas largas y una voz que sonaba como una trompeta: ¡croooac! Le encantaba cantar, sobre todo cuando caía la tarde.",
+    "i": "🐸🌿🎺"
+   },
+   {
+    "x": "Cada primavera, los animales del río celebraban el Gran Concierto de la Luna Llena. Los grillos tocaban sus violines, los mirlos silbaban y las cigarras hacían de coro. Ese año, el director, un sapo muy elegante llamado Don Croqueta, buscaba una voz solista.",
+    "i": "🦗🐦🎻"
+   },
+   {
+    "x": "Ramona quería ser la solista con todas sus fuerzas. Pero había otra rana que también quería serlo: Charca, una rana pequeña y tímida con una voz suave y dulce, como un susurro. Las dos se presentaron a la prueba.",
+    "i": "🐸🐸🎤"
+   },
+   {
+    "x": "Ramona cantó primero con su voz potente: ¡croooac, croooac! Se oyó en todo el río y los peces asomaron la cabeza. Después cantó Charca, tan bajito que los grillos tuvieron que dejar de tocar para oírla, pero era una melodía preciosa.",
+    "i": "🐸🎵🐟"
+   },
+   {
+    "x": "Don Croqueta se rascó la barbilla. No sabía a cuál elegir. Ramona, que quería ganar, pensó en decir que la voz de Charca era demasiado flojita. Pero al ver la cara nerviosa de la ranita, sintió que eso no estaría bien.",
+    "i": "🐸🤔🐸"
+   },
+   {
+    "x": "Entonces Ramona tuvo una idea mejor. —Don Croqueta —dijo—, ¿y si cantamos juntas? Mi voz es fuerte y la de Charca es dulce. Yo puedo cantar las partes alegres y ella las partes tranquilas. El sapo sonrió de oreja a oreja.",
+    "i": "🐸💡🎶"
+   },
+   {
+    "x": "Ramona y Charca ensayaron todos los días. Al principio no les salía bien: Ramona cantaba tan alto que tapaba a Charca. Pero aprendió a cantar más suave cuando le tocaba a su amiga, y Charca aprendió a cantar un poquito más fuerte.",
+    "i": "🐸🐸🎼"
+   },
+   {
+    "x": "La noche del concierto, la luna llena se reflejaba en el río como un plato de plata. Las luciérnagas encendieron sus luces. Ramona y Charca cantaron juntas y su canción sonó tan bonita que hasta el búho, que nunca se emocionaba, se secó una lágrima.",
+    "i": "🌕🐸✨"
+   },
+   {
+    "x": "Al terminar, todos los animales aplaudieron. Charca abrazó a Ramona. —Gracias por compartir el concierto conmigo —le dijo. Ramona descubrió que ganar sola no le habría hecho tan feliz como cantar con una amiga.",
+    "i": "👏🐸🤗"
+   },
+   {
+    "x": "Después del concierto, Ramona se sentó en su nenúfar favorito, mirando la luna. A su lado, Charca tarareaba bajito la canción. Ramona cerró los ojos y se dejó llevar por esa melodía suave hasta que se quedó dormida, flotando sobre el río.",
+    "i": "🌙🐸💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿A qué sonaba la voz de Ramona?",
+    "o": [
+     "🎺 A una trompeta",
+     "🎻 A un violín",
+     "🥁 A un tambor"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba el concierto?",
+    "o": [
+     "☀️ Concierto del Sol",
+     "🌕 Gran Concierto de la Luna Llena",
+     "🌸 Concierto de las Flores"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Quiénes tocaban violines?",
+    "o": [
+     "🐦 Los mirlos",
+     "🐟 Los peces",
+     "🦗 Los grillos"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué animal era Don Croqueta?",
+    "o": [
+     "🐸 Un sapo",
+     "🦆 Un pato",
+     "🐢 Una tortuga"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo era la voz de Charca?",
+    "o": [
+     "📢 Muy fuerte",
+     "🎶 Suave y dulce",
+     "😖 Desafinada"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué propuso Ramona?",
+    "o": [
+     "🏃 Irse a casa",
+     "🥇 Ganar ella",
+     "🎶 Cantar juntas"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué aprendió a hacer Ramona en los ensayos?",
+    "o": [
+     "🎵 Cantar más suave",
+     "🎺 Cantar más fuerte",
+     "💃 Bailar"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué encendieron las luciérnagas?",
+    "o": [
+     "🔥 Una hoguera",
+     "💡 Sus luces",
+     "🕯️ Velas"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Quién se secó una lágrima?",
+    "o": [
+     "🐸 Don Croqueta",
+     "🦗 Un grillo",
+     "🦉 El búho"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Dónde se durmió Ramona?",
+    "o": [
+     "🌿 En su nenúfar favorito",
+     "🪨 En una piedra",
+     "🌳 En un árbol"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 22,
+  "t": "Los guardianes del parque",
+  "e": "🌍",
+  "tema": "tierra",
+  "p": [
+   {
+    "x": "El veintidós de abril es el Día de la Tierra, y en el barrio de Aitana todos los niños del cole tenían una misión especial: limpiar y cuidar el parque de los Álamos. La maestra Rosa les había dado a cada uno un chaleco verde y unos guantes.",
+    "i": "🌍👧🦺"
+   },
+   {
+    "x": "—Hoy seremos los Guardianes del Parque —anunció la maestra—. La Tierra es nuestra casa y hay que cuidarla, igual que cuidamos nuestra habitación. Los niños se miraron con orgullo. Se sentían como superhéroes con sus chalecos verdes.",
+    "i": "👩‍🏫🦸🌳"
+   },
+   {
+    "x": "Al llegar al parque, vieron que estaba un poco triste. Había papeles en la hierba, latas junto a los bancos y bolsas de plástico enganchadas en los arbustos. Los patos del estanque nadaban esquivando una botella que flotaba.",
+    "i": "🗑️🦆🍾"
+   },
+   {
+    "x": "Aitana y su amigo Rubén se pusieron manos a la obra. Llevaban tres bolsas de colores: amarilla para los plásticos y latas, azul para el papel y verde para el vidrio. Cada vez que recogían algo, decidían en qué bolsa iba.",
+    "i": "👧👦♻️"
+   },
+   {
+    "x": "Mientras recogían, encontraron cosas curiosas: un guante perdido, un coche de juguete sin ruedas y una pelota de tenis. Pero también descubrieron que, debajo de la basura, había flores escondidas que ahora podían ver el sol.",
+    "i": "🧤🚗🌼"
+   },
+   {
+    "x": "Rubén consiguió sacar la botella del estanque con un palo largo. Los patos graznaron, cua, cua, como si le dieran las gracias. Un pato pequeño con plumas marrones se acercó tanto a la orilla que casi le picotea la zapatilla.",
+    "i": "👦🦆💧"
+   },
+   {
+    "x": "Después de recoger, plantaron árboles nuevos. Cada niño puso un arbolito pequeño en un hoyo y lo regó con cuidado. Aitana plantó un álamo y le puso un nombre: Verdecito. —Cuando yo sea mayor, tú serás enorme —le susurró.",
+    "i": "🌱💧👧"
+   },
+   {
+    "x": "Al final del día, el parque estaba precioso. La hierba se veía verde y limpia, los patos nadaban tranquilos y había veinte árboles nuevos. Los vecinos que paseaban felicitaron a los niños. Una señora mayor les aplaudió desde un banco.",
+    "i": "🌳✨👏"
+   },
+   {
+    "x": "La maestra Rosa reunió a todos. —Hoy habéis hecho algo muy grande —dijo—. Pero lo más importante es lo que hagáis cada día: no tirar basura al suelo, reciclar, apagar las luces y cerrar el grifo. Así seremos guardianes de la Tierra todo el año.",
+    "i": "👩‍🏫💬🌍"
+   },
+   {
+    "x": "Esa noche, Aitana miró por la ventana hacia el parque, iluminado por la luna. Pensó en Verdecito, su pequeño álamo, durmiendo en la tierra fresca. —Buenas noches, Verdecito —susurró—. Y se durmió sintiéndose una verdadera guardiana del planeta.",
+    "i": "🌙🌳💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Qué día se celebra el veintidós de abril?",
+    "o": [
+     "🌍 El Día de la Tierra",
+     "📚 El Día del Libro",
+     "💧 El Día del Agua"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba el parque?",
+    "o": [
+     "🌲 De los Pinos",
+     "🌳 De los Álamos",
+     "🌴 De las Palmeras"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿De qué color eran los chalecos?",
+    "o": [
+     "🟡 Amarillos",
+     "🔴 Rojos",
+     "🟢 Verdes"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cómo se llamaba el amigo de Aitana?",
+    "o": [
+     "👦 Rubén",
+     "👦 Raúl",
+     "👦 Rodrigo"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿En qué bolsa iba el papel?",
+    "o": [
+     "🟡 En la amarilla",
+     "🔵 En la azul",
+     "🟢 En la verde"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué encontraron debajo de la basura?",
+    "o": [
+     "💰 Monedas",
+     "🐛 Gusanos",
+     "🌼 Flores escondidas"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué sacó Rubén del estanque?",
+    "o": [
+     "🍾 Una botella",
+     "🐟 Un pez",
+     "⚽ Un balón"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué nombre puso Aitana a su árbol?",
+    "o": [
+     "🌳 Hojitas",
+     "🌳 Verdecito",
+     "🌳 Ramitas"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cuántos árboles nuevos plantaron?",
+    "o": [
+     "🔟 Diez",
+     "5️⃣ Cinco",
+     "2️⃣0️⃣ Veinte"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué dijo la maestra que es lo más importante?",
+    "o": [
+     "📅 Lo que hagamos cada día",
+     "🧹 Limpiar solo hoy",
+     "🦺 Llevar chaleco"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 23,
+  "t": "El dragón que regalaba rosas",
+  "e": "🌹",
+  "tema": "sant jordi",
+  "p": [
+   {
+    "x": "Hace muchos años, en un pueblo con murallas y torres, vivía un dragón verde llamado Jorgito. La gente contaba la leyenda de Sant Jordi, un caballero que se enfrentó a un dragón, y de aquella historia nació un rosal de rosas rojas. Por eso, todos temían a Jorgito.",
+    "i": "🏰🐉🌹"
+   },
+   {
+    "x": "Pero Jorgito no se parecía en nada al dragón de la leyenda. Era bueno, tímido y le encantaban dos cosas: las rosas rojas y los libros. Vivía en una cueva llena de estanterías y, por las noches, leía cuentos a la luz de su propio fuego, con mucho cuidado de no quemar las páginas.",
+    "i": "🐉📚🔥"
+   },
+   {
+    "x": "Una princesa llamada Mireia, que era muy curiosa, oyó hablar del dragón y decidió ir a conocerlo. Cuando llegó a la cueva, Jorgito se escondió detrás de una estantería, temblando. —No te asustes —dijo Mireia—. Solo quería saludarte.",
+    "i": "👸🐉🫣"
+   },
+   {
+    "x": "Jorgito asomó la cabeza despacito. Mireia vio los libros y abrió mucho los ojos. —¡Cuántos cuentos! —exclamó—. ¿Me lees uno? El dragón, sorprendido de que alguien no le tuviera miedo, sonrió por primera vez en mucho tiempo y le leyó su cuento favorito.",
+    "i": "📖🐉👸"
+   },
+   {
+    "x": "Desde aquel día, Mireia visitaba a Jorgito cada tarde. Él le leía cuentos y ella le contaba cosas del pueblo. Un día, Jorgito le confesó que le ponía triste que la gente le temiera. —Me gustaría que me conocieran de verdad —dijo.",
+    "i": "👸🐉💬"
+   },
+   {
+    "x": "Mireia tuvo una idea. Faltaba poco para el veintitrés de abril, el día de Sant Jordi, cuando la gente se regala rosas y libros. —¿Y si ese día bajas al pueblo y les regalas rosas y libros a todos? Así verán lo bueno que eres.",
+    "i": "👸💡📅"
+   },
+   {
+    "x": "Jorgito pasó días cultivando rosas y eligiendo libros. La mañana de Sant Jordi, voló hasta la plaza del pueblo con una cesta enorme. Al principio la gente gritó y se escondió. Pero Mireia estaba allí.",
+    "i": "🐉🧺🌹"
+   },
+   {
+    "x": "—¡No tengáis miedo! —dijo Mireia—. Jorgito es mi amigo y os ha traído regalos. El dragón, tímido, le dio una rosa a una abuela y un libro de cuentos a un niño. El niño lo abrió y sonrió. Poco a poco, todos se acercaron.",
+    "i": "👸🐉📚"
+   },
+   {
+    "x": "Aquella mañana, Jorgito repartió cien rosas y cien libros. La plaza se llenó de gente leyendo, oliendo flores y riendo. Los niños se subieron a su lomo y él les dio un paseo volando bajito. Desde entonces, en ese pueblo, Sant Jordi se celebra con un dragón amigo.",
+    "i": "🌹📚🐉"
+   },
+   {
+    "x": "Esa noche, Jorgito volvió a su cueva muy feliz. Mireia había aprendido que no hay que temer a alguien sin conocerlo, y él, que la amistad puede cambiarlo todo. Leyó un último cuento a la luz de su fuego y se durmió abrazado a un libro, rodeado de rosas.",
+    "i": "🌙🐉💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿De qué color era el dragón?",
+    "o": [
+     "🔴 Rojo",
+     "🟢 Verde",
+     "🔵 Azul"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba el dragón?",
+    "o": [
+     "🐉 Jorgito",
+     "🐉 Fueguito",
+     "🐉 Draguito"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué dos cosas le encantaban al dragón?",
+    "o": [
+     "🍖 La carne y el oro",
+     "⚽ El fútbol y la música",
+     "🌹 Las rosas y los libros"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Con qué leía por las noches?",
+    "o": [
+     "🔥 Con la luz de su fuego",
+     "🕯️ Con una vela",
+     "💡 Con una lámpara"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba la princesa?",
+    "o": [
+     "👸 Marina",
+     "👸 Mireia",
+     "👸 Montse"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué hizo el dragón cuando llegó la princesa?",
+    "o": [
+     "🔥 Echó fuego",
+     "🏃 Salió volando",
+     "🫣 Se escondió tras una estantería"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué se regala el día de Sant Jordi?",
+    "o": [
+     "🌹 Rosas y libros",
+     "🍫 Chocolate",
+     "🧸 Juguetes"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿A quién le dio la primera rosa?",
+    "o": [
+     "👸 A la princesa",
+     "👵 A una abuela",
+     "👦 A un niño"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cuántas rosas repartió?",
+    "o": [
+     "🔟 Diez",
+     "5️⃣0️⃣ Cincuenta",
+     "💯 Cien"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué aprendió Mireia?",
+    "o": [
+     "🤝 A no temer a alguien sin conocerlo",
+     "🐉 A volar en dragón",
+     "🌹 A cultivar rosas"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 24,
+  "t": "La noche secreta de la biblioteca",
+  "e": "📚",
+  "tema": "libros",
+  "p": [
+   {
+    "x": "En el centro de la ciudad había una biblioteca antigua, con estanterías de madera que llegaban hasta el techo y una lámpara verde en cada mesa. De día, la bibliotecaria Amparo ayudaba a los niños a encontrar libros. Pero de noche, cuando cerraba la puerta, pasaba algo mágico.",
+    "i": "🏛️📚💡"
+   },
+   {
+    "x": "En cuanto se apagaban las luces, los libros se despertaban. Se estiraban, bostezaban abriendo sus tapas y empezaban a hablar entre ellos. El diccionario, que era el más viejo y sabio, se llamaba Don Palabras y llevaba gafas de cristal redondo.",
+    "i": "📖🥱👓"
+   },
+   {
+    "x": "Aquella noche, había un libro nuevo en la estantería de cuentos infantiles. Era pequeño, de tapas amarillas, y se llamaba Pequeño Sol. Estaba triste en un rincón. —Nadie me ha cogido todavía —suspiró—. Soy demasiado pequeño y no tengo dibujos dorados como los demás.",
+    "i": "📒😔🌟"
+   },
+   {
+    "x": "Un libro de piratas muy aventurero llamado Capitán Tinta se acercó. —¿Por qué estás triste, grumete? —le preguntó. Pequeño Sol le contó su problema. El Capitán se rascó el lomo. —Aquí no importa lo grande que seas, sino la historia que llevas dentro.",
+    "i": "🏴‍☠️📕💬"
+   },
+   {
+    "x": "Los demás libros se acercaron. Un libro de dinosaurios, uno de princesas, uno de planetas y un libro de poesía que hablaba siempre rimando. —¡Cuéntanos tu historia! —le pidieron todos. Pequeño Sol, nervioso, abrió sus páginas despacito.",
+    "i": "🦕👸🪐"
+   },
+   {
+    "x": "Su historia era sobre una niña que tenía miedo a la oscuridad y que descubría que la noche estaba llena de cosas bonitas: estrellas, grillos que cantan y una luna que vigila. Era sencilla, pero tan tierna que todos los libros se quedaron en silencio.",
+    "i": "👧🌙⭐"
+   },
+   {
+    "x": "Cuando terminó, el libro de poesía dijo: —Pequeño libro, gran corazón, tu historia es pura emoción. Todos aplaudieron con sus páginas, que sonaban como alas de mariposa. Don Palabras se colocó las gafas y dijo: —Tu cuento ayudará a muchos niños.",
+    "i": "📖👏🦋"
+   },
+   {
+    "x": "A la mañana siguiente, una niña llamada Celia entró en la biblioteca con su madre. Le daba miedo dormir con la luz apagada. La bibliotecaria Amparo buscó en la estantería y, sin saber muy bien por qué, sacó el libro de tapas amarillas.",
+    "i": "👧👩📒"
+   },
+   {
+    "x": "Celia se lo llevó a casa y esa noche su madre se lo leyó. Cuando terminó, Celia miró por la ventana y vio la luna. —Ya no me da miedo —dijo—. La noche está llena de cosas bonitas. Y apagó la luz ella solita.",
+    "i": "👩📖🌙"
+   },
+   {
+    "x": "En la biblioteca, esa noche, los libros celebraron una fiesta por Pequeño Sol, que había encontrado a su primera lectora. Y tú, cuando apagues la luz, recuerda lo que aprendió Celia: la noche está llena de estrellas que te cuidan mientras duermes.",
+    "i": "🎉📚😴"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿De qué color eran las lámparas de las mesas?",
+    "o": [
+     "🔴 Rojas",
+     "🟢 Verdes",
+     "🟡 Amarillas"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba la bibliotecaria?",
+    "o": [
+     "👩 Amparo",
+     "👩 Ana",
+     "👩 Alicia"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba el diccionario?",
+    "o": [
+     "📖 Don Letras",
+     "📖 Don Libro",
+     "📖 Don Palabras"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿De qué color eran las tapas del libro nuevo?",
+    "o": [
+     "💛 Amarillas",
+     "🔵 Azules",
+     "🟢 Verdes"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba el libro de piratas?",
+    "o": [
+     "🏴‍☠️ Capitán Garfio",
+     "🏴‍☠️ Capitán Tinta",
+     "🏴‍☠️ Capitán Papel"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo hablaba el libro de poesía?",
+    "o": [
+     "🗣️ Gritando",
+     "🤫 Susurrando",
+     "🎶 Rimando"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿De qué trataba la historia de Pequeño Sol?",
+    "o": [
+     "🌙 De una niña con miedo a la oscuridad",
+     "🐉 De un dragón",
+     "🚀 De un cohete"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba la niña que se llevó el libro?",
+    "o": [
+     "👧 Clara",
+     "👧 Celia",
+     "👧 Carmen"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué le daba miedo a la niña?",
+    "o": [
+     "🐶 Los perros",
+     "⛈️ Las tormentas",
+     "🌑 Dormir con la luz apagada"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué aprendió la niña?",
+    "o": [
+     "⭐ Que la noche está llena de cosas bonitas",
+     "📚 A leer sola",
+     "💡 A encender la luz"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 25,
+  "t": "Solete, el girasol que miraba la luna",
+  "e": "🌻",
+  "tema": "jardín",
+  "p": [
+   {
+    "x": "En un campo enorme de girasoles, donde todos miraban hacia el sol, había uno diferente llamado Solete. Era alto, con pétalos amarillos y el centro marrón lleno de pipas. Pero Solete tenía una costumbre muy rara: le gustaba más mirar la luna que el sol.",
+    "i": "🌻🌻🌙"
+   },
+   {
+    "x": "Durante el día, todos los girasoles giraban despacito siguiendo al sol, de este a oeste, como si bailaran juntos. Solete también lo hacía, porque necesitaba su luz para crecer. Pero cuando llegaba la noche, se quedaba despierto mirando hacia arriba.",
+    "i": "☀️🌻🔄"
+   },
+   {
+    "x": "—¿Por qué no duermes como los demás? —le preguntaba su vecina, una girasol llamada Margarita. —Porque la luna es preciosa —respondía Solete—, y está sola toda la noche. Creo que le gusta que alguien la mire.",
+    "i": "🌻💬🌙"
+   },
+   {
+    "x": "Los demás girasoles pensaban que Solete era un poco extraño. Algunos se reían de él. Pero a Solete no le importaba. Cada noche contemplaba la luna, las estrellas, las luciérnagas que volaban sobre el campo y los búhos que cazaban en silencio.",
+    "i": "🌻⭐🦉"
+   },
+   {
+    "x": "Una noche, un grupo de luciérnagas se acercó a Solete. —Gracias por mirarnos —le dijeron—. Todos duermen y nadie ve nuestras luces. Tú eres el único que nos acompaña. Las luciérnagas se posaron en sus pétalos y lo iluminaron como una lámpara.",
+    "i": "✨🌻💛"
+   },
+   {
+    "x": "Una noche de abril, se levantó un viento muy fuerte. Los girasoles dormían y no se dieron cuenta de que una pequeña mariquita llamada Pinta había caído al suelo y no podía subir. Pero Solete, que estaba despierto, la vio.",
+    "i": "🌬️🐞🌻"
+   },
+   {
+    "x": "Solete inclinó su cabeza grande hasta el suelo, todo lo que pudo. —Sube a mis pétalos —le dijo. La mariquita trepó y Solete la protegió del viento hasta que se calmó. Las luciérnagas le dieron luz para que no tuviera miedo.",
+    "i": "🌻🐞✨"
+   },
+   {
+    "x": "A la mañana siguiente, cuando los girasoles despertaron, vieron a Pinta durmiendo tranquila en los pétalos de Solete. Ella les contó lo que había pasado. Margarita miró a su vecino con admiración. —Ser diferente también es especial —le dijo.",
+    "i": "🌅🐞🌻"
+   },
+   {
+    "x": "Desde entonces, nadie volvió a reírse de Solete. Todos aprendieron que no pasa nada por ser distinto, y que a veces, quien mira el mundo de otra manera descubre cosas que los demás no ven, y puede ayudar cuando nadie más puede.",
+    "i": "🌻💛🌻"
+   },
+   {
+    "x": "Esa noche, Solete volvió a mirar la luna, que le pareció más brillante que nunca, como si le sonriera. Las luciérnagas bailaban a su alrededor y Pinta dormía en una de sus hojas. Y el girasol que miraba la luna, por fin, cerró sus pétalos y se durmió.",
+    "i": "🌙🌻💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Cómo se llamaba el girasol?",
+    "o": [
+     "🌻 Solete",
+     "🌻 Pipas",
+     "🌻 Rayo"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué le gustaba mirar más que el sol?",
+    "o": [
+     "☁️ Las nubes",
+     "🌙 La luna",
+     "🌈 El arcoíris"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba su vecina?",
+    "o": [
+     "🌻 Rosa",
+     "🌻 Violeta",
+     "🌻 Margarita"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Por qué miraba Solete a la luna?",
+    "o": [
+     "🌙 Pensaba que estaba sola",
+     "😴 No tenía sueño",
+     "🔦 Necesitaba luz"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Quiénes se posaron en sus pétalos?",
+    "o": [
+     "🐝 Abejas",
+     "✨ Luciérnagas",
+     "🦋 Mariposas"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba la mariquita?",
+    "o": [
+     "🐞 Lunares",
+     "🐞 Roja",
+     "🐞 Pinta"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué tiempo hizo aquella noche?",
+    "o": [
+     "🌬️ Viento muy fuerte",
+     "❄️ Nieve",
+     "🌧️ Granizo"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué hizo Solete para ayudar a la mariquita?",
+    "o": [
+     "📣 Llamó a alguien",
+     "🌻 Inclinó la cabeza hasta el suelo",
+     "🌧️ Esperó la lluvia"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué le dijo Margarita?",
+    "o": [
+     "😠 Que se durmiera",
+     "🌙 Que la luna era fea",
+     "💛 Que ser diferente es especial"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué aprendieron los girasoles?",
+    "o": [
+     "🌻 Que no pasa nada por ser distinto",
+     "☀️ Que hay que mirar al sol",
+     "😴 Que hay que dormir pronto"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 26,
+  "t": "Tula, la tortuga marina viajera",
+  "e": "🐢",
+  "tema": "mar",
+  "p": [
+   {
+    "x": "En una playa de arena blanca, una noche de luna, nació una tortuga marina pequeñita llamada Tula. Salió de su huevo enterrado en la arena junto a sus hermanitos, y todos corrieron con sus aletas diminutas hacia el mar, guiados por el brillo de la luna sobre el agua.",
+    "i": "🐢🏖️🌕"
+   },
+   {
+    "x": "El mar era enorme y Tula era muy pequeña, pero nadaba con valentía. Su abuela, una tortuga sabia que la esperaba entre las olas, le dijo: —Viajarás por todo el océano, Tula. Pero un día, cuando seas mayor, volverás a esta misma playa. Es tu casa.",
+    "i": "🌊🐢👵"
+   },
+   {
+    "x": "Tula nadó y nadó. Conoció un arrecife lleno de corales de colores, donde vivían peces payaso, gambas transparentes y un pulpo que cambiaba de color para jugar al escondite. Allí se quedó un tiempo, comiendo algas y creciendo.",
+    "i": "🪸🐠🐙"
+   },
+   {
+    "x": "Después, siguiendo las corrientes del mar, llegó a aguas frías donde nadaban ballenas enormes que cantaban canciones larguísimas. Una ballena jorobada llamada Melodía le enseñó a escuchar el mar: cada ola, cada corriente, tenía su propio sonido.",
+    "i": "🐋🎶🌊"
+   },
+   {
+    "x": "Un día, Tula vio algo extraño flotando en el agua: parecía una medusa transparente, su comida favorita. Estaba a punto de comérsela cuando un delfín llamado Salto la avisó: —¡Cuidado, Tula! Eso no es una medusa, es una bolsa de plástico. Te haría mucho daño.",
+    "i": "🛍️🐬⚠️"
+   },
+   {
+    "x": "Tula se apartó a tiempo y le dio las gracias a Salto. El delfín le explicó que algunas personas tiran basura al mar sin pensar en los animales. Pero también le contó que hay muchas otras personas que limpian las playas y cuidan el océano.",
+    "i": "🐢🐬💬"
+   },
+   {
+    "x": "Pasaron los años y Tula se hizo grande, con un caparazón fuerte con dibujos como un mosaico. Había visto el mundo entero bajo el agua. Pero un día sintió una llamada dentro de su corazón: era hora de volver a casa.",
+    "i": "🐢🌍💛"
+   },
+   {
+    "x": "Nadó durante semanas, guiándose por las estrellas y por las corrientes que conocía. Y una noche de luna, llegó a una playa de arena blanca. La reconoció enseguida. Allí había nacido. Y la playa estaba limpia, porque unos niños la cuidaban cada fin de semana.",
+    "i": "🌕🏖️👧"
+   },
+   {
+    "x": "En la orilla, un niño llamado Bruno y su hermana Carla, que limpiaban la playa con su padre, vieron a Tula salir del agua. No la tocaron ni hicieron ruido, para no molestarla. Solo la miraron con la boca abierta, felices de verla volver.",
+    "i": "👦👧🐢"
+   },
+   {
+    "x": "Tula se tumbó en la arena tibia bajo la luna, cansada de su largo viaje. Pensó en el arrecife, en las ballenas y en Salto. Había aprendido que el mundo es enorme y precioso, y que cuidarlo es cosa de todos. Y con el sonido de las olas, cerró los ojos.",
+    "i": "🌙🐢💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Cómo se llamaba la tortuga?",
+    "o": [
+     "🐢 Tula",
+     "🐢 Tina",
+     "🐢 Toña"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué guiaba a las tortuguitas hacia el mar?",
+    "o": [
+     "☀️ El sol",
+     "🌕 El brillo de la luna",
+     "🗼 Un faro"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Quién la esperaba entre las olas?",
+    "o": [
+     "👩 Su mamá",
+     "🐬 Un delfín",
+     "👵 Su abuela"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué hacía el pulpo del arrecife?",
+    "o": [
+     "🙈 Jugaba al escondite cambiando de color",
+     "🎤 Cantaba",
+     "🎨 Pintaba"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se llamaba la ballena?",
+    "o": [
+     "🐋 Canción",
+     "🐋 Melodía",
+     "🐋 Música"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué creyó Tula que era la bolsa de plástico?",
+    "o": [
+     "🐟 Un pez",
+     "🌿 Un alga",
+     "🪼 Una medusa"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Quién la avisó del peligro?",
+    "o": [
+     "🐬 El delfín Salto",
+     "🐋 La ballena",
+     "🐙 El pulpo"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo se guió para volver a casa?",
+    "o": [
+     "🗺️ Con un mapa",
+     "⭐ Con las estrellas y corrientes",
+     "🐦 Siguiendo pájaros"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Por qué estaba limpia la playa?",
+    "o": [
+     "🌧️ Por la lluvia",
+     "🌊 Por las olas",
+     "👧 Unos niños la cuidaban"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué hicieron los niños al ver a Tula?",
+    "o": [
+     "👀 Mirarla sin molestarla",
+     "🤲 Tocarla",
+     "📢 Gritar"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 27,
+  "t": "Rocío baila en la Feria",
+  "e": "💃",
+  "tema": "feria",
+  "p": [
+   {
+    "x": "Rocío vivía en Sevilla y aquella semana estaba más contenta que nunca, porque era la Feria de Abril. Las calles del real estaban llenas de casetas de rayas blancas, verdes y rojas, farolillos de colores colgaban por todas partes y sonaban guitarras y palmas.",
+    "i": "👧🏮🎸"
+   },
+   {
+    "x": "Su abuela Lola le había cosido un traje de flamenca precioso: rojo con lunares blancos, con volantes que se movían como olas al andar. Le puso una flor roja en el pelo y unos pendientes grandes en forma de aro. Rocío se miró al espejo y dio una vuelta.",
+    "i": "👵👗🌹"
+   },
+   {
+    "x": "En la caseta de su familia había música y todos bailaban sevillanas, un baile alegre que se baila en parejas. Rocío quería bailar, pero tenía un problema: siempre se equivocaba en la tercera parte, la de las vueltas, y se mareaba un poco.",
+    "i": "💃🎶😵"
+   },
+   {
+    "x": "Su prima Macarena bailaba fenomenal y Rocío la miraba con un poco de vergüenza. —Yo no sé bailar tan bien —le dijo a su abuela—. Me voy a sentar. La abuela Lola le cogió la mano con cariño. —Ven, que te enseño un secreto.",
+    "i": "👧😔👵"
+   },
+   {
+    "x": "Detrás de la caseta, la abuela le enseñó a mirar siempre un punto fijo al girar, como una flor o un farolillo. —Así no te mareas —le explicó—. Y sobre todo, no te preocupes por equivocarte. Las sevillanas se bailan con el corazón, no con los pies.",
+    "i": "👵🏮💃"
+   },
+   {
+    "x": "Practicaron un rato, despacito. Rocío miraba un farolillo amarillo cada vez que giraba y, poco a poco, dejó de marearse. Se equivocó dos veces, pero la abuela se reía con ella y le decía: ¡olé, mi niña! Rocío empezó a disfrutar.",
+    "i": "💃🏮😄"
+   },
+   {
+    "x": "Cuando volvieron a la caseta, empezaba una sevillana nueva. Rocío respiró hondo y salió a bailar con su prima Macarena. Primera parte, segunda parte… y en la tercera, miró al farolillo amarillo y dio las vueltas sin marearse. ¡Lo había conseguido!",
+    "i": "👧💃👧"
+   },
+   {
+    "x": "Toda la familia aplaudió y gritó: ¡olé, olé! Macarena le dio un abrazo. —¡Bailas muy bien, prima! Rocío estaba tan contenta que le brillaban los ojos. Había aprendido que con práctica y sin miedo a equivocarse, se pueden hacer muchas cosas.",
+    "i": "👏🎉💛"
+   },
+   {
+    "x": "Después pasearon en un coche de caballos por el real, comieron pescaíto frito y montaron en los cacharritos de la calle del Infierno, como llaman allí a las atracciones. Por la noche, miles de farolillos iluminaban la Feria como si fueran estrellas de colores.",
+    "i": "🐴🎡🏮"
+   },
+   {
+    "x": "De vuelta a casa, Rocío se quedó dormida en el coche, con la flor roja todavía en el pelo. Su padre la llevó en brazos a la cama y la abuela Lola le quitó los zapatos. Y Rocío soñó que bailaba sevillanas bajo un cielo lleno de farolillos.",
+    "i": "🌙💃💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿En qué ciudad vivía Rocío?",
+    "o": [
+     "🏙️ En Valencia",
+     "🏙️ En Sevilla",
+     "🏙️ En Bilbao"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué colgaba por todas partes?",
+    "o": [
+     "🏮 Farolillos de colores",
+     "🎈 Globos",
+     "🎄 Bolas de Navidad"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Quién le cosió el traje?",
+    "o": [
+     "👩 Su madre",
+     "👩 Su tía",
+     "👵 Su abuela Lola"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿De qué color era el traje?",
+    "o": [
+     "🔴 Rojo con lunares blancos",
+     "🔵 Azul",
+     "🟢 Verde"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿En qué parte se equivocaba Rocío?",
+    "o": [
+     "1️⃣ En la primera",
+     "3️⃣ En la tercera",
+     "2️⃣ En la segunda"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba su prima?",
+    "o": [
+     "👧 Lola",
+     "👧 Carmen",
+     "👧 Macarena"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué secreto le enseñó la abuela?",
+    "o": [
+     "👀 Mirar un punto fijo al girar",
+     "🙈 Cerrar los ojos",
+     "🏃 Girar muy rápido"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿De qué color era el farolillo que miraba?",
+    "o": [
+     "🔴 Rojo",
+     "💛 Amarillo",
+     "🟢 Verde"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué comieron en la Feria?",
+    "o": [
+     "🍕 Pizza",
+     "🥘 Paella",
+     "🐟 Pescaíto frito"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cómo se bailan las sevillanas, según la abuela?",
+    "o": [
+     "❤️ Con el corazón",
+     "🦶 Solo con los pies",
+     "📏 Con mucha seriedad"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 28,
+  "t": "El huevo misterioso de la gallina Petra",
+  "e": "🦆",
+  "tema": "granja",
+  "p": [
+   {
+    "x": "En la granja de la tía Concha vivía una gallina marrón llamada Petra. Era muy cariñosa y llevaba días empollando sus huevos en un rincón del gallinero. Pero aquella primavera, entre sus huevos había uno distinto: más grande, más alargado y de color verdoso.",
+    "i": "🐔🥚🏡"
+   },
+   {
+    "x": "Nadie sabía de dónde había salido. El gallo Quiquiriquí decía que era de un pájaro raro. El gato Bolita pensaba que era un huevo de dinosaurio. Y la cerdita Rosi creía que era mágico. Petra no sabía qué era, pero lo cuidaba igual que a los demás.",
+    "i": "🐓🐱🐷"
+   },
+   {
+    "x": "Un día, los huevos empezaron a abrirse. Salieron cuatro pollitos amarillos piando sin parar. Y después, del huevo verdoso, salió un polluelo diferente: tenía el pico plano y naranja, las patas palmeadas y unas plumas amarillas un poco más oscuras. ¡Era un patito!",
+    "i": "🐣🐣🦆"
+   },
+   {
+    "x": "El patito miró a Petra y dijo: —¡Mamá! Petra se quedó sorprendida, pero enseguida lo arropó con sus alas. —Sí, cariño —respondió—. Soy tu mamá. Le puso de nombre Chapuzón, aunque todavía no sabía por qué ese nombre le iba a quedar tan bien.",
+    "i": "🦆🐔💛"
+   },
+   {
+    "x": "Chapuzón crecía junto a sus hermanos pollitos. Picoteaba maíz, dormía bajo las alas de Petra y jugaba en el patio. Pero cada vez que veía un charco, sentía unas ganas enormes de meterse dentro. Sus hermanos no lo entendían: a los pollitos no les gusta mojarse.",
+    "i": "🦆🐥💧"
+   },
+   {
+    "x": "Una tarde, la familia fue a pasear cerca del estanque de la granja. Uno de los pollitos, el más pequeño, llamado Pipo, se acercó demasiado a la orilla, resbaló sobre el barro y cayó al agua. Los pollitos no saben nadar, y Pipo empezó a piar asustado.",
+    "i": "🏞️🐥💦"
+   },
+   {
+    "x": "Petra corrió de un lado a otro sin saber qué hacer. Pero Chapuzón no lo dudó: se lanzó al agua de un salto, ¡chof!, y descubrió que sabía nadar perfectamente. Sus patas palmeadas eran como remos. Nadó hasta Pipo, lo empujó con el pico y lo llevó hasta la orilla.",
+    "i": "🦆🏊🐥"
+   },
+   {
+    "x": "Pipo estaba empapado pero bien. Todos rodearon a Chapuzón, que estaba feliz chapoteando en el agua. —¡Por eso te llamas Chapuzón! —rió Petra—. Ahora entiendo por qué eras diferente. Tu diferencia nos ha salvado hoy.",
+    "i": "🐥🦆😄"
+   },
+   {
+    "x": "Desde entonces, Chapuzón nadaba en el estanque cada tarde mientras su familia le miraba desde la orilla. Y aunque era un pato y ellos pollitos, seguían siendo hermanos. Porque una familia no es igual por fuera, sino que se quiere por dentro.",
+    "i": "🦆🐔🐥"
+   },
+   {
+    "x": "Por la noche, en el gallinero, Chapuzón se acurrucó bajo el ala de Petra junto a sus hermanos. Pipo se pegó a él, agradecido. Petra contó a sus cinco hijos, uno a uno, y suspiró feliz. Todos se quedaron dormidos, calentitos y juntos.",
+    "i": "🌙🐔💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Cómo se llamaba la gallina?",
+    "o": [
+     "🐔 Petra",
+     "🐔 Paca",
+     "🐔 Pepa"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿De qué color era el huevo distinto?",
+    "o": [
+     "⚪ Blanco",
+     "🟢 Verdoso",
+     "🟤 Marrón"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué pensaba el gato que era el huevo?",
+    "o": [
+     "✨ Mágico",
+     "🐦 De un pájaro raro",
+     "🦕 De dinosaurio"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Cuántos pollitos amarillos nacieron?",
+    "o": [
+     "4️⃣ Cuatro",
+     "2️⃣ Dos",
+     "6️⃣ Seis"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué salió del huevo verdoso?",
+    "o": [
+     "🐍 Una serpiente",
+     "🦆 Un patito",
+     "🐢 Una tortuga"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamó el patito?",
+    "o": [
+     "🦆 Charquito",
+     "🦆 Burbuja",
+     "🦆 Chapuzón"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué le encantaba hacer al patito?",
+    "o": [
+     "💧 Meterse en los charcos",
+     "🌳 Subir a los árboles",
+     "😴 Dormir mucho"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Quién cayó al estanque?",
+    "o": [
+     "🐔 Petra",
+     "🐥 Pipo",
+     "🐱 Bolita"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿A qué se parecían sus patas palmeadas?",
+    "o": [
+     "🪶 A plumas",
+     "🧤 A guantes",
+     "🛶 A remos"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué aprendió la familia?",
+    "o": [
+     "❤️ Que una familia se quiere por dentro",
+     "🏊 Que todos saben nadar",
+     "🥚 Que los huevos son iguales"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 29,
+  "t": "Lucas aprende a bailar",
+  "e": "🕺",
+  "tema": "danza",
+  "p": [
+   {
+    "x": "El veintinueve de abril es el Día Internacional de la Danza. Lucas, el robot plateado con capa roja y ojos verdes, no lo sabía, hasta que aquella tarde, volando sobre un pueblo, oyó música alegre que salía de una escuela con ventanas grandes.",
+    "i": "🤖💃🎵"
+   },
+   {
+    "x": "Lucas bajó y se asomó por la ventana. Dentro, un grupo de niños bailaba con su profesora, una señora con moño llamada Remedios. Unos daban saltitos, otros giraban como peonzas y otros movían los brazos como si fueran alas.",
+    "i": "🪟👧👦"
+   },
+   {
+    "x": "Una niña llamada Sara vio al robot en la ventana y le invitó a entrar. —Hoy es el Día de la Danza —le dijo—. ¿Quieres bailar con nosotros? Lucas se puso nervioso. —Yo no sé bailar —contestó con su voz metálica—. Mis piernas son de metal y hacen clinc, clanc.",
+    "i": "👧🤖😳"
+   },
+   {
+    "x": "La profesora Remedios sonrió. —Todo el mundo puede bailar —le dijo—. No hay una manera correcta. Solo tienes que escuchar la música y dejar que tu cuerpo se mueva como quiera. Puso una canción lenta y le invitó a probar.",
+    "i": "👩‍🏫🎶🤖"
+   },
+   {
+    "x": "Lucas cerró sus ojos verdes y escuchó. Al principio movió un brazo, clinc. Después el otro, clanc. Luego giró la cabeza a un lado y al otro. Los niños se rieron, pero no de él, sino con él, porque sus movimientos eran muy divertidos.",
+    "i": "🤖🎵😄"
+   },
+   {
+    "x": "Entonces la profesora puso una canción rápida y alegre. Lucas empezó a mover los pies, clinc, clanc, clinc, clanc, al ritmo de la música. ¡Sus piernas de metal sonaban como un tambor! Los niños empezaron a dar palmas siguiendo sus pasos.",
+    "i": "🦶🥁👏"
+   },
+   {
+    "x": "Lucas se animó tanto que hizo algo que solo él podía hacer: se elevó un poquito del suelo y dio vueltas en el aire, con su capa roja ondeando como la falda de una bailarina. Los niños gritaron de emoción y Sara bailó a su lado, girando con él.",
+    "i": "🤖🌀🦸"
+   },
+   {
+    "x": "Al final, todos bailaron juntos en un gran corro: los niños, la profesora Remedios y el robot del espacio. Cada uno bailaba a su manera, unos saltando, otros girando y Lucas haciendo clinc, clanc. Y todos juntos formaban el baile más alegre del mundo.",
+    "i": "👧🤖👦"
+   },
+   {
+    "x": "Lucas aprendió que no hace falta hacerlo perfecto para disfrutar, y que bailar es una manera de compartir la alegría con los demás. Se despidió de los niños prometiendo volver el año siguiente con pasos nuevos aprendidos en otros planetas.",
+    "i": "🤖💚👋"
+   },
+   {
+    "x": "Aquella noche, mientras volaba entre las estrellas, Lucas seguía moviéndose al ritmo de una música que solo él oía. Clinc, clanc, clinc. Y si escuchas con atención en el silencio de tu cuarto, quizá oigas a lo lejos los pasos del robot bailarín. Felices sueños.",
+    "i": "🌌🤖😴"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Qué se celebra el veintinueve de abril?",
+    "o": [
+     "💃 El Día de la Danza",
+     "📚 El Día del Libro",
+     "🌍 El Día de la Tierra"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿De dónde salía la música?",
+    "o": [
+     "⛪ De una iglesia",
+     "🏫 De una escuela",
+     "🏠 De una casa"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo se llamaba la profesora?",
+    "o": [
+     "👩‍🏫 Rosario",
+     "👩‍🏫 Mercedes",
+     "👩‍🏫 Remedios"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Quién invitó a Lucas a entrar?",
+    "o": [
+     "👧 Sara",
+     "👦 Pablo",
+     "👩‍🏫 La profesora"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué sonido hacían las piernas de Lucas?",
+    "o": [
+     "🔔 Tilín",
+     "🔩 Clinc, clanc",
+     "🥁 Bum, bum"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Qué dijo la profesora sobre bailar?",
+    "o": [
+     "📏 Que hay que hacerlo perfecto",
+     "🙅 Que no todos pueden",
+     "💃 Que todo el mundo puede bailar"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿A qué sonaban las piernas de Lucas con la música rápida?",
+    "o": [
+     "🥁 A un tambor",
+     "🎻 A un violín",
+     "🎹 A un piano"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué hizo Lucas que solo él podía hacer?",
+    "o": [
+     "🎤 Cantar",
+     "🌀 Dar vueltas en el aire",
+     "🔥 Echar fuego"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Cómo bailaron todos al final?",
+    "o": [
+     "🧍 Cada uno solo",
+     "🪑 Sentados",
+     "⭕ En un gran corro"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué aprendió Lucas?",
+    "o": [
+     "😄 Que no hace falta ser perfecto para disfrutar",
+     "🤖 Que los robots no bailan",
+     "🎵 Que la música es ruidosa"
+    ],
+    "k": 0
+   }
+  ]
+ },
+ {
+  "d": 30,
+  "t": "El farol de las luciérnagas",
+  "e": "✨",
+  "tema": "noche",
+  "p": [
+   {
+    "x": "En una casita de campo, al lado de un bosque de encinas, vivía una niña llamada Daniela con sus padres. Era la última noche de abril y hacía una temperatura tan agradable que sus padres le dejaron quedarse un rato en el porche después de cenar.",
+    "i": "🏡👧🌳"
+   },
+   {
+    "x": "Daniela se sentó en el escalón con su manta de cuadros y miró hacia el bosque oscuro. De pronto vio una lucecita verde que se encendía y se apagaba entre los árboles. Después otra, y otra más. —¡Papá, mamá, hay estrellas en el bosque! —exclamó.",
+    "i": "👧✨🌲"
+   },
+   {
+    "x": "Su padre se sentó a su lado y sonrió. —No son estrellas, son luciérnagas —le explicó—. Son unos escarabajos pequeñitos que tienen una luz en la tripa. Salen en las noches tibias de primavera para bailar y encontrarse unas a otras.",
+    "i": "👨💬✨"
+   },
+   {
+    "x": "Una de las luciérnagas se acercó volando al porche. Era más pequeña que las demás y su luz brillaba muy flojita. Se posó en la manta de Daniela. La niña la miró de cerca sin moverse. —Hola, pequeña —susurró—. ¿Por qué brillas tan poquito?",
+    "i": "✨👧🧶"
+   },
+   {
+    "x": "A Daniela le pareció que la luciérnaga estaba cansada. Su madre le dijo que quizá se había alejado demasiado de sus amigas y necesitaba descansar. Daniela tuvo una idea: cogió un tarro de cristal vacío, le puso dentro unas hojas frescas y una gotita de agua.",
+    "i": "👩🫙🍃"
+   },
+   {
+    "x": "—Te dejo descansar aquí un ratito, con la tapa abierta —le dijo Daniela—. Puedes irte cuando quieras. La luciérnaga entró en el tarro, se posó en una hoja y, poco a poco, su luz empezó a brillar un poco más fuerte, como un farol pequeñito.",
+    "i": "🫙✨💚"
+   },
+   {
+    "x": "Daniela se quedó mirando su farol de luciérnaga mientras sus padres le contaban historias de cuando ellos eran pequeños y también cazaban luces en el campo de los abuelos. Arriba, las estrellas de verdad se encendían una a una en el cielo.",
+    "i": "👨👩⭐"
+   },
+   {
+    "x": "Al rato, la luciérnaga salió del tarro, dio una vuelta alrededor de la cabeza de Daniela, como dándole las gracias, y voló hacia el bosque, donde sus amigas la esperaban. Su luz ya era tan brillante como la de las demás.",
+    "i": "✨🌲💫"
+   },
+   {
+    "x": "—Has hecho muy bien en dejarla marchar —le dijo su madre—. Los animales son más felices en su casa, libres. Daniela asintió. Había aprendido que cuidar a alguien también es saber cuándo dejarle ir, y que la naturaleza es más bonita cuando la respetamos.",
+    "i": "👩💬👧"
+   },
+   {
+    "x": "Su padre la llevó en brazos a la cama. Por la ventana se veían las luciérnagas bailando en el bosque como un mar de lucecitas. Daniela, envuelta en su manta, las miró hasta que se le cerraron los ojos. Y así terminó abril, con un sueño lleno de luz.",
+    "i": "🌙✨💤"
+   }
+  ],
+  "q": [
+   {
+    "p": "¿Cómo se llamaba la niña?",
+    "o": [
+     "👧 Diana",
+     "👧 Daniela",
+     "👧 Dolores"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿De qué árboles era el bosque?",
+    "o": [
+     "🌳 De encinas",
+     "🌲 De pinos",
+     "🌴 De palmeras"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Qué noche era?",
+    "o": [
+     "🎄 Nochebuena",
+     "🎃 Halloween",
+     "🌙 La última noche de abril"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué pensó Daniela que eran las luces?",
+    "o": [
+     "⭐ Estrellas en el bosque",
+     "🔦 Linternas",
+     "🚗 Coches"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Dónde tienen la luz las luciérnagas?",
+    "o": [
+     "👀 En los ojos",
+     "🫃 En la tripa",
+     "🪶 En las alas"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Dónde se posó la luciérnaga pequeña?",
+    "o": [
+     "✋ En su mano",
+     "🌸 En una flor",
+     "🧶 En la manta de Daniela"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué puso Daniela dentro del tarro?",
+    "o": [
+     "🍃 Hojas frescas y una gotita de agua",
+     "🍬 Caramelos",
+     "🪨 Piedras"
+    ],
+    "k": 0
+   },
+   {
+    "p": "¿Cómo dejó Daniela el tarro?",
+    "o": [
+     "🔒 Cerrado",
+     "🫙 Con la tapa abierta",
+     "🧊 En la nevera"
+    ],
+    "k": 1
+   },
+   {
+    "p": "¿Adónde voló la luciérnaga al final?",
+    "o": [
+     "🏠 A la casa",
+     "☁️ A las nubes",
+     "🌲 Al bosque con sus amigas"
+    ],
+    "k": 2
+   },
+   {
+    "p": "¿Qué aprendió Daniela?",
+    "o": [
+     "💚 Que cuidar es saber dejar ir",
+     "🫙 Que hay que guardar las luciérnagas",
+     "🌙 Que la noche da miedo"
+    ],
+    "k": 0
+   }
+  ]
+ }
+]
