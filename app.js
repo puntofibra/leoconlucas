@@ -162,7 +162,19 @@ const FUEGO = (() => {
   const ABAJO = { dir: Math.PI / 2, t: [[.344, .832, .062], [.424, .845, .07], [.511, .832, .062]] };
   const POSES = {
     'lucas-senala': ABAJO, 'lucas-senala-capa': ABAJO, 'lucas-gamer': ABAJO,
-    'lucas-vuela': { dir: Math.PI * 1.04, t: [[.33, .775, .055], [.34, .86, .055]] }
+    'lucas-vuela': { dir: Math.PI * 1.04, t: [[.33, .775, .055], [.34, .86, .055]] },
+    'chispa-senala': { dir: Math.PI / 2, t: [[.275, .925, .085], [.434, .97, .1], [.565, .905, .07]] },
+    'chispa-vuela': { dir: Math.PI * 1.05, t: [[.15, .76, .06], [.18, .9, .06]] },
+    'luna-vuela': { dir: Math.PI * .88, t: [[.375, .86, .045]] },
+    'turbo-senala': { dir: Math.PI / 2, t: [[.281, .925, .07], [.375, .94, .075], [.469, .94, .07], [.572, .92, .07]] },
+    'turbo-vuela': { dir: Math.PI * .85, t: [[.38, .83, .05], [.41, .93, .05]] },
+    'max-senala': { dir: Math.PI / 2, t: [[.36, .95, .055], [.44, .965, .06], [.52, .955, .06], [.6, .93, .05]] },
+    'max-vuela': { dir: Math.PI * .82, t: [[.31, .79, .045], [.35, .88, .045], [.40, .94, .04]] },
+    'rayo-senala': { dir: Math.PI / 2, t: [[.29, .94, .075], [.41, .965, .085], [.55, .93, .07]] },
+    'rayo-vuela': { dir: Math.PI * .92, t: [[.05, .81, .06], [.11, .94, .06]] },
+    'luna-senala': { dir: Math.PI / 2, t: [[.335, .93, .07], [.45, .975, .08], [.59, .93, .07]] },
+    'nova-senala': { dir: Math.PI / 2, t: [[.31, .885, .085], [.455, .97, .1], [.58, .885, .075]] },
+    'nova-vuela': { dir: Math.PI * 1.12, t: [[.365, .76, .05], [.41, .9, .05]] }
   };
   const poseDe = k => POSES[k] || POSES['lucas-' + (k || '').split('-').slice(1).join('-')] || null;
   let ultimo = performance.now();
@@ -359,11 +371,11 @@ const COLORES = [{ h: 0, c: '#17ff5f', n: 'Verde', pj: 'lucas', nom: 'Lucas' }, 
   { h: 222, c: '#ff4d4d', n: 'Rojo', pj: 'rayo', nom: 'Rayo' }, { h: 252, c: '#ff9a2e', n: 'Naranja', pj: 'turbo', nom: 'Turbo' }, { h: 280, c: '#ffe02e', n: 'Amarillo', pj: 'chispa', nom: 'Chispa' }, { h: 40, c: '#00e5c7', n: 'Turquesa', pj: 'aqua', nom: 'Aqua' }];
 /* Personajes con dibujo propio ya subido (img/personajes/<pj>-senala.png y <pj>-vuela.png).
    Mientras no esté, se usa Lucas con su color cambiado. */
-const PERSONAJES_LISTOS = ['lucas'];
+const PERSONAJES_LISTOS = ['lucas', 'chispa', 'nova', 'luna', 'turbo', 'max', 'rayo'];   // 'pj' = las dos poses; 'pj-pose' = solo esa
 const colorDe = h => COLORES.find(c => c.h === h) || COLORES[0];
 function imgPj(h, pose) {
   const c = colorDe(h);
-  if (PERSONAJES_LISTOS.includes(c.pj)) return { src: c.pj === 'lucas' ? 'img/lucas/' + pose + '.png' : 'img/personajes/' + c.pj + '-' + pose + '.png', filter: '', key: c.pj + '-' + pose };
+  if (PERSONAJES_LISTOS.includes(c.pj) || PERSONAJES_LISTOS.includes(c.pj + '-' + pose)) return { src: c.pj === 'lucas' ? 'img/lucas/' + pose + '.png' : 'img/personajes/' + c.pj + '-' + pose + '.png', filter: '', key: c.pj + '-' + pose };
   return { src: 'img/lucas/' + pose + '.png', filter: filtroColor(h), key: 'lucas-' + pose };
 }
 /* Robot con fuego animado en los propulsores */
@@ -860,14 +872,14 @@ RENDER.globos = (ej, E) => {
   let cuenta = 0; const META = 4;
   const marc = el('div', 'marcador-globos', `Atrapa <b class="leer" style="font-size:30px">${ej.x}</b> · <span id="gCont">0</span>/${META}`);
   const Z = el('div', 'zona-globos'); E.appendChild(marc); E.appendChild(Z);
-  const cols = ['#17ff5f', '#18e0ff', '#ff4fa3', '#ffd23f', '#8b5cff', '#ff8a3d'];
+  const BURBUJAS = [{ n: 'verde', c: '#17ff5f' }, { n: 'azul', c: '#18e0ff' }, { n: 'rosa', c: '#ff4fa3' }, { n: 'amarillo', c: '#ffd23f' }, { n: 'morado', c: '#8b5cff' }, { n: 'naranja', c: '#ff8a3d' }];
   let n = 0;
   const lanza = () => {
     if (EJ !== ej || ej.resuelto) return;
     const esX = Math.random() < .42 || n % 4 === 3; n++;
     const s = esX ? ej.x : pick(ej.otras);
     const b = el('button', 'burbuja-sil', s);
-    const w = Z.clientWidth; b.style.left = (Math.random() * (w - 100)) + 'px'; b.style.setProperty('--c', pick(cols));
+    const w = Z.clientWidth; b.style.left = (Math.random() * (w - 100)) + 'px'; { const bc = pick(BURBUJAS); b.style.setProperty('--c', bc.c); b.style.backgroundImage = `url(img/burbujas/${bc.n}.png)`; b.classList.add('img'); }
     const dur = 5200 + Math.random() * 2500;
     Z.appendChild(b);
     const an = b.animate([{ transform: 'translateY(0)' }, { transform: `translateY(-${Z.clientHeight + 240}px) translateX(${(Math.random() - .5) * 60}px)` }], { duration: dur, easing: 'linear' });
@@ -883,7 +895,7 @@ RENDER.globos = (ej, E) => {
   const iv = setInterval(lanza, 850); lanza();
   limpiezas.push(() => clearInterval(iv));
   ej.repetir = () => VOZ.decir(sv(ej.x), { rate: .75 });
-  narra(instr('globos', sv(ej.x)));
+  { const plt = pick(NARRADOR.ins.globos); burbuja(plt.replace('{x}', ej.x)); VOZ.decir(plt.replace('{x}', sv(ej.x))); }
 };
 RENDER.palimg = (ej, E) => {
   E.appendChild(el('div', 'tarjeta', `<div class="leer xl">${ej.p.w}</div>`));
@@ -1555,7 +1567,7 @@ var LICENCIA = (() => {
 var CUENTO = (() => {
   const cache = {};
   const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-  const DORMIDO_LISTO = false;   // true cuando Manu suba img/lucas/dormido.png
+  const DORMIDO_LISTO = true;   // true cuando Manu suba img/lucas/dormido.png
   let C = null, fecha = null, parar = false, enPregunta = false, rec = null;
   async function carga(f) {
     const mm = String(f.getMonth() + 1).padStart(2, '0');

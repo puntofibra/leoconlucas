@@ -500,3 +500,13 @@ img.cu-lucas { transform: none; }
 .fila-mapa .btn-mision small { font-size: 11px; }
 #cuMic { margin-top: 8px; }
 .cu-opts { margin-bottom: 4px; }
+
+/* botones con dibujo */
+.btn-ico.ico-png { background: none; border: 0; padding: 0; width: 48px; height: 48px; }
+.btn-ico.ico-png img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 3px 4px rgba(0,0,0,.45)); }
+.mapa-cab .btn-ico.ico-png { width: 42px; height: 42px; }
+/* burbujas con dibujo */
+.burbuja-sil.img { background: center/contain no-repeat; border: 0; box-shadow: none; filter: drop-shadow(0 0 10px var(--c)); color: #fff; -webkit-text-stroke: 1.5px rgba(0,0,0,.55); paint-order: stroke fill; }
+/* Lucas dormido */
+img.cu-lucas { width: 230px; animation: respiraImg 4s ease-in-out infinite; filter: drop-shadow(0 0 18px rgba(123,108,255,.55)); }
+@keyframes respiraImg { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-8px) scale(1.02); } }
