@@ -140,6 +140,77 @@ const ESTELA = (() => {
   };
 })();
 
+/* ---------------- FUEGO de los propulsores (dibujado por código) ----------------
+   Cada .robot lleva un canvas detrás de la imagen. Los propulsores de cada pose
+   están medidos sobre el PNG (fracciones de ancho/alto). */
+const FUEGO = (() => {
+  const ABAJO = { dir: Math.PI / 2, t: [[.344, .832, .062], [.424, .845, .07], [.511, .832, .062]] };
+  const POSES = {
+    'lucas-senala': ABAJO, 'lucas-senala-capa': ABAJO, 'lucas-gamer': ABAJO,
+    'lucas-vuela': { dir: Math.PI * 1.04, t: [[.33, .775, .055], [.34, .86, .055]] }
+  };
+  const poseDe = k => POSES[k] || POSES['lucas-' + (k || '').split('-').slice(1).join('-')] || null;
+  let ultimo = performance.now();
+  function paso(ahora) {
+    const dt = Math.min(0.05, (ahora - ultimo) / 1000); ultimo = ahora;
+    if (!document.hidden) document.querySelectorAll('.robot').forEach(r => dibuja(r, dt, ahora));
+    requestAnimationFrame(paso);
+  }
+  function dibuja(r, dt, t) {
+    if (!r.offsetParent && getComputedStyle(r).position !== 'fixed') return;
+    const cv = r.querySelector('canvas.fuego'); if (!cv) return;
+    const P = poseDe(r.dataset.pose); const x = cv.getContext('2d');
+    const w = r.offsetWidth, h = r.offsetHeight; if (!w || !h) return;
+    const dpr = Math.min(2, devicePixelRatio || 1), CW = Math.round(w * 2 * dpr), CH = Math.round(h * 1.8 * dpr);
+    if (cv.width !== CW || cv.height !== CH) { cv.width = CW; cv.height = CH; }
+    x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w * 2, h * 1.8);
+    if (!P) return;
+    const fuerza = parseFloat(r.dataset.fuerza || '1');
+    const ox = w * .5, oy = h * .2;
+    const ps = r._ps || (r._ps = []);
+    /* emitir partículas */
+    P.t.forEach(([fx, fy, fw]) => {
+      const nx = ox + fx * w, ny = oy + fy * h, nw = fw * w;
+      const n = Math.ceil(2 * fuerza * (w / 120 + .6));
+      for (let k = 0; k < n; k++) {
+        const a = P.dir + (Math.random() - .5) * .35, v = (60 + Math.random() * 80) * (w / 140) * (0.7 + fuerza * .3);
+        ps.push({ x: nx + (Math.random() - .5) * nw * .6, y: ny, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: nw * (.38 + Math.random() * .22), vida: 0, max: .22 + Math.random() * .2 * fuerza, chispa: Math.random() < .06 });
+      }
+    });
+    /* núcleo de cada llama (forma de gota que parpadea) */
+    x.globalCompositeOperation = 'lighter';
+    P.t.forEach(([fx, fy, fw], i) => {
+      const nx = ox + fx * w, ny = oy + fy * h, nw = fw * w;
+      const largo = nw * (1.6 + .9 * fuerza) * (0.85 + .25 * Math.sin(t / 45 + i * 2) + .1 * Math.random());
+      x.save(); x.translate(nx, ny); x.rotate(P.dir - Math.PI / 2);
+      const g = x.createLinearGradient(0, 0, 0, largo);
+      g.addColorStop(0, 'rgba(255,255,240,.95)'); g.addColorStop(.25, 'rgba(255,230,120,.85)'); g.addColorStop(.6, 'rgba(255,140,40,.55)'); g.addColorStop(1, 'rgba(255,60,20,0)');
+      x.fillStyle = g; x.beginPath();
+      x.moveTo(-nw * .45, 0); x.quadraticCurveTo(-nw * .55, largo * .45, 0, largo); x.quadraticCurveTo(nw * .55, largo * .45, nw * .45, 0); x.closePath(); x.fill();
+      x.restore();
+    });
+    /* partículas */
+    for (let i = ps.length - 1; i >= 0; i--) {
+      const p = ps[i]; p.vida += dt; if (p.vida > p.max) { ps.splice(i, 1); continue; }
+      p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= .97; p.vy *= .97;
+      const q = p.vida / p.max;
+      if (p.chispa) {
+        x.fillStyle = q < .5 ? 'rgba(200,255,210,' + (1 - q) + ')' : 'rgba(23,255,95,' + (1 - q) + ')';
+        x.beginPath(); x.arc(p.x, p.y, Math.max(.6, p.r * .18), 0, 7); x.fill(); continue;
+      }
+      const rr = p.r * (1 - q * .55);
+      const col = q < .25 ? [255, 245, 200] : q < .55 ? [255, 170, 50] : [255, 70, 30];
+      const g = x.createRadialGradient(p.x, p.y, 0, p.x, p.y, rr);
+      g.addColorStop(0, `rgba(${col},${.55 * (1 - q)})`); g.addColorStop(1, `rgba(${col},0)`);
+      x.fillStyle = g; x.beginPath(); x.arc(p.x, p.y, rr, 0, 7); x.fill();
+    }
+    if (ps.length > 260) ps.splice(0, ps.length - 260);
+    x.globalCompositeOperation = 'source-over';
+  }
+  requestAnimationFrame(paso);
+  return { POSES };
+})();
+
 /* ---------------- sonido (Web Audio, sin MP3) ---------------- */
 const SFX = (() => {
   let ac = null, musGain = null, musOn = false, musTimer = null;
@@ -179,6 +250,7 @@ const SFX = (() => {
       const toca = () => { if (!musOn) return; const ac2 = acordes[i++ % 4]; ac2.forEach((f, k) => { nota(f, k * .38, 1.6, 'sine', .5, musGain); nota(f * 2, k * .38 + .19, .5, 'triangle', .18, musGain); }); };
       toca(); musTimer = setInterval(toca, 1600);
     },
+    nfc() { nota(1500, 0, .08, 'sine', .14); nota(2000, .1, .12, 'sine', .14); },
     desbloquear() { ctx(); },
     sonando() { return musOn; },
     suspender() { musOn = false; clearInterval(musTimer); try { if (ac && ac.state === 'running') ac.suspend(); } catch (e) {} },
@@ -267,9 +339,27 @@ const VOZ = (() => {
 let SES = LS.get('ses', null);        // {token, email, nombre}
 let NINOS = LS.get('ninos', []);
 let NINO = null;                       // niño activo
-const COLORES = [{ h: 0, c: '#17ff5f', n: 'Verde' }, { h: 72, c: '#18b4ff', n: 'Azul' }, { h: 130, c: '#8b5cff', n: 'Morado' }, { h: 185, c: '#ff4fd8', n: 'Rosa' },
-  { h: 222, c: '#ff4d4d', n: 'Rojo' }, { h: 252, c: '#ff9a2e', n: 'Naranja' }, { h: 280, c: '#ffe02e', n: 'Amarillo' }, { h: 40, c: '#00e5c7', n: 'Turquesa' }];
 const filtroColor = h => h ? `hue-rotate(${h}deg) saturate(1.15)` : '';
+const COLORES = [{ h: 0, c: '#17ff5f', n: 'Verde', pj: 'lucas', nom: 'Lucas' }, { h: 72, c: '#18b4ff', n: 'Azul', pj: 'max', nom: 'Max' }, { h: 130, c: '#8b5cff', n: 'Morado', pj: 'nova', nom: 'Nova' }, { h: 185, c: '#ff4fd8', n: 'Rosa', pj: 'luna', nom: 'Luna' },
+  { h: 222, c: '#ff4d4d', n: 'Rojo', pj: 'rayo', nom: 'Rayo' }, { h: 252, c: '#ff9a2e', n: 'Naranja', pj: 'turbo', nom: 'Turbo' }, { h: 280, c: '#ffe02e', n: 'Amarillo', pj: 'chispa', nom: 'Chispa' }, { h: 40, c: '#00e5c7', n: 'Turquesa', pj: 'aqua', nom: 'Aqua' }];
+/* Personajes con dibujo propio ya subido (img/personajes/<pj>-senala.png y <pj>-vuela.png).
+   Mientras no esté, se usa Lucas con su color cambiado. */
+const PERSONAJES_LISTOS = ['lucas'];
+const colorDe = h => COLORES.find(c => c.h === h) || COLORES[0];
+function imgPj(h, pose) {
+  const c = colorDe(h);
+  if (PERSONAJES_LISTOS.includes(c.pj)) return { src: c.pj === 'lucas' ? 'img/lucas/' + pose + '.png' : 'img/personajes/' + c.pj + '-' + pose + '.png', filter: '', key: c.pj + '-' + pose };
+  return { src: 'img/lucas/' + pose + '.png', filter: filtroColor(h), key: 'lucas-' + pose };
+}
+/* Robot con fuego animado en los propulsores */
+function robotHTML(h, pose, cls = '', extra = '') {
+  const im = imgPj(h, pose);
+  return `<span class="robot ${cls}" data-pose="${im.key}" ${extra}><canvas class="fuego"></canvas><img src="${im.src}" alt="" style="filter:${im.filter}"></span>`;
+}
+function ponRobot(el0, h, pose) {
+  const im = imgPj(h, pose); el0.dataset.pose = im.key;
+  const img = el0.querySelector('img'); img.src = im.src; img.style.filter = im.filter;
+}
 function datosVacios() {
   return { plan: {}, chispas: 0, est: 0, peg: [], racha: { n: 0, ult: '' }, diaria: '', st: { ej: 0, ok: 0, ko: 0, seg: 0, dias: {} }, mem: { seen: {}, fail: {} },
     aj: { mayus: false, lenta: false, musica: true, todo: false } };
@@ -286,7 +376,7 @@ function guardarNino(inmediato) {
 function inicioEdad(e) { return e >= 8 ? 9 : e >= 7 ? 5 : 0; }
 function desbloqueado(i) {
   const d = datos();
-  if (i === 0 || d.aj.todo || i <= inicioEdad(NINO.edad)) return true;
+  if (i === 0 || d.aj.todo || ADMIN.todo() || i <= inicioEdad(NINO.edad)) return true;
   const p = d.plan[i - 1]; return !!(p && p.m >= 2);
 }
 function nivelActual() { let i = 0; while (i < PLANETAS.length - 1 && desbloqueado(i + 1)) i++; return i; }
@@ -299,7 +389,9 @@ function aplicaAjustes() {
 /* ---------------- arranque ---------------- */
 window.addEventListener('load', async () => {
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => {});
-  await esperar(1500);
+  const rapida = Date.now() - (LS.get('recargaRapida', 0) || 0) < 20000; LS.del('recargaRapida');
+  await esperar(rapida ? 250 : 1500);
+  const vj = LS.get('viaje', null); LS.del('viaje'); if (vj) VIAJE = vj;
   if (SES && SES.token) {
     const r = await api('estado', { token: SES.token });
     if (r.ok) { aceptaSesion(r); return; }
@@ -370,7 +462,8 @@ function initGoogle() {
 }
 ON_PANTALLA.pLogin = () => { initGoogle(); };
 function aceptaSesion(r) {
-  SES = { token: r.token, email: r.email, nombre: r.nombre }; LS.set('ses', SES);
+  SES = { token: r.token, email: r.email, nombre: r.nombre, lic: r.lic || null }; LS.set('ses', SES);
+  setTimeout(() => LICENCIA.comprobar(), 900);
   const locales = LS.get('ninos', []);
   NINOS = (r.ninos || []).map(n => {
     const loc = locales.find(l => l.id === n.id);
@@ -381,11 +474,11 @@ function aceptaSesion(r) {
   const vuelve = LS.get('volverNino', null); LS.del('volverNino');
   const nv = vuelve && NINOS.find(n => n.id === vuelve);
   if (nv) { NINO = nv; datos(); ENG.setMem(datos().mem); aplicaAjustes(); ir('mapa'); return; }
-  ir(NINOS.length ? 'perfiles' : 'nuevo');
+  if (NINOS.length) ir('perfiles'); else editarNino(null);
   if (!NINOS.length) VOZ.decir('¡Hola! Soy Lucas. Vamos a crear el perfil del lector.');
 }
-$('#bSalir').onclick = () => {
-  if (!confirm('¿Cerrar sesión?')) return;
+$('#bSalir').onclick = async () => {
+  if (!await pregunta({ icono: '👋', titulo: '¿Cerrar sesión?', texto: 'El progreso está guardado. Podrás volver a entrar cuando quieras.', si: 'Cerrar sesión' })) return;
   SES = null; LS.del('ses'); LS.del('ninos'); NINOS = []; NINO = null;
   try { google.accounts.id.disableAutoSelect(); } catch (e) {}
   ir('login');
@@ -413,9 +506,30 @@ $('#bCompartir').onclick = async () => {
 };
 
 /* modal */
-function modal(html) { $('#modalCaja').innerHTML = html; $('#modal').classList.remove('oculto'); }
-function cerrarModal() { $('#modal').classList.add('oculto'); }
-$('#modal').onclick = e => { if (e.target.id === 'modal') cerrarModal(); };
+let MODAL_FIJO = false;
+function modal(html, fijo) { MODAL_FIJO = !!fijo; $('#modalCaja').innerHTML = html; $('#modal').classList.remove('oculto'); }
+function cerrarModal() { if (MODAL_FIJO) return; $('#modal').classList.add('oculto'); }
+/* Sustituye a confirm()/alert() del navegador por ventanas con el estilo de la app */
+function pregunta({ icono = '🤖', titulo = '¿Seguro?', texto = '', si = 'Sí', no = 'Cancelar', peligro = false }) {
+  return new Promise(res => {
+    SFX.clic();
+    modal(`<div class="dlg-icono">${icono}</div><h2>${titulo}</h2>${texto ? `<p class="dlg-txt">${texto}</p>` : ''}
+      <div class="dlg-btns"><button class="btn" id="dlgNo">${no}</button><button class="btn ${peligro ? 'btn-rojo' : 'btn-verde'}" id="dlgSi">${si}</button></div>`);
+    const fin = v => { cerrarModal(); res(v); };
+    $('#dlgSi').onclick = () => { SFX.clic(); fin(true); };
+    $('#dlgNo').onclick = () => { SFX.clic(); fin(false); };
+    const obs = new MutationObserver(() => { if ($('#modal').classList.contains('oculto')) { obs.disconnect(); res(false); } });
+    obs.observe($('#modal'), { attributes: true, attributeFilter: ['class'] });
+  });
+}
+function aviso({ icono = '🤖', titulo = '', texto = '', ok = 'Entendido' }) {
+  return new Promise(res => {
+    modal(`<div class="dlg-icono">${icono}</div><h2>${titulo}</h2>${texto ? `<p class="dlg-txt">${texto}</p>` : ''}<button class="btn btn-verde" id="dlgOk">${ok}</button>`);
+    $('#dlgOk').onclick = () => { SFX.clic(); cerrarModal(); res(); };
+  });
+}
+window.alert = t => { aviso({ texto: esc(t) }); };
+$('#modal').onclick = e => { if (e.target.id === 'modal' && !MODAL_FIJO) cerrarModal(); };
 
 /* ---------------- PERFILES ---------------- */
 ON_PANTALLA.pPerfiles = () => {
@@ -423,7 +537,7 @@ ON_PANTALLA.pPerfiles = () => {
   NINOS.forEach((n, i) => {
     NINO = n; const d = datos();
     const c = el('button', 'nino-card', `<button class="editar" title="Editar">✏️</button>
-      <img src="img/lucas/senala.png" style="filter:${filtroColor(n.color)} drop-shadow(0 0 14px rgba(23,255,95,.35))" alt="">
+      ${robotHTML(n.color, 'senala', 'card-robot')}
       <h3>${esc(n.nombre)}</h3><p>${n.edad} años · ⭐ ${d.est} · 🔥 ${d.racha.n}</p>`);
     c.onclick = e => {
       if (e.target.closest('.editar')) { editarNino(n); return; }
@@ -449,7 +563,7 @@ function pintaNuevo() {
   const C = $('#nColores'); C.innerHTML = '';
   COLORES.forEach(c => { const b = el('button'); b.style.background = c.c; b.style.color = c.c; b.title = c.n; b.classList.toggle('sel', c.h === colorSel);
     b.onclick = () => { SFX.pieza(); colorSel = c.h; pintaNuevo(); }; C.appendChild(b); });
-  $('#nPreview').style.filter = filtroColor(colorSel) + ' drop-shadow(0 0 16px rgba(23,255,95,.45))';
+  ponRobot($('#nPreview'), colorSel, 'senala'); $('#nPjNombre').textContent = colorDe(colorSel).nom;
 }
 $$('#nEdades button').forEach(b => b.onclick = () => { SFX.clic(); edadSel = +b.dataset.e; pintaNuevo(); });
 $('#bGuardarNino').onclick = async () => {
@@ -465,7 +579,7 @@ $('#bGuardarNino').onclick = async () => {
   if (editando) { NINO = null; ir('perfiles'); } else entrarNino(n);
 };
 $('#bBorrarNino').onclick = async () => {
-  if (!editando || !confirm(`¿Borrar a ${editando.nombre} y todo su progreso?`)) return;
+  if (!editando || !await pregunta({ icono: '🗑️', titulo: `¿Borrar a ${esc(editando.nombre)}?`, texto: 'Se perderán sus planetas, estrellas y pegatinas. Esto no se puede deshacer.', si: 'Borrar', peligro: true })) return;
   await api('borrarNino', { token: SES.token, id: editando.id });
   NINOS = NINOS.filter(x => x !== editando); LS.set('ninos', NINOS); ir('perfiles');
 };
@@ -481,7 +595,7 @@ ON_PANTALLA.pMapa = () => {
   const d = datos();
   SFX.musica(!!d.aj.musica);
   $('#mNombre').textContent = NINO.nombre;
-  $('#mAvatar').style.filter = filtroColor(NINO.color);
+  { const im = imgPj(NINO.color, 'senala'); $('#mAvatar').src = im.src; $('#mAvatar').style.filter = im.filter; }
   $('#mRacha').textContent = d.racha.ult === hoy() || d.racha.ult === ayer() ? d.racha.n : 0;
   $('#mChispas').textContent = d.chispas;
   $('#mEstrellas').textContent = d.est;
@@ -516,7 +630,7 @@ function pintaMapa() {
     b.onclick = () => { SFX.clic(); if (bloq) { SFX.mal(); VOZ.decir('Ese planeta aún está bloqueado. ¡Completa el anterior para llegar!'); b.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'none' }], 300); return; } abrePlaneta(i); };
     M.appendChild(b);
   });
-  const nave = el('img', 'nave-mapa'); nave.src = 'img/lucas/propulsor.png'; nave.style.filter = filtroColor(NINO.color) + ' drop-shadow(0 0 12px rgba(23,255,95,.6))';
+  const nave = el('span', 'nave-mapa'); nave.innerHTML = robotHTML(NINO.color, 'vuela'); nave.firstChild.dataset.fuerza = '1.4';
   const SC = $('#mapaScroll');
   const centra = (y, suave) => { SC.style.scrollBehavior = suave ? 'smooth' : 'auto'; SC.scrollTop = Math.max(0, y - SC.clientHeight / 2); };
   if (VIAJE && VIAJE.h === act && VIAJE.d < act) {
@@ -527,13 +641,13 @@ function pintaMapa() {
     requestAnimationFrame(() => centra(pos[d].y, false));
     setTimeout(() => {
       const dx = pos[act].x - pos[d].x, dy = pos[act].y - pos[d].y;
-      nave.classList.add('viajando'); nave.style.setProperty('--vuelo', dx < 0 ? 'scaleX(-1) rotate(-22deg)' : 'rotate(-22deg)');
+      nave.classList.add('viajando'); nave.firstChild.dataset.fuerza = '2.6'; nave.style.setProperty('--vuelo', dx < 0 ? 'scaleX(-1) rotate(-22deg)' : 'rotate(-22deg)');
       nave.style.transition = 'left 2.2s cubic-bezier(.55,0,.35,1), top 2.2s cubic-bezier(.55,0,.35,1)';
       nave.style.left = pos[act].x + 'px'; nave.style.top = pos[act].y + 'px';
       SFX.woosh(); ESTELA.start(nave, M); centra(pos[act].y, true);
       VOZ.decir(pick(NARRADOR.viaje));
       setTimeout(() => {
-        ESTELA.stop(); nave.classList.remove('viajando');
+        ESTELA.stop(); nave.classList.remove('viajando'); nave.firstChild.dataset.fuerza = '1.4';
         destino.classList.remove('bloq', 'por-abrir'); destino.classList.add('recien');
         destino.querySelector('.letra').textContent = PLANETAS[act].letra;
         SFX.planeta(); FX.chispas(destino, 50); FX.confeti(90);
@@ -571,6 +685,7 @@ let MIS = null;
 let VIAJE = null;   // animación del cohete al desbloquear un planeta
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 function empezarMision({ lv, repaso = false, diaria = false }) {
+  if (LICENCIA.comprobar()) return;
   const n = diaria ? 10 : CFG.MISION;
   const lista = ENG.mision({ lv, edad: NINO.edad, n, repaso, voz: !!SR, maxLv: nivelActual() });
   if (diaria && !lista.some(e => e.tipo === 'cuento') && lv >= 1) { const c = ENG.G.cuento(lv); if (c) { c.lv = lv; lista[lista.length - 1] = c; } }
@@ -578,11 +693,11 @@ function empezarMision({ lv, repaso = false, diaria = false }) {
   SFX.musica(false); SFX.woosh(); ESTRELLAS.turbo(3); setTimeout(() => ESTRELLAS.turbo(.25), 900);
   $('#jChispas').textContent = 0;
   ir('juego');
-  $('#lucasNarra').style.filter = filtroColor(NINO.color) + ' drop-shadow(0 0 12px rgba(23,255,95,.45))';
   siguienteEjercicio();
 }
-$('#bCerrarJuego').onclick = () => {
-  if (!confirm('¿Salir de la misión? Perderás el progreso de esta misión.')) return;
+$('#bCerrarJuego').onclick = async () => {
+  VOZ.callar();
+  if (!await pregunta({ icono: '🚀', titulo: '¿Salir de la misión?', texto: 'Si sales ahora, esta misión no contará. ¡Te queda poco!', si: 'Salir', no: 'Seguir jugando' })) return;
   limpiaEjercicio(); ir('mapa');
 };
 let limpiezas = [];
@@ -600,6 +715,7 @@ function siguienteEjercicio() {
   EJ = MIS.lista[MIS.i]; EJ.errores = 0; EJ.resuelto = false;
   const E = $('#escenario'); E.innerHTML = ''; E.scrollTop = 0;
   RENDER[EJ.tipo](EJ, E);
+  ajustaTextos(E); setTimeout(() => ajustaTextos(E), 350);
 }
 function burbuja(txt) { $('#burbujaTxt').textContent = txt; }
 let ultimaFrase = '';
@@ -633,8 +749,8 @@ function fallo(elm) {
   const t = pick(NARRADOR.mal); burbuja(t);
   return VOZ.decir(t);
 }
-function lucasCruza() { const i = el('img', 'lucas-cruza'); i.src = 'img/lucas/propulsor.png'; i.style.filter = filtroColor(NINO.color); document.body.appendChild(i); SFX.woosh(); setTimeout(() => i.remove(), 1400); }
-function lucasCaido() { const i = el('img', 'lucas-caido'); i.src = 'img/lucas/caido.png'; i.style.filter = filtroColor(NINO.color); document.body.appendChild(i); setTimeout(() => i.remove(), 1500); }
+function lucasCruza() { const i = el('div', 'lucas-cruza', robotHTML(NINO.color, 'vuela')); i.firstChild.dataset.fuerza = '2'; document.body.appendChild(i); SFX.woosh(); setTimeout(() => i.remove(), 1400); }
+function lucasCaido() { const i = el('img', 'lucas-caido'); i.src = 'img/lucas/caido.png'; document.body.appendChild(i); setTimeout(() => i.remove(), 1500); }
 const silabeo = p => p.s.map(sv).join('... ') + '... ' + p.w;
 function pic(p) {
   const slug = ENG.quitaTildes(p.w.toLowerCase()).replace('ñ', 'n');
@@ -642,6 +758,18 @@ function pic(p) {
   return p.e;
 }
 
+/* Reduce la letra de lo que no cabe (p. ej. «todoterreno» en un móvil estrecho) */
+function ajustaTextos(raiz) {
+  if (!raiz) return;
+  raiz.querySelectorAll('.leer, .opt-txt, .pieza, .hueco').forEach(e => {
+    e.style.fontSize = '';
+    const caja = e.classList.contains('leer') ? (e.closest('.tarjeta') || e.parentElement) : e;
+    let fs = parseFloat(getComputedStyle(e).fontSize), n = 0;
+    const max = () => e.classList.contains('leer') ? Math.min(caja.clientWidth, raiz.clientWidth - 24) : e.clientWidth;
+    while (n++ < 30 && fs > 12 && e.scrollWidth > max() + 1) { fs *= 0.92; e.style.fontSize = fs + 'px'; }
+  });
+}
+addEventListener('resize', () => { if (pantallaActual === 'pJuego') ajustaTextos($('#escenario')); });
 /* ---------------- RENDERIZADORES ---------------- */
 const RENDER = {};
 function opciones(lista, cls, contenido, esCorrecta, alAcertar) {
@@ -955,6 +1083,7 @@ RENDER.cuento = (ej, E) => {
 /* ---------------- FIN DE MISIÓN ---------------- */
 async function finMision() {
   limpiaEjercicio();
+  if (MIS && MIS.prueba) { toast('Prueba terminada (no cuenta para el progreso)'); ir('mapa'); return; }
   const d = datos(), t = MIS.lista.length;
   const fallos = MIS.fallosTot;
   const est = fallos <= 1 ? 3 : fallos <= 4 ? 2 : 1;
@@ -980,8 +1109,7 @@ async function finMision() {
   guardarNino();
 
   ir('resultado');
-  $('#resLucas').src = est >= 2 ? 'img/lucas/vuela.png' : 'img/lucas/caido.png';
-  $('#resLucas').style.filter = filtroColor(NINO.color) + ' drop-shadow(0 0 20px rgba(23,255,95,.55))';
+  ponRobot($('#resLucas'), NINO.color, 'vuela');
   $('#resTitulo').textContent = MIS.diaria ? '¡Misión del día!' : est === 3 ? '¡Misión perfecta!' : '¡Misión completada!';
   $('#resAciertos').textContent = MIS.aciertos + '/' + t;
   $('#resChispas').textContent = '+' + (MIS.chispas + bonus);
@@ -1028,7 +1156,6 @@ ON_PANTALLA.pAlbum = () => {
     A.appendChild(b);
   });
   d.pegNueva = null;
-  $('#pAlbum .album-lucas').style.filter = filtroColor(NINO.color) + ' drop-shadow(0 0 12px rgba(23,255,95,.5))';
   VOZ.decir(`Tienes ${d.peg.length} pegatinas de ${PEGATINAS.length}. ¡A por todas!`);
 };
 
@@ -1093,8 +1220,8 @@ function pintaPadres() {
   });
   const sv = $('#selVoz'); if (sv) sv.onchange = () => { VOZ.setVoz(sv.value); VOZ.decir('¡Hola! Así sueno ahora.'); };
   $('#bEditN').onclick = () => editarNino(padresNino);
-  $('#bReset').onclick = () => {
-    if (!confirm(`¿Seguro que quieres borrar todo el progreso de ${padresNino.nombre}?`)) return;
+  $('#bReset').onclick = async () => {
+    if (!await pregunta({ icono: '⚠️', titulo: 'Reiniciar progreso', texto: `Se borrará todo el progreso de ${esc(padresNino.nombre)} y empezará de cero.`, si: 'Reiniciar', peligro: true })) return;
     const aj = padresNino.datos.aj; padresNino.datos = datosVacios(); padresNino.datos.aj = aj; padresNino.datos._t = Date.now();
     const g = NINO; NINO = padresNino; guardarNino(true); if (g === padresNino) ENG.setMem(datos().mem); NINO = g; pintaPadres(); toast('Progreso reiniciado');
   };
@@ -1132,30 +1259,228 @@ addEventListener('blur', () => { setTimeout(() => { if (document.hidden) silenci
    Si los hay, recarga sola cuando el niño no está en mitad de una misión
    y vuelve a entrar directamente con el mismo lector. */
 var ACT = (() => {
-  const ARCH = ['index.html', 'app.js', 'engine.js', 'data.js', 'data2.js', 'style.css'];
-  let firma = null, pendiente = false;
-  async function leeFirma() {
-    try {
-      const r = await Promise.all(ARCH.map(f => fetch(f, { method: 'HEAD', cache: 'no-store' }).then(x => x.ok ? (x.headers.get('etag') || x.headers.get('last-modified') || '') : '')));
-      return r.join('|');
-    } catch (e) { return null; }
+  /* Solo recarga si cambia el número de version.json (antes comparaba cabeceras
+     de GitHub, que a veces cambian solas y provocaban recargas sin motivo). */
+  let ver = null, pendiente = false, mirando = false;
+  async function leeVersion() {
+    try { const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return null; const j = await r.json(); return j && j.v ? String(j.v) : null; } catch (e) { return null; }
   }
-  function seguro() { return !['pJuego', 'pNuevo'].includes(pantallaActual) && !document.querySelector('#modal:not(.oculto)'); }
+  function seguro() { return ['pMapa', 'pPerfiles', 'pLogin', 'pAlbum'].includes(pantallaActual) && !document.querySelector('#modal:not(.oculto)') && !document.querySelector('.nave-mapa.viajando'); }
   function recargar() {
     if (NINO && NINO.id) LS.set('volverNino', NINO.id);
+    if (VIAJE) LS.set('viaje', VIAJE);
+    LS.set('recargaRapida', Date.now());
     location.reload();
   }
   async function comprobar() {
-    if (pendiente) { if (seguro()) recargar(); return; }
-    const f = await leeFirma(); if (!f) return;
-    if (firma === null) { firma = f; return; }
-    if (f !== firma) {
-      pendiente = true;
-      try { const reg = await navigator.serviceWorker.getRegistration(); if (reg) await reg.update(); } catch (e) {}
-      if (seguro()) setTimeout(recargar, 800);
-    }
+    if (mirando) return; mirando = true;
+    try {
+      if (pendiente) { if (seguro()) recargar(); return; }
+      const v = await leeVersion(); if (!v) return;
+      if (ver === null) { ver = v; return; }
+      if (v !== ver) {
+        pendiente = true;
+        try { const reg = await navigator.serviceWorker.getRegistration(); if (reg) await reg.update(); } catch (e) {}
+        if (seguro()) setTimeout(() => { if (seguro()) recargar(); }, 800);
+      }
+    } finally { mirando = false; }
   }
-  setInterval(() => { if (!document.hidden) comprobar(); }, 60000);
-  setTimeout(comprobar, 3000);
-  return { comprobar, pendiente: () => pendiente, recargar, seguro };
+  setInterval(() => { if (!document.hidden) comprobar(); }, 90000);
+  setTimeout(comprobar, 4000);
+  return { comprobar, pendiente: () => pendiente, recargar, seguro, version: () => ver };
+})();
+
+/* =====================================================================
+   MODO ADMIN · solo con la llave NFC de Manu
+   - Entrada oculta: mantener pulsado 5 s el logo FuturMovil (pantalla de
+     entrada o de lectores) o tocarlo 10 veces seguidas.
+   - La primera vez (con la cuenta de admin abierta) se guarda la llave.
+   ===================================================================== */
+var ADMIN = (() => {
+  let est = LS.get('adm', null);   // { t: token, exp }
+  const activo = () => !!(est && est.exp > Date.now());
+  const todo = () => activo() && !!LS.get('adm_todo', false);
+  function badge() {
+    let b = $('#admBadge');
+    if (activo()) { if (!b) { b = el('button', 'adm-badge', '🛠️'); b.id = 'admBadge'; b.title = 'Modo admin'; b.onclick = () => { SFX.clic(); panel(); }; document.body.appendChild(b); } }
+    else if (b) b.remove();
+  }
+  /* entrada oculta en los logos */
+  function engancha(img) {
+    if (!img || img._adm) return; img._adm = true; img.classList.add('mantener');
+    let tm = null, toques = 0, tt = null;
+    const quita = () => { clearTimeout(tm); img.classList.remove('cargando'); };
+    img.addEventListener('pointerdown', () => { img.classList.add('cargando'); tm = setTimeout(() => { quita(); entrar(); }, 5000); });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => img.addEventListener(ev, quita));
+    img.addEventListener('click', () => { toques++; clearTimeout(tt); tt = setTimeout(() => toques = 0, 2500); if (toques >= 10) { toques = 0; entrar(); } });
+    img.addEventListener('contextmenu', e => e.preventDefault());
+  }
+  async function entrar() {
+    if (activo()) { panel(); return; }
+    SFX.nfc ? SFX.nfc() : SFX.clic();
+    if (!('NDEFReader' in window)) { modal(`<h2>🔑 Llave NFC</h2><p>Para entrar al modo admin abre la app en <b>Chrome de Android</b> con el NFC activado.</p><button class="btn btn-verde" onclick="cerrarModal()">Vale</button>`); return; }
+    modal(`<h2>🔑 Modo admin</h2><div class="nfc-anillo">📶</div><p id="nfcTxt">Comprobando…</p><button class="btn btn-mini" onclick="cerrarModal()">Cancelar</button>`);
+    const e0 = await api('nfcEstado', {});
+    const txt = t => { const e = $('#nfcTxt'); if (e) e.innerHTML = t; };
+    if (!e0.ok) { txt(e0.error || 'Sin conexión'); return; }
+    if (!e0.registrada && !(SES && SES.token)) { txt('La llave aún no está guardada. Entra primero con la cuenta de administrador.'); return; }
+    txt(e0.registrada ? 'Acerca tu llave a la parte de atrás del móvil' : 'Primera vez: acerca tu llave para <b>guardarla</b>');
+    try {
+      const ctrl = new AbortController(); const r = new NDEFReader();
+      await r.scan({ signal: ctrl.signal });
+      $('#modal').addEventListener('click', () => { if ($('#modal').classList.contains('oculto')) ctrl.abort(); });
+      r.onreadingerror = () => txt('No he podido leerla. Prueba otra vez.');
+      r.onreading = async ev => {
+        ctrl.abort(); const serial = ev.serialNumber || '';
+        if (!serial) { txt('Esa llave no tiene número de serie.'); return; }
+        txt('Verificando…');
+        const res = e0.registrada ? await api('nfcLogin', { serial }) : await api('nfcRegistrar', { token: SES.token, serial });
+        if (!res.ok) { SFX.mal(); txt(res.error || 'Llave no válida'); return; }
+        est = { t: res.adminToken, exp: Date.now() + 12 * 3600e3 }; LS.set('adm', est);
+        SFX.ok(); FX.confeti(60); cerrarModal(); badge(); toast(e0.registrada ? 'Modo admin activado 🛠️' : 'Llave guardada. Modo admin activado 🛠️'); panel();
+      };
+    } catch (err) { txt('No se puede usar el NFC: ' + (err && err.message || err)); }
+  }
+  function salir() { est = null; LS.del('adm'); LS.del('adm_todo'); badge(); cerrarModal(); toast('Has salido del modo admin'); if (pantallaActual === 'pMapa') pintaMapa(); }
+  async function op(o, extra) {
+    if (!activo()) return { ok: false, error: 'Sesión admin caducada' };
+    const r = await api('admin', Object.assign({ adminToken: est.t, op: o }, extra || {}));
+    if (!r.ok && /caducad|no válid/i.test(r.error || '')) { salir(); }
+    return r;
+  }
+  const TIPOS = { escucha: 'Escucha y toca', globos: 'Burbujas', palimg: 'Palabra → dibujo', imgpal: 'Dibujo → palabra', forma: 'Forma la palabra', falta: 'Sílaba que falta', inicial: 'Letra inicial', frase: 'Frase → dibujo', verdad: 'Verdad o mentira', ordena: 'Ordena la frase', une: 'Une', traza: 'Traza la letra', silabas: 'Palmadas', dictado: 'Dictado', cuento: 'Cuento', voz: 'Leer en voz alta' };
+  function probarTipo(tipo, lv) {
+    if (!NINO) { toast('Elige antes un lector'); return; }
+    const lista = []; for (let k = 0; k < 30 && lista.length < 5; k++) { const ej = ENG.G[tipo](lv, 4, NINO.edad); if (ej) { ej.lv = lv; lista.push(ej); } }
+    if (!lista.length) { toast('Ese ejercicio no existe en este planeta'); return; }
+    cerrarModal();
+    MIS = { lv, repaso: true, diaria: false, lista, i: 0, aciertos: 0, fallosTot: 0, chispas: 0, t0: Date.now(), racha: 0, prueba: true };
+    ir('juego'); siguienteEjercicio();
+  }
+  function panel() {
+    if (!activo()) { entrar(); return; }
+    const n = NINO, d = n ? datos() : null;
+    const C = ENG;
+    modal(`<h2>🛠️ Modo admin</h2>
+      <div class="adm-sec"><h3>Pruebas</h3>
+        <div class="ajuste"><span>Jugar planetas bloqueados<small>Solo mientras esté marcado</small></span><button class="switch ${todo() ? 'on' : ''}" id="admTodo"></button></div>
+        ${n ? `<p style="margin:6px 0;font-size:14px">Probar un ejercicio en el planeta <select id="admLv">${PLANETAS.map((p, i) => `<option value="${i}" ${i === nivelActual() ? 'selected' : ''}>${i + 1}. ${p.letra}</option>`).join('')}</select></p>
+        <div class="adm-grid">${Object.keys(TIPOS).map(t => `<button class="btn" data-tipo="${t}">${TIPOS[t]}</button>`).join('')}</div>` : '<p style="font-size:14px;color:var(--txt2)">Elige un lector para probar ejercicios.</p>'}
+      </div>
+      ${n ? `<div class="adm-sec"><h3>Lector: ${esc(n.nombre)}</h3><div class="adm-grid">
+        <button class="btn" id="admPlaneta">✅ Completar planeta actual</button>
+        <button class="btn" id="admChispas">⚡ +100 chispas</button>
+        <button class="btn" id="admEstrellas">⭐ +10 estrellas</button>
+        <button class="btn" id="admPeg">📒 Pegatina al azar</button>
+        <button class="btn" id="admPegAll">📒 Todas las pegatinas</button>
+        <button class="btn" id="admDiaria">🌟 Repetir misión del día</button>
+        <button class="btn" id="admViaje">🚀 Ver animación del cohete</button>
+        <button class="btn" id="admCofre">🎁 Ver cofre del premio</button>
+      </div></div>` : ''}
+      <div class="adm-sec"><h3>App</h3><div class="adm-grid">
+        <button class="btn" id="admPagos">💶 Pagos y licencias</button>
+        <button class="btn" id="admCartel">👀 Ver cartel de pago</button>
+        <button class="btn" id="admStats">📊 Estadísticas</button>
+        <button class="btn" id="admResumen">📧 Enviarme el resumen semanal ahora</button>
+        <button class="btn" id="admVoz">🔊 Probar voz</button>
+        <button class="btn" id="admAct">🔄 Forzar actualización</button>
+        <button class="btn btn-rojo" id="admLlave">🔑 Olvidar llave</button>
+      </div>
+      <div class="adm-stats" id="admOut">Contenido: <b>${C.PAL.length}</b> palabras · <b>${C.FR.length}</b> frases · <b>${C.VF.length}</b> verdad/mentira · <b>${C.CU.length}</b> cuentos · versión <b>${ACT.version() || '?'}</b></div></div>
+      <button class="btn btn-verde" onclick="cerrarModal()">Cerrar</button>
+      <button class="btn btn-mini" id="admSalir">Salir del modo admin</button>`);
+    const out = t => { $('#admOut').innerHTML = t; };
+    $('#admTodo').onclick = () => { const v = !todo(); LS.set('adm_todo', v); $('#admTodo').classList.toggle('on', v); SFX.clic(); if (pantallaActual === 'pMapa') pintaMapa(); toast(v ? 'Planetas desbloqueados (modo prueba)' : 'Candados activados otra vez'); };
+    $$('[data-tipo]').forEach(b => b.onclick = () => probarTipo(b.dataset.tipo, +$('#admLv').value));
+    const guarda = () => { d._t = Date.now(); guardarNino(); if (pantallaActual === 'pMapa') ON_PANTALLA.pMapa(); };
+    if (n) {
+      $('#admPlaneta').onclick = () => { const a = nivelActual(); d.plan[a] = { m: Math.max(2, (d.plan[a] || {}).m || 0), e: 3 }; guarda(); toast('Planeta ' + PLANETAS[a].letra + ' completado'); VIAJE = { d: a, h: nivelActual() }; cerrarModal(); ir('mapa'); };
+      $('#admChispas').onclick = () => { d.chispas += 100; guarda(); toast('+100 chispas'); };
+      $('#admEstrellas').onclick = () => { d.est += 10; guarda(); toast('+10 estrellas'); };
+      $('#admPeg').onclick = () => { const l = PEGATINAS.map((p, i) => i).filter(i => !d.peg.includes(i)); if (!l.length) return toast('Ya las tiene todas'); const k = pick(l); d.peg.push(k); d.pegNueva = k; guarda(); toast('Pegatina: ' + PEGATINAS[k].n); };
+      $('#admPegAll').onclick = () => { d.peg = PEGATINAS.map((p, i) => i); guarda(); toast('Álbum completo'); };
+      $('#admDiaria').onclick = () => { d.diaria = ''; guarda(); toast('Misión del día disponible otra vez'); };
+      $('#admViaje').onclick = () => { const a = nivelActual(); if (a < 1) return toast('Necesita al menos 2 planetas abiertos'); VIAJE = { d: a - 1, h: a }; cerrarModal(); ir('mapa'); };
+      $('#admCofre').onclick = () => { cerrarModal(); if (!MIS) MIS = { lv: nivelActual(), lista: [1, 1, 1, 1, 1, 1, 1, 1], i: 8, aciertos: 8, fallosTot: 0, chispas: 0, t0: Date.now(), repaso: true, diaria: true }; else { MIS.diaria = true; MIS.repaso = true; } MIS.fallosTot = 0; MIS.aciertos = MIS.lista.length; finMision(); };
+    }
+    $('#admCartel').onclick = () => LICENCIA.cartel('demo');
+    const pagos = async () => {
+      out('Cargando…'); const r = await op('pagos'); if (!r.ok) return out(r.error);
+      out(`<b>Pendientes de confirmar (${r.pendientes.length})</b><br>` +
+        (r.pendientes.map(x => `• ${esc(x.email)} · ${x.dias} días · avisó ${x.aviso} <button class="btn btn-mini btn-verde" data-act="${esc(x.email)}">Activar</button>`).join('<br>') || '—') +
+        `<br><br><b>Activar a mano</b><br><input type="email" id="admMail" placeholder="correo de la cuenta" style="padding:8px;font-size:14px"> <button class="btn btn-mini btn-verde" id="admMailBtn">Activar</button>` +
+        `<br><br><b>Con licencia (${r.licencias.length})</b><br>` + (r.licencias.map(x => `• ${esc(x.email)} · ${x.fecha} <button class="btn btn-mini" data-quitar="${esc(x.email)}">Quitar</button>`).join('<br>') || '—') +
+        `<br><br><b>En prueba (días usados de 15)</b><br>` + (r.prueba.map(x => `• ${esc(x.email)} · <b>${x.dias}</b>`).join('<br>') || '—'));
+      const act = async (em, o) => { const k = await op(o, { email: em }); toast(k.ok ? (o === 'activar' ? 'Licencia activada ✅ (le llega un correo)' : 'Licencia quitada') : k.error); pagos(); };
+      $$('[data-act]').forEach(b => b.onclick = () => act(b.dataset.act, 'activar'));
+      $$('[data-quitar]').forEach(b => b.onclick = async () => { if (await pregunta({ icono: '💶', titulo: '¿Quitar licencia?', texto: esc(b.dataset.quitar), si: 'Quitar', peligro: true })) act(b.dataset.quitar, 'quitar'); else panel(); });
+      $('#admMailBtn').onclick = () => { const em = $('#admMail').value.trim(); if (em) act(em, 'activar'); };
+    };
+    $('#admPagos').onclick = pagos;
+    $('#admStats').onclick = async () => {
+      out('Cargando…'); const r = await op('stats'); if (!r.ok) return out(r.error);
+      out(`<b>${r.usuarios}</b> cuentas · <b>${r.ninos}</b> lectores · <b>${r.activos7}</b> activos esta semana · <b>${r.hoy}</b> hoy · <b>${r.ejercicios}</b> ejercicios hechos<br>` +
+        r.lista.map(x => `• <b>${esc(x.nombre)}</b> (${x.edad}) — ${esc(x.email)} · planeta ${x.nivel + 1} · ⭐${x.est} · ${x.min} min · ${x.ult}`).join('<br>'));
+    };
+    $('#admResumen').onclick = async () => { out('Enviando…'); const r = await op('resumen'); out(r.ok ? '📧 Enviado a ' + esc(r.a) + ' (si tienes lectores con actividad).' : r.error); };
+    $('#admVoz').onclick = () => { VOZ.decir('¡Hola, Manu! Soy Lucas. Mamá me mima. ¿Leemos un cuento? ¡Genial, campeón!'); out('Voces en español de este dispositivo: ' + (VOZ.voces().map(v => esc(v.name)).join(', ') || 'ninguna')); };
+    $('#admAct').onclick = async () => { out('Actualizando…'); try { const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); const reg = await navigator.serviceWorker.getRegistration(); if (reg) await reg.unregister(); } catch (e) {} ACT.recargar(); };
+    $('#admLlave').onclick = async () => { if (!await pregunta({ icono: '🔑', titulo: '¿Olvidar la llave?', texto: 'La próxima vez tendrás que guardarla de nuevo con la cuenta de administrador.', si: 'Olvidar', peligro: true })) return; const r = await op('nfcBorrar'); if (r.ok) { toast('Llave olvidada'); salir(); } else out(r.error); };
+    $('#admSalir').onclick = salir;
+  }
+  setInterval(badge, 60000);
+  setTimeout(() => { badge(); $$('.logo-fm, .logo-mini').forEach(engancha); }, 300);
+  return { activo, todo, panel, entrar, badge };
+})();
+
+/* =====================================================================
+   LICENCIA · prueba gratis sin avisos durante 15 días de uso distintos.
+   El día 15 aparece el cartel de pago único (2,99 € con myPOS).
+   El admin confirma el pago desde el modo admin.
+   ===================================================================== */
+var LICENCIA = (() => {
+  const PAGO = 'https://mypos.com/@futurmovil/2,99';
+  const WA = '34633200100';
+  function cartel(vista) {
+    const l = (SES && SES.lic) || { dias: 15, prueba: 15, precio: '2,99' };
+    const waTxt = encodeURIComponent(`Hola, he pagado la licencia de Leo con Lucas (${l.precio} €). Mi cuenta es ${SES ? SES.email : ''}`);
+    modal(`<div class="pay">
+      <span class="robot pay-robot" data-pose="lucas-vuela" data-fuerza="2"><canvas class="fuego"></canvas><img src="img/lucas/vuela.png" alt=""></span>
+      <h2>¡Misión de prueba completada!</h2>
+      <p class="dlg-txt">Habéis disfrutado de <b>${l.prueba} días</b> leyendo con Lucas. 🚀<br>Para seguir explorando los planetas, desbloquea la app <b>para siempre</b>.</p>
+      <div class="pay-precio"><b>${l.precio} €</b><span>pago único</span></div>
+      <ul class="pay-lista">
+        <li>✅ Licencia <b>vitalicia</b>: pagas una vez y es tuya para siempre</li>
+        <li>✅ Sin suscripciones ni pagos mensuales</li>
+        <li>✅ Todos los planetas, cuentos y lectores de la familia</li>
+        <li>✅ Las actualizaciones y novedades, incluidas</li>
+      </ul>
+      ${vista === 'gracias' || vista === 'gracias-demo' ? `<div class="pay-ok">💚 <b>¡Gracias!</b> Activaremos tu licencia en cuanto confirmemos el pago, normalmente en pocas horas. Mientras tanto puedes seguir usando la app.</div>
+        <a class="btn btn-azul" target="_blank" href="https://wa.me/${WA}?text=${waTxt}">💬 Avisar por WhatsApp</a>
+        <button class="btn btn-verde btn-grande" id="paySeguir">🚀 SEGUIR LEYENDO</button>`
+      : `<a class="btn btn-verde btn-grande" id="payIr" target="_blank" href="${PAGO}">💳 DESBLOQUEAR POR ${l.precio} €</a>
+        <button class="btn" id="payHecho">✅ Ya he pagado</button>
+        ${l.avisado ? `<p class="dlg-txt" style="font-size:13px">Tu pago está pendiente de confirmar. Si ya pagaste, <a style="color:var(--verde)" target="_blank" href="https://wa.me/${WA}?text=${waTxt}">avísanos por WhatsApp</a>.</p>` : ''}
+        <p class="pay-seg">🔒 Pago seguro con myPOS</p>`}
+      ${vista === 'demo' ? '<button class="btn btn-mini" id="payCerrar">Cerrar vista previa</button>' : ''}
+    </div>`, vista !== 'demo');
+    VOZ.callar();
+    const ir_ = $('#payIr'); if (ir_) ir_.onclick = () => { SFX.clic(); setTimeout(() => { const h = $('#payHecho'); if (h) h.classList.add('btn-azul'); }, 1500); };
+    const h = $('#payHecho');
+    if (h) h.onclick = async () => {
+      if (vista === 'demo') { cartel('gracias-demo'); return; }
+      h.disabled = true; h.textContent = 'Un momento…';
+      const r = await api('pagoAviso', { token: SES.token });
+      if (r.ok) { SES.lic = Object.assign({}, SES.lic, { avisado: true, espera: true }); LS.set('ses', SES); cartel('gracias'); SFX.ok(); FX.confeti(80); }
+      else { h.disabled = false; h.textContent = '✅ Ya he pagado'; toast(r.error || 'Sin conexión, inténtalo otra vez'); }
+    };
+    const sg = $('#paySeguir'); if (sg) sg.onclick = () => { MODAL_FIJO = false; cerrarModal(); };
+    const cc = $('#payCerrar'); if (cc) cc.onclick = () => { MODAL_FIJO = false; cerrarModal(); };
+    if (vista === 'gracias-demo') { MODAL_FIJO = false; }
+  }
+  function comprobar() {
+    const l = SES && SES.lic; if (!l || l.ok || !l.bloqueo || l.espera) return false;
+    cartel('pagar'); return true;
+  }
+  return { comprobar, cartel };
 })();

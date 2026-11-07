@@ -33,7 +33,7 @@
 <!-- ============ CARGA ============ -->
 <section id="pCarga" class="pantalla activa">
   <div class="carga-centro">
-    <img src="img/lucas/propulsor.png" class="carga-lucas" alt="Lucas">
+    <span class="robot carga-lucas" data-pose="lucas-vuela" data-fuerza="2"><canvas class="fuego"></canvas><img src="img/lucas/vuela.png" alt="Lucas"></span>
     <h1 class="titulo-app"><span>LEO</span> <small>con</small> <span class="verde">LUCAS</span></h1>
     <div class="barra-carga"><i></i></div>
     <p class="carga-txt">Cargando motores de lectura…</p>
@@ -47,7 +47,7 @@
       <img src="img/logo-futurmovil.png" class="logo-fm" alt="FuturMovil">
       <h1 class="titulo-app grande"><span>LEO</span> <small>con</small> <span class="verde">LUCAS</span></h1>
       <p class="lema">¡Aprende a leer viajando por el espacio!</p>
-      <img src="img/lucas/senala-capa.png" class="login-lucas flota" alt="Lucas">
+      <span class="robot login-lucas flota" data-pose="lucas-senala-capa"><canvas class="fuego"></canvas><img src="img/lucas/senala-capa.png" alt="Lucas"></span>
     </div>
     <div class="panel cristal login-panel">
       <div class="tabs">
@@ -105,13 +105,13 @@
 <section id="pNuevo" class="pantalla">
   <header class="cabecera"><button class="btn-ico" data-ir="perfiles">←</button><h2>Nuevo lector</h2><span></span></header>
   <div class="panel cristal nuevo-panel">
-    <div class="nuevo-avatar"><img src="img/lucas/senala.png" id="nPreview" class="avatar-lucas" alt=""></div>
+    <div class="nuevo-avatar"><span class="robot avatar-lucas" id="nPreview" data-pose="lucas-senala"><canvas class="fuego"></canvas><img src="img/lucas/senala.png" alt=""></span><div class="pj-nombre" id="nPjNombre">Lucas</div></div>
     <label>¿Cómo se llama el niño o la niña?<input type="text" id="nNombre" maxlength="16" placeholder="Nombre" autocomplete="off"></label>
     <p class="etq">¿Cuántos años tiene?</p>
     <div class="edades" id="nEdades">
       <button data-e="5">5</button><button data-e="6" class="sel">6</button><button data-e="7">7</button><button data-e="8">8+</button>
     </div>
-    <p class="etq">Elige el color de su Lucas</p>
+    <p class="etq">Elige su personaje</p>
     <div class="colores" id="nColores"></div>
     <button class="btn btn-verde btn-grande" id="bGuardarNino">🚀 ¡A LEER!</button>
     <button class="btn btn-rojo btn-mini oculto" id="bBorrarNino">🗑️ Borrar este lector</button>
@@ -148,7 +148,7 @@
   <div class="juego-cuerpo">
     <aside class="narrador" id="narrador">
       <div class="burbuja" id="burbuja"><span id="burbujaTxt">¡Hola!</span><button class="btn-oir" id="bRepetir" title="Repetir">🔊</button></div>
-      <img src="img/lucas/senala.png" id="lucasNarra" class="lucas-narra" alt="Lucas">
+      <span class="robot lucas-narra" id="lucasNarra" data-pose="lucas-senala"><canvas class="fuego"></canvas><img src="img/lucas/senala.png" alt="Lucas"></span>
     </aside>
     <main class="escenario" id="escenario"></main>
   </div>
@@ -157,7 +157,7 @@
 <!-- ============ RESULTADO ============ -->
 <section id="pResultado" class="pantalla">
   <div class="resultado panel cristal">
-    <img src="img/lucas/vuela.png" class="res-lucas" id="resLucas" alt="">
+    <span class="robot res-lucas" id="resLucas" data-pose="lucas-vuela" data-fuerza="1.6"><canvas class="fuego"></canvas><img src="img/lucas/vuela.png" alt=""></span>
     <h2 id="resTitulo">¡Misión completada!</h2>
     <div class="res-estrellas" id="resEstrellas"><span><img src="img/estrella-on.png" alt=""></span><span><img src="img/estrella-on.png" alt=""></span><span><img src="img/estrella-on.png" alt=""></span></div>
     <div class="res-datos">
@@ -175,7 +175,7 @@
 <section id="pAlbum" class="pantalla">
   <header class="cabecera"><button class="btn-ico" data-ir="mapa">←</button><h2>Mi álbum espacial</h2><span id="albumCuenta" class="cont">0/40</span></header>
   <div class="album" id="album"></div>
-  <img src="img/lucas/gamer.png" class="album-lucas" alt="">
+  <span class="robot album-lucas" data-pose="lucas-gamer"><canvas class="fuego"></canvas><img src="img/lucas/gamer.png" alt=""></span>
 </section>
 
 <!-- ============ PADRES ============ -->
