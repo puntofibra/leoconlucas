@@ -514,3 +514,9 @@ img.cu-lucas { width: 230px; animation: respiraImg 4s ease-in-out infinite; filt
 .lista-ninos, .album, #pNuevo, #pPadres, #pLogin, #pCuento, .escenario { overflow-x: hidden; }
 .nino-card { overflow: hidden; }
 html, body { overscroll-behavior-x: none; }
+
+/* Lucas dormido asomando en el botón del cuento */
+.btn-cuento { position: relative; overflow: visible; padding-left: 52px; }
+.cuento-ico { position: absolute; left: 2px; top: 50%; width: 62px; margin-top: -36px; filter: drop-shadow(0 3px 6px rgba(0,0,0,.5)); animation: respiraImg 4s ease-in-out infinite; pointer-events: none; }
+
+.btn-cuento > span, .btn-cuento > small { position: relative; z-index: 1; }
