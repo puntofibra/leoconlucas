@@ -172,6 +172,8 @@ const FUEGO = (() => {
     'max-vuela': { dir: Math.PI * .82, t: [[.31, .79, .045], [.35, .88, .045], [.40, .94, .04]] },
     'rayo-senala': { dir: Math.PI / 2, t: [[.29, .94, .075], [.41, .965, .085], [.55, .93, .07]] },
     'rayo-vuela': { dir: Math.PI * .92, t: [[.05, .81, .06], [.11, .94, .06]] },
+    'aqua-senala': { dir: Math.PI / 2, t: [[.28, .955, .09], [.504, .955, .09]] },
+    'aqua-vuela': { dir: Math.PI * 1.02, t: [[.17, .8, .12]] },   // una sola propulsión grande
     'luna-senala': { dir: Math.PI / 2, t: [[.335, .93, .07], [.45, .975, .08], [.59, .93, .07]] },
     'nova-senala': { dir: Math.PI / 2, t: [[.31, .885, .085], [.455, .97, .1], [.58, .885, .075]] },
     'nova-vuela': { dir: Math.PI * 1.12, t: [[.365, .76, .05], [.41, .9, .05]] }
@@ -371,7 +373,7 @@ const COLORES = [{ h: 0, c: '#17ff5f', n: 'Verde', pj: 'lucas', nom: 'Lucas' }, 
   { h: 222, c: '#ff4d4d', n: 'Rojo', pj: 'rayo', nom: 'Rayo' }, { h: 252, c: '#ff9a2e', n: 'Naranja', pj: 'turbo', nom: 'Turbo' }, { h: 280, c: '#ffe02e', n: 'Amarillo', pj: 'chispa', nom: 'Chispa' }, { h: 40, c: '#00e5c7', n: 'Turquesa', pj: 'aqua', nom: 'Aqua' }];
 /* Personajes con dibujo propio ya subido (img/personajes/<pj>-senala.png y <pj>-vuela.png).
    Mientras no esté, se usa Lucas con su color cambiado. */
-const PERSONAJES_LISTOS = ['lucas', 'chispa', 'nova', 'luna', 'turbo', 'max', 'rayo'];   // 'pj' = las dos poses; 'pj-pose' = solo esa
+const PERSONAJES_LISTOS = ['lucas', 'chispa', 'nova', 'luna', 'turbo', 'max', 'rayo', 'aqua'];   // 'pj' = las dos poses; 'pj-pose' = solo esa
 const colorDe = h => COLORES.find(c => c.h === h) || COLORES[0];
 let PJ_ON = !!LS.get('pjOn', false);   // personajes nuevos activados desde el admin (para todos)
 function imgPj(h, pose) {
