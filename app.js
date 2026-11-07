@@ -373,9 +373,10 @@ const COLORES = [{ h: 0, c: '#17ff5f', n: 'Verde', pj: 'lucas', nom: 'Lucas' }, 
    Mientras no esté, se usa Lucas con su color cambiado. */
 const PERSONAJES_LISTOS = ['lucas', 'chispa', 'nova', 'luna', 'turbo', 'max', 'rayo'];   // 'pj' = las dos poses; 'pj-pose' = solo esa
 const colorDe = h => COLORES.find(c => c.h === h) || COLORES[0];
+let PJ_ON = !!LS.get('pjOn', false);   // personajes nuevos activados desde el admin (para todos)
 function imgPj(h, pose) {
   const c = colorDe(h);
-  if (PERSONAJES_LISTOS.includes(c.pj) || PERSONAJES_LISTOS.includes(c.pj + '-' + pose)) return { src: c.pj === 'lucas' ? 'img/lucas/' + pose + '.png' : 'img/personajes/' + c.pj + '-' + pose + '.png', filter: '', key: c.pj + '-' + pose };
+  if (PJ_ON && (PERSONAJES_LISTOS.includes(c.pj) || PERSONAJES_LISTOS.includes(c.pj + '-' + pose))) return { src: c.pj === 'lucas' ? 'img/lucas/' + pose + '.png' : 'img/personajes/' + c.pj + '-' + pose + '.png', filter: '', key: c.pj + '-' + pose };
   return { src: 'img/lucas/' + pose + '.png', filter: filtroColor(h), key: 'lucas-' + pose };
 }
 /* Robot con fuego animado en los propulsores */
@@ -490,6 +491,7 @@ function initGoogle() {
 ON_PANTALLA.pLogin = () => { initGoogle(); };
 function aceptaSesion(r) {
   SES = { token: r.token, email: r.email, nombre: r.nombre, lic: r.lic || null }; LS.set('ses', SES);
+  if (r.pjNuevos != null) { PJ_ON = !!r.pjNuevos; LS.set('pjOn', PJ_ON); }
   setTimeout(() => LICENCIA.comprobar(), 900);
   const locales = LS.get('ninos', []);
   NINOS = (r.ninos || []).map(n => {
@@ -599,7 +601,7 @@ function pintaNuevo() {
   const C = $('#nColores'); C.innerHTML = '';
   COLORES.forEach(c => { const b = el('button'); b.style.background = c.c; b.style.color = c.c; b.title = c.n; b.classList.toggle('sel', c.h === colorSel);
     b.onclick = () => { SFX.pieza(); colorSel = c.h; pintaNuevo(); }; C.appendChild(b); });
-  ponRobot($('#nPreview'), colorSel, 'senala'); $('#nPjNombre').textContent = colorDe(colorSel).nom;
+  ponRobot($('#nPreview'), colorSel, 'senala'); $('#nPjNombre').textContent = PJ_ON ? colorDe(colorSel).nom : 'Lucas';
 }
 $$('#nEdades button').forEach(b => b.onclick = () => { SFX.clic(); edadSel = +b.dataset.e; pintaNuevo(); });
 $('#bGuardarNino').onclick = async () => {
@@ -690,6 +692,7 @@ function pintaMapa() {
       VOZ.decir(pick(NARRADOR.viaje));
       setTimeout(() => {
         ESTELA.stop(); nave.classList.remove('viajando'); nave.firstChild.dataset.fuerza = '1.4'; nave.style.transform = dx < 0 ? 'scaleX(-1)' : ''; MAPA.donde = act;
+        if (dx < 0) setTimeout(() => { nave.style.transition = 'transform .45s cubic-bezier(.3,1.5,.5,1)'; nave.style.transform = ''; }, 150);
         destino.classList.remove('bloq', 'por-abrir'); destino.classList.add('recien');
         destino.querySelector('.letra').textContent = PLANETAS[act].letra;
         SFX.planeta(); FX.chispas(destino, 50); FX.confeti(90);
@@ -697,7 +700,7 @@ function pintaMapa() {
       }, 2300);
     }, 900);
   } else {
-    const dd = MAPA.donde; if (MAPA.mira < 0) nave.style.transform = 'scaleX(-1)';
+    const dd = MAPA.donde; MAPA.mira = 1;
     nave.style.left = pos[dd].x + 'px'; nave.style.top = pos[dd].y + 'px'; M.appendChild(nave);
     requestAnimationFrame(() => centra(pos[dd].y, false));
   }
@@ -727,6 +730,8 @@ function volarA(i) {
     setTimeout(() => {
       ESTELA.stop(); nave.classList.remove('viajando'); nave.firstChild.dataset.fuerza = '1.4';
       nave.style.transform = MAPA.mira < 0 ? 'scaleX(-1)' : '';
+      /* al aterrizar se gira para mirar siempre hacia su planeta (queda a su izquierda) */
+      if (MAPA.mira < 0) { setTimeout(() => { nave.style.transition = 'transform .45s cubic-bezier(.3,1.5,.5,1)'; nave.style.transform = ''; MAPA.mira = 1; }, 150); }
       MAPA.donde = i; MAPA.volando = false; FX.chispas(M.querySelectorAll('.planeta')[i], 18); SFX.pop();
       setTimeout(res, 300);
     }, dur + 220);
@@ -1437,6 +1442,7 @@ var ADMIN = (() => {
     modal(`<h2>🛠️ Modo admin</h2>
       <div class="adm-sec"><h3>Pruebas</h3>
         <div class="ajuste"><span>Jugar planetas bloqueados<small>Solo mientras esté marcado</small></span><button class="switch ${todo() ? 'on' : ''}" id="admTodo"></button></div>
+        <div class="ajuste"><span>Personajes nuevos<small>Activado: 8 robots distintos para todos los usuarios. Desactivado: Lucas con colores</small></span><button class="switch ${PJ_ON ? 'on' : ''}" id="admPj"></button></div>
         ${n ? `<p style="margin:6px 0;font-size:14px">Probar un ejercicio en el planeta <select id="admLv">${PLANETAS.map((p, i) => `<option value="${i}" ${i === nivelActual() ? 'selected' : ''}>${i + 1}. ${p.letra}</option>`).join('')}</select></p>
         <div class="adm-grid">${Object.keys(TIPOS).map(t => `<button class="btn" data-tipo="${t}">${TIPOS[t]}</button>`).join('')}</div>` : '<p style="font-size:14px;color:var(--txt2)">Elige un lector para probar ejercicios.</p>'}
       </div>
@@ -1464,6 +1470,13 @@ var ADMIN = (() => {
       <button class="btn btn-mini" id="admSalir">Salir del modo admin</button>`);
     const out = t => { $('#admOut').innerHTML = t; };
     $('#admTodo').onclick = () => { const v = !todo(); LS.set('adm_todo', v); $('#admTodo').classList.toggle('on', v); SFX.clic(); if (pantallaActual === 'pMapa') pintaMapa(); toast(v ? 'Planetas desbloqueados (modo prueba)' : 'Candados activados otra vez'); };
+    $('#admPj').onclick = async () => {
+      const v = !PJ_ON; const r = await op('pjNuevos', { valor: v });
+      if (!r.ok) return toast(r.error || 'No se pudo cambiar');
+      PJ_ON = v; LS.set('pjOn', v); $('#admPj').classList.toggle('on', v); SFX.clic();
+      toast(v ? 'Personajes nuevos activados para todos 🤖' : 'Vuelve Lucas con colores');
+      ON_PANTALLA[pantallaActual] && ON_PANTALLA[pantallaActual]();
+    };
     $$('[data-tipo]').forEach(b => b.onclick = () => probarTipo(b.dataset.tipo, +$('#admLv').value));
     const guarda = () => { d._t = Date.now(); guardarNino(); if (pantallaActual === 'pMapa') ON_PANTALLA.pMapa(); };
     if (n) {
@@ -1512,7 +1525,7 @@ var ADMIN = (() => {
    El admin confirma el pago desde el modo admin.
    ===================================================================== */
 var LICENCIA = (() => {
-  const PAGO = 'https://mypos.com/@futurmovil/2,99';
+  const PAGO = 'https://mypos.com/@futurmovil/2.99';   // myPOS necesita punto decimal (con coma sale 0,00)
   const WA = '34633200100';
   function cartel(vista) {
     const l = (SES && SES.lic) || { dias: 15, prueba: 15, precio: '2,99' };
