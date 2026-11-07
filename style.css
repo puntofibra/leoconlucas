@@ -510,3 +510,7 @@ img.cu-lucas { transform: none; }
 /* Lucas dormido */
 img.cu-lucas { width: 230px; animation: respiraImg 4s ease-in-out infinite; filter: drop-shadow(0 0 18px rgba(123,108,255,.55)); }
 @keyframes respiraImg { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-8px) scale(1.02); } }
+/* sin desplazamiento lateral (el fuego de los robots sobresale de la tarjeta) */
+.lista-ninos, .album, #pNuevo, #pPadres, #pLogin, #pCuento, .escenario { overflow-x: hidden; }
+.nino-card { overflow: hidden; }
+html, body { overscroll-behavior-x: none; }
