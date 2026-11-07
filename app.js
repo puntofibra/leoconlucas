@@ -546,15 +546,10 @@ $('#bInstalar').onclick = async () => {
 };
 $('#bCompartir').onclick = async () => {
   const txt = '¡Mira esta app para aprender a leer con Lucas! 🚀📚';
-  if (navigator.share) {
-    try {
-      const blob = await fetch('img/compartir.jpg').then(r => r.blob());
-      const f = new File([blob], 'leo-con-lucas.jpg', { type: 'image/jpeg' });
-      if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: 'Leo con Lucas', text: txt + ' ' + CFG.APP_URL }); return; }
-    } catch (e) { if (e && e.name === 'AbortError') return; }
-    try { await navigator.share({ title: 'Leo con Lucas', text: txt, url: CFG.APP_URL }); } catch (e) {}
-    return;
-  }
+  /* Solo texto + enlace (sin adjuntar la imagen): así WhatsApp crea la tarjeta con la
+     ilustración (og:image) y el enlace se puede pulsar. Si se adjunta la imagen, WhatsApp
+     la publica como foto y el enlace del pie no funciona. */
+  if (navigator.share) { try { await navigator.share({ title: 'Leo con Lucas', text: txt + ' ' + CFG.APP_URL }); } catch (e) {} return; }
   modal(`<h2>💬 Compartir</h2>
     <a class="btn btn-verde" target="_blank" href="https://wa.me/?text=${encodeURIComponent(txt + ' ' + CFG.APP_URL)}">WhatsApp</a>
     <a class="btn btn-azul" href="mailto:?subject=Leo%20con%20Lucas&body=${encodeURIComponent(txt + ' ' + CFG.APP_URL)}">Correo</a>
