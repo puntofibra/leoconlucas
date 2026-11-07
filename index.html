@@ -93,8 +93,8 @@
   <header class="cabecera">
     <img src="img/logo-futurmovil.png" class="logo-mini" alt="FuturMovil">
     <div class="cab-acciones">
-      <button class="btn-ico" data-ir="padres" title="Zona de papás">👨‍👩‍👧</button>
-      <button class="btn-ico" id="bSalir" title="Salir">⏻</button>
+      <button class="btn-ico ico-img" data-ir="padres" title="Zona de papás"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#17ff5f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="6" r="2.6"/><circle cx="16" cy="6" r="2.6"/><circle cx="12" cy="13" r="2"/><path d="M3.5 20v-3.5a4.5 4.5 0 0 1 9 0M11.5 20v-3.5a4.5 4.5 0 0 1 9 0"/></svg></button>
+      <button class="btn-ico ico-img" id="bSalir" title="Cerrar sesión"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#ff6b78" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/></svg></button>
     </div>
   </header>
   <h2 class="titulo-pantalla">¿Quién va a leer hoy?</h2>
@@ -114,7 +114,7 @@
     <p class="etq">Elige su personaje</p>
     <div class="colores" id="nColores"></div>
     <button class="btn btn-verde btn-grande" id="bGuardarNino">🚀 ¡A LEER!</button>
-    <button class="btn btn-rojo btn-mini oculto" id="bBorrarNino">🗑️ Borrar este lector</button>
+    <button class="btn btn-rojo oculto" id="bBorrarNino">🗑️ Eliminar perfil</button>
   </div>
 </section>
 
@@ -135,7 +135,7 @@
   <div class="mapa-scroll" id="mapaScroll">
     <div class="mapa" id="mapa"></div>
   </div>
-  <button class="btn btn-mision" id="bDiaria"><span>🌟 MISIÓN DEL DÍA</span><small id="bDiariaSub">Repaso sorpresa</small></button>
+  <div class="fila-mapa"><button class="btn btn-mision" id="bDiaria"><span>🌟 MISIÓN DEL DÍA</span><small id="bDiariaSub">Repaso sorpresa</small></button><button class="btn btn-cuento" id="bCuento"><span>🌙 CUENTO</span><small id="bCuentoSub">de hoy</small></button></div>
 </section>
 
 <!-- ============ JUEGO ============ -->
@@ -152,6 +152,13 @@
     </aside>
     <main class="escenario" id="escenario"></main>
   </div>
+</section>
+
+<!-- ============ CUENTO DE CADA DÍA ============ -->
+<section id="pCuento" class="pantalla">
+  <div class="noche"></div>
+  <header class="cabecera"><button class="btn-ico" id="bCuentoSalir">←</button><h2 id="cuTitulo">Un cuento cada día</h2><button class="btn-ico" id="bCuentoDias" title="Otros días">📅</button></header>
+  <div class="cuento-cuerpo" id="cuCuerpo"></div>
 </section>
 
 <!-- ============ RESULTADO ============ -->

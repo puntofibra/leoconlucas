@@ -97,9 +97,14 @@ const FX = (() => {
     for (const p of P) {
       p.x += p.vx; p.y += p.vy; p.vy += p.g; p.vx *= .985; p.r += p.vr; p.v -= p.d;
       x.save(); x.globalAlpha = Math.max(0, Math.min(1, p.v)); x.translate(p.x, p.y); x.rotate(p.r);
-      if (p.tipo === 'estrella') { x.fillStyle = p.c; estrella(x, p.s); }
+      if (p.fase != null) { p.fase += p.vf; p.x += Math.sin(p.fase) * p.ondula * d; if (p.vy > 0) { p.vy *= .985; p.vx *= .97; } }
+      const giro = p.fase != null ? Math.cos(p.fase * 1.7) : 1;   // efecto de voltereta 3D
+      if (p.tipo === 'estrella') { x.scale(1, Math.abs(giro) * .7 + .3); x.fillStyle = p.c; x.shadowColor = p.c; x.shadowBlur = 8; estrella(x, p.s); }
       else if (p.tipo === 'punto') { x.fillStyle = p.c; x.shadowColor = p.c; x.shadowBlur = 10; x.beginPath(); x.arc(0, 0, p.s, 0, 7); x.fill(); }
-      else { x.fillStyle = p.c; x.fillRect(-p.s, -p.s / 2, p.s * 2, p.s); }
+      else if (p.tipo === 'circulo') { x.scale(giro, 1); x.fillStyle = p.c; x.beginPath(); x.arc(0, 0, p.s * .7, 0, 7); x.fill(); x.fillStyle = 'rgba(255,255,255,.45)'; x.beginPath(); x.arc(-p.s * .2, -p.s * .2, p.s * .25, 0, 7); x.fill(); }
+      else if (p.tipo === 'cinta') { x.strokeStyle = p.c; x.lineWidth = p.s * .45; x.lineCap = 'round'; x.beginPath(); for (let k = 0; k <= 6; k++) { const yy = (k - 3) * p.s * .55; const xx = Math.sin(k * 1.1 + p.fase * 2) * p.s * .6; k ? x.lineTo(xx, yy) : x.moveTo(xx, yy); } x.stroke(); }
+      else if (p.tipo === 'brillo') { const t = (Math.sin(p.fase * 3) + 1) / 2; x.fillStyle = '#fff'; x.shadowColor = p.c; x.shadowBlur = 14; x.globalAlpha *= .4 + t * .6; x.beginPath(); for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4, rr = k % 2 ? p.s * .18 : p.s * (.6 + t * .4); x.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } x.closePath(); x.fill(); }
+      else { x.scale(1, giro); x.fillStyle = p.c; x.fillRect(-p.s, -p.s / 2, p.s * 2, p.s); x.fillStyle = 'rgba(255,255,255,.25)'; x.fillRect(-p.s, -p.s / 2, p.s * 2, p.s * .3); }
       x.restore();
     }
     if (P.length) requestAnimationFrame(bucle); else { vivo = false; x.clearRect(0, 0, W, H); }
@@ -109,7 +114,17 @@ const FX = (() => {
   const d = devicePixelRatio;
   return {
     confeti(n = 140) {
-      for (let i = 0; i < n; i++) P.push({ x: W / 2 + (Math.random() - .5) * W * .3, y: H * .35, vx: (Math.random() - .5) * 22 * d, vy: (-Math.random() * 18 - 6) * d, g: .45 * d, r: Math.random() * 6, vr: (Math.random() - .5) * .4, s: (5 + Math.random() * 6) * d, c: pick(COL), v: 2.2, d: .012, tipo: Math.random() < .25 ? 'estrella' : 'papel' });
+      /* dos cañones laterales + lluvia desde arriba, con cintas, estrellas, círculos y purpurina que giran en 3D */
+      const tipos = ['papel', 'papel', 'cinta', 'estrella', 'circulo', 'brillo'];
+      const lanza = (x, y, ang, fuerza, k) => {
+        for (let i = 0; i < k; i++) {
+          const a = ang + (Math.random() - .5) * .7, v = (fuerza * (.6 + Math.random() * .6)) * d;
+          P.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: .32 * d, r: Math.random() * 6, vr: (Math.random() - .5) * .35, s: (5 + Math.random() * 7) * d, c: pick(COL), v: 2.6, d: .009 + Math.random() * .004, tipo: pick(tipos), fase: Math.random() * 6, vf: .08 + Math.random() * .15, ondula: Math.random() * 2 });
+        }
+      };
+      const k = Math.round(n / 3);
+      lanza(0, H * .75, -Math.PI / 3, 26, k); lanza(W, H * .75, -Math.PI * 2 / 3, 26, k);
+      for (let i = 0; i < k; i++) P.push({ x: Math.random() * W, y: -20 * d, vx: (Math.random() - .5) * 3 * d, vy: (2 + Math.random() * 3) * d, g: .06 * d, r: Math.random() * 6, vr: (Math.random() - .5) * .2, s: (5 + Math.random() * 6) * d, c: pick(COL), v: 3, d: .008, tipo: pick(tipos), fase: Math.random() * 6, vf: .08 + Math.random() * .12, ondula: 1 + Math.random() * 2 });
       arranca();
     },
     chispas(elm, n = 26, col) {
@@ -377,7 +392,7 @@ function inicioEdad(e) { return e >= 8 ? 9 : e >= 7 ? 5 : 0; }
 function desbloqueado(i) {
   const d = datos();
   if (i === 0 || d.aj.todo || ADMIN.todo() || i <= inicioEdad(NINO.edad)) return true;
-  const p = d.plan[i - 1]; return !!(p && p.m >= 2);
+  const p = d.plan[i - 1]; return !!(p && (p.m >= 2 || p.e >= 3));
 }
 function nivelActual() { let i = 0; while (i < PLANETAS.length - 1 && desbloqueado(i + 1)) i++; return i; }
 function aplicaAjustes() {
@@ -497,7 +512,15 @@ $('#bInstalar').onclick = async () => {
 };
 $('#bCompartir').onclick = async () => {
   const txt = '¡Mira esta app para aprender a leer con Lucas! 🚀📚';
-  if (navigator.share) { try { await navigator.share({ title: 'Leo con Lucas', text: txt, url: CFG.APP_URL }); } catch (e) {} return; }
+  if (navigator.share) {
+    try {
+      const blob = await fetch('img/compartir.jpg').then(r => r.blob());
+      const f = new File([blob], 'leo-con-lucas.jpg', { type: 'image/jpeg' });
+      if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: 'Leo con Lucas', text: txt + ' ' + CFG.APP_URL }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    try { await navigator.share({ title: 'Leo con Lucas', text: txt, url: CFG.APP_URL }); } catch (e) {}
+    return;
+  }
   modal(`<h2>💬 Compartir</h2>
     <a class="btn btn-verde" target="_blank" href="https://wa.me/?text=${encodeURIComponent(txt + ' ' + CFG.APP_URL)}">WhatsApp</a>
     <a class="btn btn-azul" href="mailto:?subject=Leo%20con%20Lucas&body=${encodeURIComponent(txt + ' ' + CFG.APP_URL)}">Correo</a>
@@ -536,13 +559,14 @@ ON_PANTALLA.pPerfiles = () => {
   const L = $('#listaNinos'); L.innerHTML = '';
   NINOS.forEach((n, i) => {
     NINO = n; const d = datos();
-    const c = el('button', 'nino-card', `<button class="editar" title="Editar">✏️</button>
+    const c = el('div', 'nino-card', `<button class="editar" title="Editar perfil">✏️</button>
       ${robotHTML(n.color, 'senala', 'card-robot')}
       <h3>${esc(n.nombre)}</h3><p>${n.edad} años · ⭐ ${d.est} · 🔥 ${d.racha.n}</p>`);
     c.onclick = e => {
-      if (e.target.closest('.editar')) { editarNino(n); return; }
+      if (e.target.closest('.editar')) { e.stopPropagation(); SFX.clic(); editarNino(n); return; }
       SFX.clic(); entrarNino(n);
     };
+    c.setAttribute('role', 'button'); c.tabIndex = 0;
     L.appendChild(c);
   });
   NINO = null;
@@ -579,7 +603,7 @@ $('#bGuardarNino').onclick = async () => {
   if (editando) { NINO = null; ir('perfiles'); } else entrarNino(n);
 };
 $('#bBorrarNino').onclick = async () => {
-  if (!editando || !await pregunta({ icono: '🗑️', titulo: `¿Borrar a ${esc(editando.nombre)}?`, texto: 'Se perderán sus planetas, estrellas y pegatinas. Esto no se puede deshacer.', si: 'Borrar', peligro: true })) return;
+  if (!editando || !await pregunta({ icono: '🗑️', titulo: `¿Borrar a ${esc(editando.nombre)}?`, texto: 'Se perderán <b>todos sus logros</b>: planetas conquistados, estrellas, pegatinas, chispas, racha de días y cuentos escuchados. Esto no se puede deshacer.', si: 'Eliminar perfil', no: 'No, mantener', peligro: true })) return;
   await api('borrarNino', { token: SES.token, id: editando.id });
   NINOS = NINOS.filter(x => x !== editando); LS.set('ninos', NINOS); ir('perfiles');
 };
@@ -602,6 +626,7 @@ ON_PANTALLA.pMapa = () => {
   const hecha = d.diaria === hoy();
   $('#bDiaria').classList.toggle('hecha', hecha);
   $('#bDiariaSub').textContent = hecha ? '¡Completada! Vuelve mañana 😉' : 'Repaso sorpresa · premio seguro 🎁';
+  { const hc = (d.cuentos || {})[hoy()]; $('#bCuentoSub').textContent = hc != null ? 'escuchado ⭐' + hc : 'de hoy'; $('#bCuento').classList.toggle('hecha', hc != null); }
   pintaMapa();
 };
 function pintaMapa() {
@@ -627,12 +652,17 @@ function pintaMapa() {
       <span class="letra${larga ? ' larga' : ''}">${bloq ? '🔒' : p.letra}</span>
       ${pl.e ? `<span class="est">${[0, 1, 2].map(k => `<img src="img/estrella-${k < pl.e ? 'on' : 'off'}.png" alt="">`).join('')}</span>` : ''}
       <span class="nombre">${p.nombre}</span>`;
-    b.onclick = () => { SFX.clic(); if (bloq) { SFX.mal(); VOZ.decir('Ese planeta aún está bloqueado. ¡Completa el anterior para llegar!'); b.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'none' }], 300); return; } abrePlaneta(i); };
+    b.onclick = async () => { SFX.clic(); if (bloq) { SFX.mal(); VOZ.decir('Ese planeta aún está bloqueado. ¡Completa el anterior para llegar!'); b.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'none' }], 300); return; }
+      if (MAPA.volando) return;
+      if (MAPA.donde !== i) await volarA(i);
+      abrePlaneta(i); };
     M.appendChild(b);
   });
   const nave = el('span', 'nave-mapa'); nave.innerHTML = robotHTML(NINO.color, 'vuela'); nave.firstChild.dataset.fuerza = '1.4';
   const SC = $('#mapaScroll');
   const centra = (y, suave) => { SC.style.scrollBehavior = suave ? 'smooth' : 'auto'; SC.scrollTop = Math.max(0, y - SC.clientHeight / 2); };
+  if (MAPA.nino !== NINO || MAPA.donde == null || MAPA.donde > act || !desbloqueado(MAPA.donde)) MAPA.donde = act;
+  MAPA.nino = NINO; MAPA.nave = nave; MAPA.pos = pos; MAPA.centra = centra; MAPA.volando = false; MAPA.M = M;
   if (VIAJE && VIAJE.h === act && VIAJE.d < act) {
     const d = VIAJE.d; VIAJE = null;
     const destino = M.querySelectorAll('.planeta')[act];
@@ -641,13 +671,13 @@ function pintaMapa() {
     requestAnimationFrame(() => centra(pos[d].y, false));
     setTimeout(() => {
       const dx = pos[act].x - pos[d].x, dy = pos[act].y - pos[d].y;
-      nave.classList.add('viajando'); nave.firstChild.dataset.fuerza = '2.6'; nave.style.setProperty('--vuelo', dx < 0 ? 'scaleX(-1) rotate(-22deg)' : 'rotate(-22deg)');
+      nave.classList.add('viajando'); nave.firstChild.dataset.fuerza = '2.6'; nave.style.transform = orienta(dx, dy) + ' scale(1.15)';
       nave.style.transition = 'left 2.2s cubic-bezier(.55,0,.35,1), top 2.2s cubic-bezier(.55,0,.35,1)';
       nave.style.left = pos[act].x + 'px'; nave.style.top = pos[act].y + 'px';
       SFX.woosh(); ESTELA.start(nave, M); centra(pos[act].y, true);
       VOZ.decir(pick(NARRADOR.viaje));
       setTimeout(() => {
-        ESTELA.stop(); nave.classList.remove('viajando'); nave.firstChild.dataset.fuerza = '1.4';
+        ESTELA.stop(); nave.classList.remove('viajando'); nave.firstChild.dataset.fuerza = '1.4'; nave.style.transform = dx < 0 ? 'scaleX(-1)' : ''; MAPA.donde = act;
         destino.classList.remove('bloq', 'por-abrir'); destino.classList.add('recien');
         destino.querySelector('.letra').textContent = PLANETAS[act].letra;
         SFX.planeta(); FX.chispas(destino, 50); FX.confeti(90);
@@ -655,9 +685,40 @@ function pintaMapa() {
       }, 2300);
     }, 900);
   } else {
-    nave.style.left = pos[act].x + 'px'; nave.style.top = pos[act].y + 'px'; M.appendChild(nave);
-    requestAnimationFrame(() => centra(pos[act].y, false));
+    const dd = MAPA.donde; if (MAPA.mira < 0) nave.style.transform = 'scaleX(-1)';
+    nave.style.left = pos[dd].x + 'px'; nave.style.top = pos[dd].y + 'px'; M.appendChild(nave);
+    requestAnimationFrame(() => centra(pos[dd].y, false));
   }
+}
+/* ---- vuelo del robot entre planetas: mira y se inclina hacia el destino ---- */
+var MAPA = { donde: null, mira: 1 };
+function orienta(dx, dy) {
+  const th = Math.atan2(dy, dx), lim = 40 * Math.PI / 180, cl = v => Math.max(-lim, Math.min(lim, v));
+  if (dx >= 0) return `rotate(${cl(th)}rad)`;
+  let ph = th - Math.PI; if (ph < -Math.PI) ph += 2 * Math.PI; if (ph > Math.PI) ph -= 2 * Math.PI;
+  return `rotate(${cl(ph)}rad) scaleX(-1)`;
+}
+function volarA(i) {
+  return new Promise(res => {
+    const { nave, pos, centra, M } = MAPA; const d0 = MAPA.donde;
+    if (!nave || d0 == null) { MAPA.donde = i; res(); return; }
+    const a = pos[d0], b = pos[i], dx = b.x - a.x, dy = b.y - a.y, dist = Math.hypot(dx, dy);
+    const dur = Math.min(2600, Math.max(900, dist * 2.4));   // cerca: normal; lejos: más rápido (máx. ~2,6 s)
+    MAPA.volando = true; MAPA.mira = dx < 0 ? -1 : 1;
+    nave.style.transition = 'transform .35s ease-out'; nave.style.transform = orienta(dx, dy) + ' scale(1.1)';
+    nave.classList.add('viajando'); nave.firstChild.dataset.fuerza = String(1.8 + Math.min(1.4, dist / 600));
+    SFX.woosh(); ESTELA.start(nave, M);
+    setTimeout(() => {
+      nave.style.transition = `left ${dur}ms cubic-bezier(.5,0,.3,1), top ${dur}ms cubic-bezier(.5,0,.3,1), transform .35s ease-out`;
+      nave.style.left = b.x + 'px'; nave.style.top = b.y + 'px'; centra(b.y, true);
+    }, 180);
+    setTimeout(() => {
+      ESTELA.stop(); nave.classList.remove('viajando'); nave.firstChild.dataset.fuerza = '1.4';
+      nave.style.transform = MAPA.mira < 0 ? 'scaleX(-1)' : '';
+      MAPA.donde = i; MAPA.volando = false; FX.chispas(M.querySelectorAll('.planeta')[i], 18); SFX.pop();
+      setTimeout(res, 300);
+    }, dur + 220);
+  });
 }
 function abrePlaneta(i) {
   const p = PLANETAS[i], pl = datos().plan[i] || { m: 0, e: 0 };
@@ -667,7 +728,7 @@ function abrePlaneta(i) {
     <p style="margin:0;color:var(--txt2)">${esCuentos ? 'Cuentos y lecturas largas' : i === 0 ? 'Las vocales' : 'Aprendemos: ' + p.letra}</p>
     ${p.silabas.length ? `<div class="silabas-muestra">${p.silabas.slice(0, 10).map(s => `<button data-s="${s}">${s}</button>`).join('')}</div>` : ''}
     <div class="misiones-dots">${[0, 1, 2].map(k => `<span class="${pl.m > k ? 'on' : ''}"></span>`).join('')}</div>
-    <small style="color:var(--txt2)">${pl.m >= 2 ? '¡Planeta conquistado! Sigue practicando para ganar estrellas.' : 'Completa 2 misiones para abrir el siguiente planeta'}</small>
+    <small style="color:var(--txt2)">${pl.m >= 2 || pl.e >= 3 ? '¡Planeta conquistado! Puedes volver cuando quieras para practicar.' : 'Consigue 3 estrellas en una misión (o completa 2 misiones) para abrir el siguiente planeta'}</small>
     <button class="btn btn-verde btn-grande" id="bDespegar">🚀 ¡DESPEGAR!</button>
     <button class="btn btn-mini" onclick="cerrarModal()">Volver</button>`);
   $$('.silabas-muestra button').forEach(b => b.onclick = () => { SFX.pieza(); VOZ.decir(sv(b.dataset.s), { rate: .8 }); });
@@ -792,8 +853,8 @@ RENDER.escucha = (ej, E) => {
   E.appendChild(el('div', 'leer m', '👂')); E.appendChild(big);
   E.appendChild(opciones(ej.opts, ej.opts.length === 3 ? 'tres' : '', o => `<span class="opt-txt">${o}</span>`, o => o === ej.x));
   ej.repetir = decirX;
-  const t = instr('escucha', ej.x); burbuja(t.replace(ej.x, '🔊'));
-  VOZ.decir(t.replace(ej.x, '')).then(() => decirX());
+  const plt = pick(NARRADOR.ins.escucha); burbuja(plt.replace('{x}', '🔊'));
+  VOZ.decir(plt.replace('{x}', '')).then(() => decirX());
 };
 RENDER.globos = (ej, E) => {
   let cuenta = 0; const META = 4;
@@ -1483,4 +1544,165 @@ var LICENCIA = (() => {
     cartel('pagar'); return true;
   }
   return { comprobar, cartel };
+})();
+
+/* =====================================================================
+   UN CUENTO CADA DÍA · 365 cuentos (cuentos/MM.json), uno por fecha.
+   Lucas lo narra con ilustraciones; después 10 preguntas habladas que
+   se responden tocando la tarjeta o diciéndolo en voz alta. Cada acierto
+   enciende una estrella de la constelación.
+   ===================================================================== */
+var CUENTO = (() => {
+  const cache = {};
+  const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  const DORMIDO_LISTO = false;   // true cuando Manu suba img/lucas/dormido.png
+  let C = null, fecha = null, parar = false, enPregunta = false, rec = null;
+  async function carga(f) {
+    const mm = String(f.getMonth() + 1).padStart(2, '0');
+    if (!cache[mm]) { const r = await fetch('cuentos/' + mm + '.json'); if (!r.ok) throw new Error('sin cuento'); cache[mm] = await r.json(); }
+    const lista = cache[mm]; return lista.find(c => c.d === f.getDate()) || lista[lista.length - 1];
+  }
+  const claveF = f => f.getFullYear() + '-' + String(f.getMonth() + 1).padStart(2, '0') + '-' + String(f.getDate()).padStart(2, '0');
+  const lucasDuerme = () => DORMIDO_LISTO ? `<img src="img/lucas/dormido.png" class="cu-lucas" alt="">`
+    : `<div class="cu-lucas-wrap"><span class="robot cu-lucas" data-pose="lucas-vuela" data-fuerza=".6"><canvas class="fuego"></canvas><img src="img/lucas/vuela.png" alt=""></span><div class="zzz"><b>Z</b><b>Z</b><b>Z</b></div></div>`;
+  function cuerpo(html) { $('#cuCuerpo').innerHTML = html; }
+  async function abrir(f) {
+    fecha = f || new Date(); parar = false; enPregunta = false;
+    SFX.musica(false); ir('cuento');
+    cuerpo(`<div class="cu-portada">${lucasDuerme()}<p class="dlg-txt">Buscando el cuento…</p></div>`);
+    try { C = await carga(fecha); } catch (e) { cuerpo(`<div class="cu-portada">${lucasDuerme()}<p class="dlg-txt">No he podido cargar el cuento. Comprueba la conexión.</p></div>`); return; }
+    const d = datos(); const hecho = (d.cuentos || {})[claveF(fecha)];
+    $('#cuTitulo').textContent = esHoy(fecha) ? 'El cuento de hoy' : fecha.getDate() + ' de ' + MESES[fecha.getMonth()];
+    cuerpo(`<div class="cu-portada">
+      ${lucasDuerme()}
+      <div class="cu-fecha">${fecha.getDate()} de ${MESES[fecha.getMonth()]}</div>
+      <div class="cu-emoji">${C.e}</div>
+      <h2 class="cu-t">${esc(C.t)}</h2>
+      ${hecho != null ? `<p class="dlg-txt">Ya lo escuchaste: <b>${hecho}/10</b> estrellas ⭐</p>` : '<p class="dlg-txt">Ponte cómodo, tápate bien… ¡y a escuchar!</p>'}
+      <button class="btn btn-cuento btn-grande" id="cuPlay">▶ ESCUCHAR EL CUENTO</button>
+    </div>`);
+    $('#cuPlay').onclick = () => { SFX.clic(); narrar(); };
+    VOZ.decir(`${NINO.nombre}, hoy te voy a contar: ${C.t}.`);
+  }
+  const esHoy = f => claveF(f) === claveF(new Date());
+  async function narrar() {
+    parar = false;
+    for (let k = 0; k < C.p.length; k++) {
+      if (parar || pantallaActual !== 'pCuento') return;
+      const P = C.p[k];
+      cuerpo(`<div class="cu-escena">
+        <div class="cu-prog">${C.p.map((_, j) => `<i class="${j < k ? 'on' : j === k ? 'ya' : ''}"></i>`).join('')}</div>
+        <div class="cu-ilus" id="cuIlus">${[...P.i].filter(ch => ch.trim()).length ? splitEmoji(P.i).map((e, j) => `<span style="animation-delay:${j * .25}s">${e}</span>`).join('') : C.e}</div>
+        <div class="cu-texto" id="cuTexto">${P.x.split(' ').map(w => `<span>${esc(w)}</span>`).join(' ')}</div>
+        <div class="fila-btns"><button class="btn" id="cuPausa">⏸ Pausa</button><button class="btn" id="cuSalta">⏭ Siguiente</button></div>
+      </div>`);
+      let saltar = false;
+      $('#cuSalta').onclick = () => { SFX.clic(); saltar = true; VOZ.callar(); };
+      $('#cuPausa').onclick = async () => {
+        SFX.clic(); parar = true; VOZ.callar();
+        if (await pregunta({ icono: '🌙', titulo: 'Cuento en pausa', texto: '¿Seguimos con el cuento?', si: '▶ Seguir', no: 'Salir' })) { parar = false; C._desde = k; narrarDesde(k); } else ir('mapa');
+      };
+      await leeParrafo(P.x);
+      if (parar) return;
+      if (!saltar) await esperar(450);
+    }
+    if (!parar) preguntas();
+  }
+  function narrarDesde(k) { const p = C.p; C = Object.assign({}, C, { p: p.slice(k) }); narrar().then(() => { C.p = p; }); }
+  function splitEmoji(s) { try { return [...new Intl.Segmenter('es', { granularity: 'grapheme' }).segment(s)].map(x => x.segment).filter(x => x.trim()); } catch (e) { return [...s]; } }
+  function leeParrafo(x) {
+    const spans = [...document.querySelectorAll('#cuTexto span')], palabras = x.split(' ');
+    const starts = []; let pos = 0; palabras.forEach(w => { starts.push(pos); pos += w.length + 1; });
+    return VOZ.decir(x, { rate: .9, pitch: 1, onBoundary: e => {
+      const idx = starts.findIndex((st, i) => e.charIndex >= st && (i === starts.length - 1 || e.charIndex < starts[i + 1]));
+      spans.forEach(s => s.classList.remove('lee')); if (spans[idx]) { spans[idx].classList.add('lee'); }
+    } });
+  }
+  async function preguntas() {
+    enPregunta = true;
+    let estrellas = 0;
+    cuerpo(`<div class="cu-preg">
+      <div class="constelacion" id="cuConst">${Array.from({ length: 10 }, (_, k) => `<i style="--a:${k * 36}deg"></i>`).join('')}<div class="cu-luna">🌙</div></div>
+      <p class="dlg-txt" id="cuPregTxt">¡Fin del cuento! Ahora, vamos a ver si estabas atento. Cada respuesta buena enciende una estrella.</p>
+      <div id="cuPregZona"></div>
+    </div>`);
+    await VOZ.decir('¡Colorín, colorado, este cuento se ha acabado! Ahora te haré diez preguntas. Cada vez que aciertes, se encenderá una estrella en el cielo. ¡Vamos allá!');
+    for (let k = 0; k < C.q.length; k++) {
+      if (pantallaActual !== 'pCuento') return;
+      const ok = await unaPregunta(C.q[k], k);
+      if (ok) { estrellas++; const st = $('#cuConst').children[k]; st.classList.add('on'); FX.chispas(st, 16, '#ffd23f'); SFX.estrella(Math.min(2, k % 3)); }
+      await esperar(500);
+    }
+    fin(estrellas);
+  }
+  function unaPregunta(q, k) {
+    return new Promise(async res => {
+      const ords = q.o.map((t, i) => ({ t, ok: i === q.k }));
+      $('#cuPregTxt').innerHTML = `<b>Pregunta ${k + 1} de 10</b><br>${esc(q.p)}`;
+      $('#cuPregZona').innerHTML = `<div class="opciones lista cu-opts">${ords.map((o, i) => `<button class="opt" data-i="${i}"><span class="opt-txt" style="font-size:24px">${esc(o.t)}</span></button>`).join('')}</div>
+        ${SR ? '<button class="btn btn-micro-mini" id="cuMic">🎤 Decirlo en voz alta</button>' : ''}`;
+      let fallos = 0, hecho = false;
+      const termina = (bien, btn) => {
+        if (hecho) return; hecho = true; try { rec && rec.abort(); } catch (e) {}
+        $$('.cu-opts .opt').forEach(b => b.classList.add('apagada'));
+        const buena = $$('.cu-opts .opt')[q.k]; buena.classList.remove('apagada'); buena.classList.add('ok');
+        if (bien) { SFX.ok(); VOZ.decir(pick(NARRADOR.bien)).then(() => res(true)); }
+        else { VOZ.decir('Era: ' + q.o[q.k].replace(/^\S+\s/, '') + '. ¡La próxima seguro que sí!').then(() => res(false)); }
+      };
+      const elige = i => {
+        if (hecho) return;
+        const b = $$('.cu-opts .opt')[i];
+        if (i === q.k) termina(fallos === 0, b);
+        else { fallos++; SFX.mal(); b.classList.add('mal', 'apagada'); if (fallos >= 2) termina(false); else VOZ.decir('Mmm, esa no. ¡Prueba otra!'); }
+      };
+      $$('.cu-opts .opt').forEach(b => b.onclick = () => elige(+b.dataset.i));
+      const mic = $('#cuMic');
+      if (mic) mic.onclick = () => {
+        VOZ.callar(); const norm = t => ENG.quitaTildes(String(t).toLowerCase()).replace(/[^a-zñü ]/g, ' ').replace(/\s+/g, ' ').trim();
+        try {
+          rec = new SR(); rec.lang = 'es-ES'; rec.maxAlternatives = 5; mic.classList.add('escucha'); mic.textContent = '👂 Te escucho…';
+          rec.onresult = e => {
+            const alts = [...e.results[0]].map(a => norm(a.transcript));
+            const idx = q.o.findIndex(o => { const ws = norm(o.replace(/^\S+\s/, '')).split(' ').filter(w => w.length > 2); return ws.length && alts.some(a => ws.some(w => a.includes(w))); });
+            if (idx >= 0) elige(idx); else VOZ.decir('No te he entendido bien. ¡Toca la respuesta!');
+          };
+          rec.onend = () => { mic.classList.remove('escucha'); mic.textContent = '🎤 Decirlo en voz alta'; };
+          rec.start();
+        } catch (e) {}
+      };
+      await VOZ.decir(q.p);
+      if (!hecho) await VOZ.decir(q.o.map((o, i) => ['¿', '¿', '¿'][i] + o.replace(/^\S+\s/, '') + '?').join(' '), { cola: true, rate: .95 });
+    });
+  }
+  function fin(n) {
+    const d = datos(); d.cuentos = d.cuentos || {}; const k = claveF(fecha);
+    const nuevo = d.cuentos[k] == null; d.cuentos[k] = Math.max(n, d.cuentos[k] || 0);
+    if (nuevo) d.chispas += n * 3; d._t = Date.now(); guardarNino();
+    const frase = n >= 9 ? '¡Constelación completa! Has escuchado el cuento como un campeón.' : n >= 6 ? '¡Muy bien! Has encendido muchas estrellas.' : '¡Bien hecho! Mañana encenderemos todavía más estrellas.';
+    cuerpo(`<div class="cu-portada">
+      ${lucasDuerme()}
+      <h2 class="cu-t">${n} de 10 estrellas ⭐</h2>
+      <div class="constelacion mini">${Array.from({ length: 10 }, (_, j) => `<i class="${j < n ? 'on' : ''}" style="--a:${j * 36}deg"></i>`).join('')}<div class="cu-luna">🌙</div></div>
+      <p class="dlg-txt">${frase}${nuevo ? `<br>+${n * 3} chispas ⚡` : ''}</p>
+      <p class="dlg-txt" style="font-size:20px">Buenas noches, ${esc(NINO.nombre)}. 💤</p>
+      <button class="btn btn-cuento" id="cuOtra">🔁 Escucharlo otra vez</button>
+      <button class="btn btn-mini" id="cuMapa">Volver al mapa</button>
+    </div>`);
+    if (n >= 6) FX.confeti(90);
+    $('#cuOtra').onclick = () => abrir(fecha); $('#cuMapa').onclick = () => ir('mapa');
+    VOZ.decir(frase + ' Buenas noches, ' + NINO.nombre + '. Que tengas dulces sueños.');
+  }
+  function dias() {
+    const hoy = new Date(); const d = datos();
+    const items = Array.from({ length: 14 }, (_, k) => new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - k));
+    modal(`<h2>📅 Cuentos de otros días</h2><div class="cu-dias">${items.map((f, k) => {
+      const h = (d.cuentos || {})[claveF(f)];
+      return `<button class="btn" data-k="${k}">${k === 0 ? 'Hoy' : k === 1 ? 'Ayer' : f.getDate() + ' de ' + MESES[f.getMonth()]}${h != null ? ` · ⭐${h}` : ''}</button>`;
+    }).join('')}</div><button class="btn btn-mini" onclick="cerrarModal()">Cerrar</button>`);
+    $$('.cu-dias [data-k]').forEach(b => b.onclick = () => { cerrarModal(); abrir(items[+b.dataset.k]); });
+  }
+  $('#bCuento').onclick = () => { SFX.clic(); if (LICENCIA.comprobar()) return; abrir(new Date()); };
+  $('#bCuentoSalir').onclick = () => { parar = true; VOZ.callar(); try { rec && rec.abort(); } catch (e) {} ir('mapa'); };
+  $('#bCuentoDias').onclick = () => { SFX.clic(); dias(); };
+  return { abrir };
 })();
