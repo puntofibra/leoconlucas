@@ -161,7 +161,9 @@ const ESTELA = (() => {
 const FUEGO = (() => {
   const ABAJO = { dir: Math.PI / 2, t: [[.344, .832, .062], [.424, .845, .07], [.511, .832, .062]] };
   const POSES = {
-    'lucas-senala': ABAJO, 'lucas-senala-capa': ABAJO, 'lucas-gamer': ABAJO,
+    'lucas-senala': { dir: Math.PI / 2, t: [[.274, .939, .078], [.375, .956, .088], [.485, .939, .078]] },
+    'lucas-senala-capa': { dir: Math.PI / 2, t: [[.369, .943, .069], [.457, .959, .077], [.554, .943, .069]] },
+    'lucas-gamer': { dir: Math.PI / 2, t: [[.244, .969, .091], [.362, .986, .103], [.49, .969, .091]] },
     'lucas-vuela': { dir: Math.PI * 1.04, t: [[.33, .775, .055], [.34, .86, .055]] },
     'chispa-senala': { dir: Math.PI / 2, t: [[.275, .925, .085], [.434, .97, .1], [.565, .905, .07]] },
     'chispa-vuela': { dir: Math.PI * 1.05, t: [[.15, .76, .06], [.18, .9, .06]] },
