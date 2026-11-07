@@ -515,14 +515,30 @@ $('#bSalir').onclick = async () => {
 
 /* instalar / compartir */
 let promptInstalar = null;
-addEventListener('beforeinstallprompt', e => { e.preventDefault(); promptInstalar = e; });
+const esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const enApp = () => matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches || navigator.standalone === true;
+function pintaInstalar() {
+  const ya = enApp();
+  ['#bInstalar', '#bPInstalar'].forEach(q => { const b = $(q); if (b) b.classList.toggle('oculto', ya); });
+}
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); promptInstalar = e; LS.del('instalada'); pintaInstalar(); });
+addEventListener('appinstalled', () => { promptInstalar = null; LS.set('instalada', true); pintaInstalar(); toast('¡Leo con Lucas instalada! Ya la tienes en tu pantalla de inicio 🚀', 3500); });
+setTimeout(pintaInstalar, 500);
 $('#bInstalar').onclick = async () => {
-  if (promptInstalar) { promptInstalar.prompt(); promptInstalar = null; return; }
-  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  modal(`<h2>📲 Instalar</h2>${ios
-    ? '<ol class="ios-pasos"><li>Toca el botón <b>Compartir</b> ⬆️ de Safari.</li><li>Elige <b>«Añadir a pantalla de inicio»</b>.</li><li>Pulsa <b>Añadir</b>. ¡Listo!</li></ol>'
-    : '<ol class="ios-pasos"><li>Abre el menú <b>⋮</b> del navegador.</li><li>Toca <b>«Instalar aplicación»</b> o <b>«Añadir a pantalla de inicio»</b>.</li></ol>'}
-    <button class="btn btn-verde" onclick="cerrarModal()">Entendido</button>`);
+  SFX.clic();
+  if (enApp()) { aviso({ icono: '✅', titulo: 'Ya está instalada', texto: 'Estás usando la app instalada. ¡Todo listo!' }); return; }
+  if (promptInstalar) {   // Android / Chrome / PC: instala directamente
+    promptInstalar.prompt();
+    const r = await promptInstalar.userChoice.catch(() => null); promptInstalar = null;
+    if (r && r.outcome === 'accepted') LS.set('instalada', true);
+    return;
+  }
+  if (esIOS) {
+    aviso({ icono: '📲', titulo: 'Instalar en iPhone', texto: '<ol class="ios-pasos"><li>Toca el botón <b>Compartir</b> ⬆️ de Safari.</li><li>Elige <b>«Añadir a pantalla de inicio»</b>.</li><li>Pulsa <b>Añadir</b>. ¡Listo!</li></ol>' });
+    return;
+  }
+  /* Android sin aviso de instalación: casi siempre es porque ya está instalada */
+  aviso({ icono: '✅', titulo: 'Ya la tienes instalada', texto: 'Leo con Lucas ya está en tu pantalla de inicio. Ábrela desde su icono 🤖 para usarla como app.' });
 };
 $('#bCompartir').onclick = async () => {
   const txt = '¡Mira esta app para aprender a leer con Lucas! 🚀📚';
@@ -1307,11 +1323,12 @@ function pintaPadres() {
 }
 function panelCuenta() {
   return `<div class="panel cristal"><h3>👤 Cuenta</h3><p style="margin:0 0 10px;color:var(--txt2)">${esc(SES ? SES.nombre + ' · ' + SES.email : '')}</p>
-    <div class="fila-btns" style="justify-content:flex-start"><button class="btn btn-mini" id="bPInstalar">📲 Instalar app</button><button class="btn btn-mini" id="bPCompartir">💬 Compartir app</button><button class="btn btn-mini btn-rojo" id="bPSalir">⏻ Cerrar sesión</button></div>
+    <div class="fila-btns" style="justify-content:flex-start"><button class="btn btn-mini" id="bPInstalar">📲 Instalar app</button><button class="btn btn-mini" id="bPCompartir">💬 Compartir app</button><button class="btn btn-mini btn-rojo" id="bPSalir">Cerrar sesión</button></div>
     <p style="color:var(--txt2);font-size:13px;margin:12px 0 0">Leo con Lucas · FuturMovil · Ayuda: <a style="color:var(--verde)" href="https://wa.me/34633200100?text=${encodeURIComponent('Hola, necesito ayuda con Leo con Lucas')}" target="_blank">WhatsApp</a></p></div>`;
 }
 function enlazaCuenta() {
   const a = $('#bPInstalar'), b = $('#bPCompartir'), c = $('#bPSalir');
+  pintaInstalar();
   if (a) a.onclick = () => $('#bInstalar').click(); if (b) b.onclick = () => $('#bCompartir').click(); if (c) c.onclick = () => $('#bSalir').click();
 }
 
@@ -1397,27 +1414,36 @@ var ADMIN = (() => {
     if (activo()) { panel(); return; }
     SFX.nfc ? SFX.nfc() : SFX.clic();
     if (!('NDEFReader' in window)) { modal(`<h2>🔑 Llave NFC</h2><p>Para entrar al modo admin abre la app en <b>Chrome de Android</b> con el NFC activado.</p><button class="btn btn-verde" onclick="cerrarModal()">Vale</button>`); return; }
-    modal(`<h2>🔑 Modo admin</h2><div class="nfc-anillo">📶</div><p id="nfcTxt">Comprobando…</p><button class="btn btn-mini" onclick="cerrarModal()">Cancelar</button>`);
-    const e0 = await api('nfcEstado', {});
+    modal(`<h2>🔑 Modo admin</h2><div class="nfc-anillo">📶</div><p id="nfcTxt">Preparando el lector…</p><button class="btn btn-mini" id="nfcCancel">Cancelar</button>`);
     const txt = t => { const e = $('#nfcTxt'); if (e) e.innerHTML = t; };
-    if (!e0.ok) { txt(e0.error || 'Sin conexión'); return; }
-    if (!e0.registrada && !(SES && SES.token)) { txt('La llave aún no está guardada. Entra primero con la cuenta de administrador.'); return; }
+    /* El lector se activa YA (antes de hablar con el servidor) y sigue activo unos segundos
+       después de leer: mientras la app está leyendo, Android no ejecuta lo que tenga
+       programado la tarjeta (abrir otra web, etc.). */
+    const ctrl = new AbortController(); let ocupado = false, hecho = false;
+    const cerrarLector = (ms) => setTimeout(() => { try { ctrl.abort(); } catch (e) {} }, ms || 0);
+    $('#nfcCancel').onclick = () => { cerrarLector(0); cerrarModal(); };
+    let r;
+    try { r = new NDEFReader(); await r.scan({ signal: ctrl.signal }); }
+    catch (err) { txt('No se puede usar el NFC: ' + (err && err.message || err)); return; }
+    const e0 = await api('nfcEstado', {});
+    if (!e0.ok) { txt(e0.error || 'Sin conexión'); cerrarLector(1500); return; }
+    if (!e0.registrada && !(SES && SES.token)) { txt('La llave aún no está guardada. Entra primero con la cuenta de administrador.'); cerrarLector(1500); return; }
     txt(e0.registrada ? 'Acerca tu llave a la parte de atrás del móvil' : 'Primera vez: acerca tu llave para <b>guardarla</b>');
-    try {
-      const ctrl = new AbortController(); const r = new NDEFReader();
-      await r.scan({ signal: ctrl.signal });
-      $('#modal').addEventListener('click', () => { if ($('#modal').classList.contains('oculto')) ctrl.abort(); });
-      r.onreadingerror = () => txt('No he podido leerla. Prueba otra vez.');
-      r.onreading = async ev => {
-        ctrl.abort(); const serial = ev.serialNumber || '';
-        if (!serial) { txt('Esa llave no tiene número de serie.'); return; }
-        txt('Verificando…');
-        const res = e0.registrada ? await api('nfcLogin', { serial }) : await api('nfcRegistrar', { token: SES.token, serial });
-        if (!res.ok) { SFX.mal(); txt(res.error || 'Llave no válida'); return; }
-        est = { t: res.adminToken, exp: Date.now() + 12 * 3600e3 }; LS.set('adm', est);
-        SFX.ok(); FX.confeti(60); cerrarModal(); badge(); toast(e0.registrada ? 'Modo admin activado 🛠️' : 'Llave guardada. Modo admin activado 🛠️'); panel();
-      };
-    } catch (err) { txt('No se puede usar el NFC: ' + (err && err.message || err)); }
+    r.onreadingerror = () => { if (!hecho) txt('No he podido leerla. Prueba otra vez.'); };
+    r.onreading = async ev => {
+      if (ocupado || hecho) return;     // lecturas repetidas mientras la llave sigue cerca: se ignoran
+      const serial = ev.serialNumber || '';
+      if (!serial) { txt('Esa llave no tiene número de serie.'); return; }
+      ocupado = true; txt('Verificando…');
+      const res = e0.registrada ? await api('nfcLogin', { serial }) : await api('nfcRegistrar', { token: SES.token, serial });
+      ocupado = false;
+      if (!res.ok) { SFX.mal(); txt((res.error || 'Llave no válida') + '<br><small>Puedes acercar otra llave.</small>'); return; }
+      hecho = true;
+      est = { t: res.adminToken, exp: Date.now() + 12 * 3600e3 }; LS.set('adm', est);
+      SFX.ok(); FX.confeti(60); cerrarModal(); badge(); toast(e0.registrada ? 'Modo admin activado 🛠️ · ya puedes retirar la llave' : 'Llave guardada. Modo admin activado 🛠️'); panel();
+      cerrarLector(5000);   // sigue "tapando" la tarjeta 5 s para que el móvil no la abra al retirarla
+    };
+    setTimeout(() => { if (!hecho) cerrarLector(0); }, 90000);
   }
   function salir() { est = null; LS.del('adm'); LS.del('adm_todo'); badge(); cerrarModal(); toast('Has salido del modo admin'); if (pantallaActual === 'pMapa') pintaMapa(); }
   async function op(o, extra) {
