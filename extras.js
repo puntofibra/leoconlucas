@@ -326,8 +326,7 @@ async function dibujaDiploma(g) {
   const im = imgPj(NINO.color, 'vuela'), ri = await cargaImg(im.src);
   if (ri) { let h = 250, w = ri.width / ri.height * h; if (w > 380) { w = 380; h = w * ri.height / ri.width; } try { x.filter = im.filter || 'none'; } catch (e) {} x.drawImage(ri, W - 95 - w, 95, w, h); x.filter = 'none'; }
   const lg = await cargaImg('img/logo-futurmovil.png');
-  if (lg) { const w = 300, h = w * 200 / 1024; x.drawImage(lg, W / 2 - w / 2, H - 150, w, h); }
-  x.fillStyle = '#a9c3d9'; x.font = '700 22px Andika, sans-serif'; x.fillText('puntofibra.github.io/leoconlucas', W / 2, H - 70);
+  if (lg) { const w = 300, h = w * 200 / 1024; x.drawImage(lg, W / 2 - w / 2, H - 135, w, h); }
   return cv.toDataURL('image/png');
 }
 async function verDiploma(g, nuevo) {
