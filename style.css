@@ -665,3 +665,14 @@ body, button, input, select, .btn, .titulo-pantalla, .cabecera h2, .btn-grande, 
 .fila-mapa .btn-cuento > small { white-space: nowrap; font-size: 12px; }
 @media (max-width: 380px) { .fila-mapa .btn-mision span, .fila-mapa .btn-cuento > span { font-size: 16px; } }
 .fila-mapa .cuento-ico { width: 54px; margin-top: -30px; }
+
+/* aviso de girar la pantalla */
+.gira { position: fixed; inset: 0; z-index: 999; display: none; place-items: center; background: radial-gradient(ellipse at 50% 30%, #13244d, #050a1a 70%); text-align: center; }
+.gira.ver { display: grid; }
+.gira-caja { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.gira-movil { font-size: 80px; animation: giraV 1.8s ease-in-out infinite; filter: drop-shadow(0 0 16px rgba(23,255,95,.6)); }
+.gira.a-horiz .gira-movil { animation-name: giraH; }
+@keyframes giraV { 0%, 25% { transform: rotate(-90deg); } 60%, 100% { transform: rotate(0deg); } }
+@keyframes giraH { 0%, 25% { transform: rotate(0deg); } 60%, 100% { transform: rotate(-90deg); } }
+.gira p { margin: 6px 0 0; font-size: 24px; font-weight: 700; color: var(--verde); text-shadow: var(--sombra-verde); }
+.gira small { color: var(--txt2); font-size: 15px; }
