@@ -32,6 +32,11 @@ function accion_(d) {
     case 'nuevaClave': return nuevaClave_(d);
     case 'guardarNino': return guardarNino_(d);
     case 'borrarNino': return borrarNino_(d);
+    case 'pagoAviso': return pagoAviso_(d);
+    case 'nfcEstado': return nfcEstado_();
+    case 'nfcRegistrar': return nfcRegistrar_(d);
+    case 'nfcLogin': return nfcLogin_(d);
+    case 'admin': return admin_(d);
     default: return { ok: false, error: 'Acción desconocida' };
   }
 }
@@ -70,10 +75,16 @@ function hoja_(nombre, cab) {
   }
   return h;
 }
-const hUsuarios_ = () => hoja_('Usuarios', ['email', 'nombre', 'hash', 'sal', 'google', 'alta', 'ultimo', 'tokens', 'codigo', 'codigoCad']);
+const CAB_USU = ['email', 'nombre', 'hash', 'sal', 'google', 'alta', 'ultimo', 'tokens', 'codigo', 'codigoCad', 'diasUso', 'ultDia', 'licencia', 'pagoAviso'];
+function hUsuarios_() {
+  const h = hoja_('Usuarios', CAB_USU);
+  if (h.getLastColumn() < CAB_USU.length) h.getRange(1, 1, 1, CAB_USU.length).setValues([CAB_USU]).setFontWeight('bold').setBackground('#0b1633').setFontColor('#17ff5f');
+  return h;
+}
 const hNinos_ = () => hoja_('Ninos', ['id', 'email', 'nombre', 'edad', 'color', 'nivel', 'estrellas', 'chispas', 'racha', 'minutos', 'ejercicios', 'aciertos%', 'actualizado', 'datos']);
 const hActividad_ = () => hoja_('Actividad', ['fecha', 'email', 'nino', 'nivel', 'estrellas', 'ejercicios']);
-const U = { email: 0, nombre: 1, hash: 2, sal: 3, google: 4, alta: 5, ultimo: 6, tokens: 7, codigo: 8, codigoCad: 9 };
+const U = { email: 0, nombre: 1, hash: 2, sal: 3, google: 4, alta: 5, ultimo: 6, tokens: 7, codigo: 8, codigoCad: 9, diasUso: 10, ultDia: 11, licencia: 12, pagoAviso: 13 };
+const DIAS_PRUEBA = 15, PRECIO = '2,99';
 
 function buscaUsuario_(email) {
   const h = hUsuarios_(), v = h.getDataRange().getValues();
@@ -104,7 +115,15 @@ function nuevoToken_(u) {
 }
 function sesion_(u, token) {
   const email = String(u.v[0]).toLowerCase();
-  return { ok: true, token, email, nombre: u.v[U.nombre], ninos: ninosDe_(email), admin: email === ADMIN };
+  /* cuenta los días distintos en que se usa la app (no días naturales) */
+  const hoy = Utilities.formatDate(new Date(), 'Europe/Madrid', 'yyyy-MM-dd');
+  let dias = Number(u.v[U.diasUso]) || 0;
+  if (String(u.v[U.ultDia]) !== hoy) { dias++; u.h.getRange(u.fila, U.diasUso + 1, 1, 2).setValues([[dias, hoy]]); }
+  const aviso = u.v[U.pagoAviso] ? new Date(u.v[U.pagoAviso]) : null;
+  const licencia = email === ADMIN || !!u.v[U.licencia];
+  return { ok: true, token, email, nombre: u.v[U.nombre], ninos: ninosDe_(email), admin: email === ADMIN,
+    lic: { ok: licencia, dias, prueba: DIAS_PRUEBA, bloqueo: !licencia && dias >= DIAS_PRUEBA,
+      avisado: !!aviso, espera: !!aviso && (Date.now() - aviso.getTime()) < 48 * 3600e3, precio: PRECIO } };
 }
 const emailOk_ = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || '');
 
@@ -231,8 +250,9 @@ function instalarResumen() {
   ScriptApp.newTrigger('resumenSemanal').timeBased().onWeekDay(ScriptApp.WeekDay.SUNDAY).atHour(19).inTimezone('Europe/Madrid').create();
   return 'Resumen semanal activado (domingos 19:00)';
 }
-function resumenSemanal() {
-  const usuarios = hUsuarios_().getDataRange().getValues().slice(1);
+function resumenSemanal(soloEmail) {
+  if (soloEmail && typeof soloEmail !== 'string') soloEmail = null;   // al lanzarlo el aviso automático llega un objeto
+  const usuarios = hUsuarios_().getDataRange().getValues().slice(1).filter(u => !soloEmail || String(u[0]).toLowerCase() === soloEmail);
   const ninos = hNinos_().getDataRange().getValues().slice(1);
   const PL = ['a e i o u', 'm', 'p', 'l', 's', 't', 'n', 'd', 'f', 'r rr', 'ca co cu', 'b', 'v', 'ga go gu', 'j ge gi', 'ñ', 'ch', 'll y', 'z ce ci', 'que qui', 'h', 'gue gui', 'pl br tr…', 'k w x', 'cuentos'];
   const dias = [];
@@ -274,4 +294,82 @@ function resumenSemanal() {
         '<p style="color:#789;font-size:12px">Puedes desactivar este correo en la Zona de papás → Ajustes. FuturMovil</p></div>'
     });
   });
+}
+
+
+/* ---------------- licencia (pago único tras 15 días de uso) ---------------- */
+function pagoAviso_(d) {
+  const u = porToken_(d.token); if (!u) return { ok: false, error: 'Sesión caducada' };
+  if (!u.v[U.pagoAviso]) u.h.getRange(u.fila, U.pagoAviso + 1).setValue(new Date());
+  try {
+    MailApp.sendEmail({ to: ADMIN, name: 'Leo con Lucas', subject: '💶 Pago pendiente de confirmar · ' + u.v[0],
+      htmlBody: '<p><b>' + u.v[0] + '</b> (' + (u.v[U.nombre] || '') + ') dice que ha pagado la licencia de Leo con Lucas (' + PRECIO + ' €).</p><p>Compruébalo en myPOS y actívalo desde el modo admin de la app.</p>' });
+  } catch (e) {}
+  return { ok: true };
+}
+
+/* ---------------- llave NFC del admin ---------------- */
+function hashSerial_(serial) {
+  const P = PropertiesService.getScriptProperties();
+  let sal = P.getProperty('NFC_SAL'); if (!sal) { sal = Utilities.getUuid(); P.setProperty('NFC_SAL', sal); }
+  return hash_(String(serial).toUpperCase().replace(/[^0-9A-F]/g, ''), sal);
+}
+function nfcEstado_() { return { ok: true, registrada: !!PropertiesService.getScriptProperties().getProperty('NFC_HASH') }; }
+function nfcRegistrar_(d) {
+  const P = PropertiesService.getScriptProperties();
+  if (P.getProperty('NFC_HASH')) return { ok: false, error: 'Ya hay una llave guardada' };
+  const u = porToken_(d.token);
+  if (!u || String(u.v[0]).toLowerCase() !== ADMIN) return { ok: false, error: 'Solo la cuenta de administrador puede guardar la llave' };
+  if (!d.serial) return { ok: false, error: 'Llave sin número de serie' };
+  P.setProperty('NFC_HASH', hashSerial_(d.serial));
+  return nfcToken_();
+}
+function nfcLogin_(d) {
+  const C = CacheService.getScriptCache(), fallos = Number(C.get('nfc_fallos') || 0);
+  if (fallos >= 5) return { ok: false, error: 'Demasiados intentos. Espera 10 minutos.' };
+  const h = PropertiesService.getScriptProperties().getProperty('NFC_HASH');
+  if (!h || !d.serial || hashSerial_(d.serial) !== h) { C.put('nfc_fallos', String(fallos + 1), 600); return { ok: false, error: 'Esta llave no es la del administrador' }; }
+  C.remove('nfc_fallos');
+  return nfcToken_();
+}
+function nfcToken_() {
+  const t = Utilities.getUuid();
+  CacheService.getScriptCache().put('adm_' + t, '1', 12 * 3600);
+  return { ok: true, adminToken: t };
+}
+function admin_(d) {
+  if (!d.adminToken || !CacheService.getScriptCache().get('adm_' + d.adminToken)) return { ok: false, error: 'Sesión de admin caducada o no válida' };
+  const hoy = Utilities.formatDate(new Date(), 'Europe/Madrid', 'yyyy-MM-dd');
+  if (d.op === 'nfcBorrar') { PropertiesService.getScriptProperties().deleteProperty('NFC_HASH'); return { ok: true }; }
+  if (d.op === 'resumen') { resumenSemanal(ADMIN); return { ok: true, a: ADMIN }; }
+  if (d.op === 'stats') {
+    const us = hUsuarios_().getDataRange().getValues().slice(1), ns = hNinos_().getDataRange().getValues().slice(1);
+    const hace7 = Date.now() - 7 * 864e5;
+    const lista = ns.map(n => ({ nombre: n[2], email: n[1], edad: n[3], nivel: Number(n[5]) || 0, est: n[6], min: n[9], ej: Number(n[10]) || 0, t: new Date(n[12]).getTime() || 0 }))
+      .sort((a, b) => b.t - a.t);
+    return { ok: true, usuarios: us.length, ninos: ns.length, activos7: lista.filter(x => x.t > hace7).length,
+      hoy: lista.filter(x => x.t && Utilities.formatDate(new Date(x.t), 'Europe/Madrid', 'yyyy-MM-dd') === hoy).length,
+      ejercicios: lista.reduce((a, x) => a + x.ej, 0),
+      lista: lista.slice(0, 40).map(x => Object.assign(x, { ult: x.t ? Utilities.formatDate(new Date(x.t), 'Europe/Madrid', 'dd/MM HH:mm') : '-' })) };
+  }
+  if (d.op === 'pagos') {
+    const us = hUsuarios_().getDataRange().getValues().slice(1);
+    const f = x => x ? Utilities.formatDate(new Date(x), 'Europe/Madrid', 'dd/MM/yyyy HH:mm') : '';
+    return { ok: true,
+      pendientes: us.filter(u => u[U.pagoAviso] && !u[U.licencia]).map(u => ({ email: u[0], nombre: u[U.nombre], dias: u[U.diasUso], aviso: f(u[U.pagoAviso]) })),
+      licencias: us.filter(u => u[U.licencia]).map(u => ({ email: u[0], nombre: u[U.nombre], fecha: f(u[U.licencia]) })),
+      prueba: us.filter(u => !u[U.licencia]).map(u => ({ email: u[0], dias: Number(u[U.diasUso]) || 0 })).sort((a, b) => b.dias - a.dias).slice(0, 30) };
+  }
+  if (d.op === 'activar' || d.op === 'quitar') {
+    const u = buscaUsuario_(String(d.email || '').trim().toLowerCase()); if (!u) return { ok: false, error: 'No existe esa cuenta' };
+    u.h.getRange(u.fila, U.licencia + 1).setValue(d.op === 'activar' ? new Date() : '');
+    if (d.op === 'activar') try { MailApp.sendEmail({ to: u.v[0], name: 'Leo con Lucas', subject: '🚀 ¡Leo con Lucas desbloqueado para siempre!',
+      htmlBody: '<div style="font-family:Arial;background:#050a1a;color:#fff;padding:24px;border-radius:16px"><h2 style="color:#17ff5f">¡Gracias por tu apoyo!</h2><p>Tu licencia vitalicia de <b>Leo con Lucas</b> ya está activada. Lucas y los planetas os esperan.</p><p style="color:#9ab">FuturMovil</p></div>' }); } catch (e) {}
+    return { ok: true };
+  }
+  if (d.op === 'reiniciarDias') {
+    const u = buscaUsuario_(String(d.email || '').trim().toLowerCase()); if (!u) return { ok: false, error: 'No existe esa cuenta' };
+    u.h.getRange(u.fila, U.diasUso + 1, 1, 2).setValues([[Number(d.dias) || 0, '']]); return { ok: true };
+  }
+  return { ok: false, error: 'Operación desconocida' };
 }
