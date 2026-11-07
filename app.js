@@ -410,7 +410,12 @@ function inicioEdad(e) { return e >= 8 ? 9 : e >= 7 ? 5 : 0; }
 function desbloqueado(i) {
   const d = datos();
   if (i === 0 || d.aj.todo || ADMIN.todo() || i <= inicioEdad(NINO.edad)) return true;
-  const p = d.plan[i - 1]; return !!(p && (p.m >= 2 || p.e >= 3));
+  /* en orden: un planeta solo se abre si el anterior también está abierto y conquistado
+     (evita saltos si se jugaron planetas con el modo de prueba del admin) */
+  for (let k = Math.max(1, inicioEdad(NINO.edad) + 1); k <= i; k++) {
+    const p = d.plan[k - 1]; if (!(p && (p.m >= 2 || p.e >= 3))) return false;
+  }
+  return true;
 }
 function nivelActual() { let i = 0; while (i < PLANETAS.length - 1 && desbloqueado(i + 1)) i++; return i; }
 function aplicaAjustes() {
