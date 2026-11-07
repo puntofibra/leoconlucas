@@ -122,8 +122,13 @@ const ENG = (() => {
     const base = palabras(lv, conDibujo).filter(p => !excluir.includes(p.w) && !excluir.includes(p.e));
     if (!base.length) return null;
     const foco = base.filter(p => p.lv === lv && (!p.tr || lv >= 22));
-    const usarFoco = foco.length >= 2 && Math.random() < 0.6;
+    const usarFoco = foco.length >= 2 && Math.random() < 0.85;   // 85 % con la letra del planeta, 15 % repaso
     return elige(usarFoco ? foco : base);
+  }
+  /* elige priorizando (85 %) las palabras con la letra nueva del planeta */
+  function eligeF(lista, lv) {
+    const f = lista.filter(p => p.lv === lv && (!p.tr || lv >= 22));
+    return (f.length >= 2 && Math.random() < 0.85) ? elige(f) : elige(lista);
   }
   /* distractores con dibujo distinto, preferentemente parecidos */
   function distractores(obj, lv, n, conDibujo = true) {
@@ -170,19 +175,19 @@ const ENG = (() => {
     return { tipo: 'imgpal', p, opts: shuffle([p, ...d.slice(0, op - 1)]), id: p.id };
   };
   G.forma = (lv) => {
-    const p = elige(palabras(lv, true).filter(x => x.s.length >= 2 && x.s.length <= 4)); if (!p) return null;
+    const p = eligeF(palabras(lv, true).filter(x => x.s.length >= 2 && x.s.length <= 4), lv); if (!p) return null;
     const extra = pick(silabasNivel(lv).filter(s => !p.s.includes(s)));
     return { tipo: 'forma', p, piezas: shuffle([...p.s, extra].filter(Boolean)), id: p.id };
   };
   G.falta = (lv, op) => {
-    const p = elige(palabras(lv, true).filter(x => x.s.length >= 2)); if (!p) return null;
+    const p = eligeF(palabras(lv, true).filter(x => x.s.length >= 2), lv); if (!p) return null;
     const i = rnd(p.s.length);
     const x = p.s[i];
     const otras = shuffle(silabasNivel(lv).filter(s => s !== x && !p.s.includes(s))).slice(0, op - 1);
     return { tipo: 'falta', p, i, opts: shuffle([x, ...otras]), id: p.id };
   };
   G.inicial = (lv, op) => {
-    const p = elige(palabras(lv, true).filter(x => esVoc(quitaTildes(x.w[0])) || lv > 0)); if (!p) return null;
+    const p = eligeF(palabras(lv, true).filter(x => esVoc(quitaTildes(x.w[0])) || lv > 0), lv); if (!p) return null;
     const x = quitaTildes(p.w[0]);
     const letras = [...new Set(silabasNivel(lv).map(s => s[0]))].filter(l => l !== x);
     const opts = shuffle([x, ...shuffle(letras).slice(0, op - 1)]);
@@ -197,12 +202,13 @@ const ENG = (() => {
     return { tipo: 'frase', texto, p, opts: shuffle([p, ...distractores(p, lv, op - 1)]), id: 'fp:' + texto };
   };
   G.verdad = (lv) => {
-    const f = elige(VF, 1, x => x.lv <= lv); if (!f) return null;
+    const f = (Math.random() < 0.8 && elige(VF, 1, x => x.lv === lv)) || elige(VF, 1, x => x.lv <= lv); if (!f) return null;
     return { tipo: 'verdad', f, id: f.id };
   };
   G.ordena = (lv, op, edad) => {
     const max = edad <= 5 ? 4 : edad === 6 ? 5 : 7;
-    let f = elige(FR, 1, x => x.lv <= lv && x.t.split(' ').length >= 3 && x.t.split(' ').length <= max);
+    const okF = x => x.t.split(' ').length >= 3 && x.t.split(' ').length <= max;
+    let f = (Math.random() < 0.8 && elige(FR, 1, x => x.lv === lv && okF(x))) || elige(FR, 1, x => x.lv <= lv && okF(x));
     if (!f) {
       const plts = PLT.filter(t => t.lv <= lv && t.t.split(' ').length >= 3); const p = eligePalabra(lv, true);
       if (!plts.length || !p) return null;
@@ -213,7 +219,7 @@ const ENG = (() => {
     return { tipo: 'ordena', f, pals, mez, id: f.id };
   };
   G.cuento = (lv) => {
-    const c = elige(CU, 1, x => x.lv <= lv); if (!c) return null;
+    const c = (Math.random() < 0.7 && elige(CU, 1, x => x.lv === lv)) || elige(CU, 1, x => x.lv <= lv); if (!c) return null;
     return { tipo: 'cuento', c, id: c.id };
   };
   G.une = (lv) => {
@@ -232,12 +238,12 @@ const ENG = (() => {
     return { tipo: 'voz', p, id: p.id };
   };
   G.dictado = (lv) => {
-    const p = elige(palabras(lv, false).filter(x => x.s.length >= 2 && x.s.length <= 4 && !/^[A-ZÁÉÍÓÚ]/.test(x.w) && (!x.tr || lv >= 22 || Math.random() < 0.3))); if (!p) return null;
+    const p = eligeF(palabras(lv, false).filter(x => x.s.length >= 2 && x.s.length <= 4 && !/^[A-ZÁÉÍÓÚ]/.test(x.w) && (!x.tr || lv >= 22 || Math.random() < 0.3)), lv); if (!p) return null;
     const extra = shuffle(silabasNivel(lv).filter(s => !p.s.includes(s))).slice(0, p.s.length >= 3 ? 2 : 1);
     return { tipo: 'dictado', p, piezas: shuffle([...p.s, ...extra]), id: p.id };
   };
   G.silabas = (lv) => {
-    const p = elige(palabras(lv, true).filter(x => x.s.length <= 5)); if (!p) return null;
+    const p = eligeF(palabras(lv, true).filter(x => x.s.length <= 5), lv); if (!p) return null;
     return { tipo: 'silabas', p, id: p.id };
   };
 

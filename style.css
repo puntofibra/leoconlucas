@@ -520,3 +520,10 @@ html, body { overscroll-behavior-x: none; }
 .cuento-ico { position: absolute; left: 2px; top: 50%; width: 62px; margin-top: -36px; filter: drop-shadow(0 3px 6px rgba(0,0,0,.5)); animation: respiraImg 4s ease-in-out infinite; pointer-events: none; }
 
 .btn-cuento > span, .btn-cuento > small { position: relative; z-index: 1; }
+/* Letra escolar en toda la app (a y g "de cole", como escriben los niños de 1º).
+   Andika está diseñada para niños que aprenden a leer. Solo el logo mantiene su letra. */
+:root { --f-ui: 'Andika', 'Fredoka', system-ui, sans-serif; --f-titulo: 'Andika', 'Fredoka', system-ui, sans-serif; }
+body, button, input, select, .btn, .titulo-pantalla, .cabecera h2, .btn-grande, .btn-mision, .btn-cuento, .resultado h2, .modal-caja h2, .cu-t, .nino-card h3, .pj-nombre, .edades button, .opt, .pieza, .burbuja, .planeta .nombre, .planeta .letra, .cont { font-family: 'Andika', 'Fredoka', system-ui, sans-serif; }
+.titulo-pantalla, .cabecera h2, .btn-grande, .btn-mision, .btn-cuento, .resultado h2, .modal-caja h2, .cu-t, .nino-card h3, .pj-nombre { font-weight: 700; letter-spacing: .3px; }
+.titulo-app span { font-family: 'Lilita One', 'Fredoka', sans-serif; }
+.titulo-app small { font-family: 'Andika', sans-serif; }
