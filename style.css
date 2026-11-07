@@ -527,3 +527,12 @@ body, button, input, select, .btn, .titulo-pantalla, .cabecera h2, .btn-grande, 
 .titulo-pantalla, .cabecera h2, .btn-grande, .btn-mision, .btn-cuento, .resultado h2, .modal-caja h2, .cu-t, .nino-card h3, .pj-nombre { font-weight: 700; letter-spacing: .3px; }
 .titulo-app span { font-family: 'Lilita One', 'Fredoka', sans-serif; }
 .titulo-app small { font-family: 'Andika', sans-serif; }
+
+/* lista de voces */
+.voces { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; padding: 4px 0 8px; }
+.voz-op { display: grid; grid-template-columns: 1fr auto; text-align: left; gap: 0 10px; padding: 10px 14px; border-radius: 14px; background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.12); }
+.voz-op span { font-weight: 700; font-size: 15px; }
+.voz-op small { grid-column: 1; color: var(--txt2); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.voz-op b { grid-row: 1 / 3; grid-column: 2; align-self: center; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgba(23,255,95,.18); color: var(--verde); }
+.voz-op.sel { border-color: var(--verde); background: rgba(23,255,95,.12); box-shadow: 0 0 12px rgba(23,255,95,.3); }
+.voz-aj { border: 0; padding-bottom: 4px; }

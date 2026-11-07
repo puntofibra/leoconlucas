@@ -362,7 +362,7 @@ const VOZ = (() => {
     })();
   }
   return {
-    decir, callar() { turno++; if (ss) ss.cancel(); habla(false); },
+    actual: () => voz, decir, callar() { turno++; if (ss) ss.cancel(); habla(false); },
     setRate(r) { rate = r; }, voces: () => voces, setVoz(n) { LS.set('voz', n); cargar(); }, disponible: !!ss
   };
 })();
@@ -1306,7 +1306,8 @@ function pintaPadres() {
       <div class="ajuste"><span>Resumen semanal por correo<small>Cada domingo a ${esc(SES ? SES.email : '')}</small></span><button class="switch ${d.aj.resumen !== false ? 'on' : ''}" data-aj="resumen"></button></div>
       <div class="ajuste"><span>Música en el mapa</span><button class="switch ${d.aj.musica ? 'on' : ''}" data-aj="musica"></button></div>
       <div class="ajuste"><span>Desbloquear todos los planetas<small>Para niños que ya leen</small></span><button class="switch ${d.aj.todo ? 'on' : ''}" data-aj="todo"></button></div>
-      <div class="ajuste"><span>Voz del narrador</span><select id="selVoz">${VOZ.voces().map(v => `<option ${LS.get('voz', '') === v.name ? 'selected' : ''}>${esc(v.name)}</option>`).join('') || '<option>Por defecto</option>'}</select></div>
+      <div class="ajuste voz-aj"><span>Voz del narrador<small>Elige la que más le guste. Las voces dependen de cada móvil, tablet u ordenador.</small></span></div>
+      <div class="voces" id="listaVoces">${listaVoces()}</div>
       <div class="ajuste"><span>Editar nombre, edad o color</span><button class="btn btn-mini" id="bEditN">✏️ Editar</button></div>
       <div class="ajuste"><span>Reiniciar progreso<small>Empieza de cero</small></span><button class="btn btn-mini btn-rojo" id="bReset">Reiniciar</button></div>
     </div>
@@ -1317,7 +1318,7 @@ function pintaPadres() {
     const g = NINO; NINO = padresNino; const dd = datos(); dd.aj[b.dataset.aj] = !dd.aj[b.dataset.aj]; dd._t = Date.now(); b.classList.toggle('on', dd.aj[b.dataset.aj]);
     guardarNino(); if (g === padresNino) aplicaAjustes(); NINO = g; SFX.clic();
   });
-  const sv = $('#selVoz'); if (sv) sv.onchange = () => { VOZ.setVoz(sv.value); VOZ.decir('¡Hola! Así sueno ahora.'); };
+  enlazaVoces();
   $('#bEditN').onclick = () => editarNino(padresNino);
   $('#bReset').onclick = async () => {
     if (!await pregunta({ icono: '⚠️', titulo: 'Reiniciar progreso', texto: `Se borrará todo el progreso de ${esc(padresNino.nombre)} y empezará de cero.`, si: 'Reiniciar', peligro: true })) return;
@@ -1325,6 +1326,26 @@ function pintaPadres() {
     const g = NINO; NINO = padresNino; guardarNino(true); if (g === padresNino) ENG.setMem(datos().mem); NINO = g; pintaPadres(); toast('Progreso reiniciado');
   };
   enlazaCuenta();
+}
+/* ---- elegir voz del narrador ---- */
+const VOZ_M = /(m[oó]nica|helena|laura|elvira|dalia|paulina|marisol|luc[ií]a|ximena|sabina|conchita|paloma|elena|isabel|carmen|esperanza|ana\b|female|mujer|eea|eef|eec)/i;
+const VOZ_H = /(jorge|pablo|[aá]lvaro|diego|enrique|juan|carlos|ra[uú]l|andr[eé]s|pedro|miguel|male\b|hombre|eed|eee)/i;
+function generoVoz(v) { return VOZ_M.test(v.name) ? 'mujer' : VOZ_H.test(v.name) ? 'hombre' : ''; }
+function nombreVoz(v, i) {
+  const g = generoVoz(v), pais = /es[-_]ES/i.test(v.lang) ? 'España' : /MX/i.test(v.lang) ? 'México' : /US/i.test(v.lang) ? 'EE. UU.' : 'Latina';
+  const nat = /natural|neural|online|google|premium|enhanced/i.test(v.name) ? ' · natural' : '';
+  return `${g === 'mujer' ? '👩' : g === 'hombre' ? '👨' : '🗣️'} Voz ${i + 1}${g ? ' (' + g + ')' : ''} · ${pais}${nat}`;
+}
+function listaVoces() {
+  const vs = VOZ.voces(), act = VOZ.actual();
+  if (!vs.length) return '<p style="color:var(--txt2);font-size:14px">Este dispositivo solo tiene la voz por defecto.</p>';
+  return vs.map((v, i) => `<button class="voz-op ${act && act.name === v.name ? 'sel' : ''}" data-v="${esc(v.name)}"><span>${nombreVoz(v, i)}</span><small>${esc(v.name)}</small><b>▶</b></button>`).join('');
+}
+function enlazaVoces() {
+  $$('#listaVoces .voz-op').forEach(b => b.onclick = () => {
+    VOZ.setVoz(b.dataset.v); $$('#listaVoces .voz-op').forEach(x => x.classList.toggle('sel', x === b));
+    VOZ.decir('¡Hola! Soy Lucas. ¿Te gusta cómo sueno? Vamos a leer juntos.');
+  });
 }
 function panelCuenta() {
   return `<div class="panel cristal"><h3>👤 Cuenta</h3><p style="margin:0 0 10px;color:var(--txt2)">${esc(SES ? SES.nombre + ' · ' + SES.email : '')}</p>
@@ -1582,6 +1603,12 @@ var LICENCIA = (() => {
       ${vista === 'demo' ? '<button class="btn btn-mini" id="payCerrar">Cerrar vista previa</button>' : ''}
     </div>`, vista !== 'demo');
     VOZ.callar();
+    /* Lucas lo explica hablado */
+    const nom = NINO ? NINO.nombre : '';
+    const habla = vista === 'gracias' || vista === 'gracias-demo'
+      ? `¡Muchísimas gracias! En cuanto confirmemos el pago, tu licencia quedará activada para siempre. Mientras tanto, puedes seguir leyendo conmigo.`
+      : `¡Misión de prueba completada! ${nom ? nom + ' y tu familia habéis' : 'Habéis'} disfrutado de ${l.prueba} días leyendo conmigo. Para seguir explorando todos los planetas, podéis desbloquear la aplicación para siempre. Es un pago único de ${l.precio.replace(',', ' con ')} euros. Pagas una sola vez y la aplicación es tuya para siempre, con licencia vitalicia: sin suscripciones y sin pagos mensuales. Incluye todos los planetas, los cuentos de cada noche, todos los lectores de la familia y todas las novedades que vayan llegando. Pulsa el botón verde para desbloquearla. ¡Te espero para seguir leyendo juntos!`;
+    setTimeout(() => VOZ.decir(habla, { rate: .95 }), 600);
     const ir_ = $('#payIr'); if (ir_) ir_.onclick = () => { SFX.clic(); setTimeout(() => { const h = $('#payHecho'); if (h) h.classList.add('btn-azul'); }, 1500); };
     const h = $('#payHecho');
     if (h) h.onclick = async () => {
