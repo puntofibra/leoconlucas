@@ -49,21 +49,23 @@ const ENG = (() => {
   /* ---- palabras ---- */
   const vistos = new Set();
   const PAL = [];
-  (PALABRAS_RAW + '\n' + (typeof PALABRAS_RAW_EXTRA !== 'undefined' ? PALABRAS_RAW_EXTRA : '')).trim().split('\n').filter(l => l.trim()).forEach(l => {
+  (PALABRAS_RAW + '\n' + (typeof PALABRAS_RAW_EXTRA !== 'undefined' ? PALABRAS_RAW_EXTRA : '') + '\n' + (typeof PALABRAS_RAW_3 !== 'undefined' ? PALABRAS_RAW_3 : '')).trim().split('\n').filter(l => l.trim()).forEach(l => {
     const [s, e, g] = l.split('|');
     const w = s.replace(/-/g, '');
-    if (vistos.has(w)) return; vistos.add(w);
+    if (vistos.has(w)) { const o = PAL.find(x => x.w === w); if (o && !o.e && e) { o.e = e; o.g = g || o.g; } return; } vistos.add(w);
     PAL.push({ w, s: s.split('-'), e: e || '', g: g || 'm', lv: nivelPalabra(w), tr: tieneTrabada(w), id: 'p:' + w });
   });
-  PALABRAS_LECTURA.concat(typeof PALABRAS_LECTURA_EXTRA !== 'undefined' ? PALABRAS_LECTURA_EXTRA : []).forEach(s => {
+  PALABRAS_LECTURA.concat(typeof PALABRAS_LECTURA_EXTRA !== 'undefined' ? PALABRAS_LECTURA_EXTRA : [], typeof PALABRAS_LECTURA_3 !== 'undefined' ? PALABRAS_LECTURA_3 : []).forEach(s => {
     const w = s.replace(/-/g, '');
     if (vistos.has(w.toLowerCase())) return; vistos.add(w.toLowerCase());
     PAL.push({ w, s: s.split('-'), e: '', g: 'm', lv: nivelPalabra(w), tr: tieneTrabada(w), id: 'p:' + w });
   });
   const CON_DIBUJO = PAL.filter(p => p.e && !/^[A-Z]/.test(p.w));
-  const FR = FRASES.concat(typeof FRASES_EXTRA !== 'undefined' ? FRASES_EXTRA : []).map(t => ({ t, lv: nivelTexto(t), id: 'f:' + t }));
-  const VF = VERDAD.concat(typeof VERDAD_EXTRA !== 'undefined' ? VERDAD_EXTRA : []).map(o => ({ t: o.t, v: o.v, lv: nivelTexto(o.t), id: 'v:' + o.t }));
+  const FR = [...new Set(FRASES.concat(typeof FRASES_EXTRA !== 'undefined' ? FRASES_EXTRA : [], typeof FRASES_3 !== 'undefined' ? FRASES_3 : []))].map(t => ({ t, lv: nivelTexto(t), id: 'f:' + t }));
+  const VF = VERDAD.concat(typeof VERDAD_EXTRA !== 'undefined' ? VERDAD_EXTRA : [], typeof VERDAD_3 !== 'undefined' ? VERDAD_3 : []).filter((o, i, a) => a.findIndex(x => x.t === o.t) === i).map(o => ({ t: o.t, v: o.v, lv: nivelTexto(o.t), id: 'v:' + o.t }));
   const CU = CUENTOS.concat(typeof CUENTOS_EXTRA !== 'undefined' ? CUENTOS_EXTRA : []).map(c => ({ ...c, lv: nivelTexto(c.x), id: 'c:' + c.t }));
+  const TRREG = /(pl|pr|bl|br|cl|cr|dr|fl|fr|gl|gr|tr)[aeiouáéíóú]/i;
+  const focoT = (x, lv, txt) => lv === 22 ? TRREG.test(txt || x.t) : x.lv === lv;
   const PLT = PLANTILLAS.map(t => ({ t, lv: nivelTexto(t.replace(/\{[^}]+\}/g, '')) }));
 
   /* ---- azar ---- */
@@ -75,9 +77,22 @@ const ENG = (() => {
      mem.seen[id] = marca de tiempo de la última vez visto
      mem.fail[id] = fallos acumulados (se repiten más las palabras difíciles) */
   let MEM = { seen: {}, fail: {} };
-  let NIVEL_ACT = 0;
+  let NIVEL_ACT = 0, RETO = 0, EDAD = 6;
   const usadosSesion = new Set();
-  function setMem(m) { MEM = m; MEM.seen = MEM.seen || {}; MEM.fail = MEM.fail || {}; }
+  function setMem(m) { MEM = m; MEM.seen = MEM.seen || {}; MEM.fail = MEM.fail || {}; MEM.vis = MEM.vis || {}; }
+  /* longitud máxima según la edad (sílabas por palabra / palabras por frase) */
+  const maxSil = () => EDAD <= 5 ? 3 : EDAD === 6 ? 4 : EDAD === 7 ? 5 : 6;
+  const maxPal = () => EDAD <= 5 ? 4 : EDAD === 6 ? 6 : EDAD === 7 ? 8 : 10;
+  /* cuanto más repite un planeta (RETO 0-3), más se favorecen palabras y frases largas, sin pasar del tope de su edad */
+  function factorLargo(it) {
+    let len, max, base;
+    if (it.s) { len = it.s.length; max = maxSil(); base = 2; }
+    else if (it.t) { len = it.t.split(/\s+/).length; max = maxPal(); base = 3; }
+    else return 1;
+    if (len > max) return RETO >= 2 && len === max + 1 && EDAD >= 7 ? 0.3 : 0.04;
+    const d = len - base;
+    return Math.max(0.35, 1 + RETO * 0.45 * d - (RETO === 0 && d > 1 ? 0.25 * (d - 1) : 0));
+  }
   function peso(it) {
     const t = MEM.seen[it.id];
     let w;
@@ -86,7 +101,8 @@ const ENG = (() => {
     if (MEM.fail[it.id]) w += Math.min(6, MEM.fail[it.id] * 2);
     if (usadosSesion.has(it.id)) w *= 0.02;
     if (it.tr && NIVEL_ACT < 22) w *= 0.7;      // trabadas: pocas y alternadas
-    return w;
+    if (it.tr && NIVEL_ACT === 22) w *= 3;      // Trabalandia: protagonistas
+    return w * factorLargo(it);
   }
   function elige(lista, n = 1, filtro) {
     let pool = filtro ? lista.filter(filtro) : lista.slice();
@@ -121,13 +137,13 @@ const ENG = (() => {
   function eligePalabra(lv, conDibujo, excluir = []) {
     const base = palabras(lv, conDibujo).filter(p => !excluir.includes(p.w) && !excluir.includes(p.e));
     if (!base.length) return null;
-    const foco = base.filter(p => p.lv === lv && (!p.tr || lv >= 22));
+    const foco = base.filter(p => lv === 22 ? p.tr : (p.lv === lv && (!p.tr || lv > 22)));
     const usarFoco = foco.length >= 2 && Math.random() < 0.85;   // 85 % con la letra del planeta, 15 % repaso
     return elige(usarFoco ? foco : base);
   }
   /* elige priorizando (85 %) las palabras con la letra nueva del planeta */
   function eligeF(lista, lv) {
-    const f = lista.filter(p => p.lv === lv && (!p.tr || lv >= 22));
+    const f = lista.filter(p => lv === 22 ? p.tr : (p.lv === lv && (!p.tr || lv > 22)));
     return (f.length >= 2 && Math.random() < 0.85) ? elige(f) : elige(lista);
   }
   /* distractores con dibujo distinto, preferentemente parecidos */
@@ -202,13 +218,13 @@ const ENG = (() => {
     return { tipo: 'frase', texto, p, opts: shuffle([p, ...distractores(p, lv, op - 1)]), id: 'fp:' + texto };
   };
   G.verdad = (lv) => {
-    const f = (Math.random() < 0.8 && elige(VF, 1, x => x.lv === lv)) || elige(VF, 1, x => x.lv <= lv); if (!f) return null;
+    const f = (Math.random() < 0.8 && elige(VF, 1, x => x.lv <= lv && focoT(x, lv))) || elige(VF, 1, x => x.lv <= lv); if (!f) return null;
     return { tipo: 'verdad', f, id: f.id };
   };
   G.ordena = (lv, op, edad) => {
-    const max = edad <= 5 ? 4 : edad === 6 ? 5 : 7;
+    const max = Math.min(maxPal(), (edad <= 5 ? 4 : edad === 6 ? 5 : 7) + RETO);
     const okF = x => x.t.split(' ').length >= 3 && x.t.split(' ').length <= max;
-    let f = (Math.random() < 0.8 && elige(FR, 1, x => x.lv === lv && okF(x))) || elige(FR, 1, x => x.lv <= lv && okF(x));
+    let f = (Math.random() < 0.8 && elige(FR, 1, x => x.lv <= lv && focoT(x, lv) && okF(x))) || elige(FR, 1, x => x.lv <= lv && okF(x));
     if (!f) {
       const plts = PLT.filter(t => t.lv <= lv && t.t.split(' ').length >= 3); const p = eligePalabra(lv, true);
       if (!plts.length || !p) return null;
@@ -219,7 +235,7 @@ const ENG = (() => {
     return { tipo: 'ordena', f, pals, mez, id: f.id };
   };
   G.cuento = (lv) => {
-    const c = (Math.random() < 0.7 && elige(CU, 1, x => x.lv === lv)) || elige(CU, 1, x => x.lv <= lv); if (!c) return null;
+    const c = (Math.random() < 0.7 && elige(CU, 1, x => x.lv <= lv && focoT(x, lv, x.x))) || elige(CU, 1, x => x.lv <= lv); if (!c) return null;
     return { tipo: 'cuento', c, id: c.id };
   };
   G.une = (lv) => {
@@ -258,7 +274,11 @@ const ENG = (() => {
     if (lv >= 5) t.verdad = 2.5;
     if (lv >= 1) t.cuento = lv >= 24 ? 6 : lv >= 6 ? 1.2 : 0.6;
     if (voz && lv >= 2) t.voz = 1;
+    /* planetas con pocos dibujos posibles: menos juegos de dibujo (no repetir) y más de sílabas/lectura */
+    const nDib = CON_DIBUJO.filter(p => p.lv <= lv).length;
+    if (nDib < 30) { const f = Math.max(0.15, nDib / 30); ['palimg', 'imgpal', 'une', 'frase'].forEach(k => { if (t[k]) t[k] *= f; }); t.escucha += 1.5; t.globos += 1; t.silabas += 1.5; if (t.dictado) t.dictado += 1; }
     if (edad >= 7) { t.escucha *= 0.5; t.globos *= 0.6; if (t.verdad) t.verdad += 1; if (t.cuento) t.cuento += 0.8; }
+    if (RETO >= 1 && lv >= 3) { t.ordena = (t.ordena || 0) + RETO * 0.6; if (t.verdad) t.verdad += RETO * 0.5; t.escucha *= 0.7; t.globos *= 0.7; }
     if (lv >= 24) { t.ordena = 3; t.verdad = 3; t.frase = 2; t.traza = 0; t.escucha = 0; t.globos = 0.5; }
     return t;
   }
@@ -271,8 +291,11 @@ const ENG = (() => {
   }
   /* Genera una misión. lv = planeta; repaso = mezcla de todos los niveles desbloqueados */
   function mision({ lv, edad = 6, n = 8, repaso = false, voz = false, maxLv }) {
-    nuevaSesion(); NIVEL_ACT = lv;
-    const op = edad <= 5 ? 3 : edad >= 7 ? 4 : 3 + (lv >= 6 ? 1 : 0);
+    nuevaSesion(); NIVEL_ACT = lv; EDAD = edad;
+    /* veces que ha jugado este planeta: cada 2 visitas sube un poco el reto (máx. 3) */
+    const vez = repaso ? 2 : (MEM.vis[lv] = (MEM.vis[lv] || 0) + 1) - 1;
+    RETO = Math.min(3, Math.floor(vez / 2));
+    const op = Math.min(edad <= 5 ? 4 : 5, (edad <= 5 ? 3 : edad >= 7 ? 4 : 3 + (lv >= 6 ? 1 : 0)) + (RETO >= 2 ? 1 : 0));
     const out = []; let prev = null, tries = 0, cuentos = 0;
     while (out.length < n && tries++ < 200) {
       const L = repaso ? Math.max(0, (maxLv || lv) - rnd(4)) : lv;
@@ -280,11 +303,12 @@ const ENG = (() => {
       if (tp === 'cuento' && cuentos >= 1) continue;
       const ej = G[tp](L, op, edad);
       if (!ej) continue;
+      if (tries < 150 && out.some(o => o.id === ej.id || (ej.p && o.p && o.p.w === ej.p.w))) continue;   // nada repetido en la misma misión
       ej.lv = L; out.push(ej); prev = tp; if (tp === 'cuento') cuentos++;
     }
     return out;
   }
 
-  return { nivelPalabra, nivelTexto, PAL, CON_DIBUJO, FR, VF, CU, mision, marca, setMem, getMem: () => MEM, shuffle, pick, rnd, quitaTildes, G };
+  return { reto: () => RETO, nivelPalabra, nivelTexto, PAL, CON_DIBUJO, FR, VF, CU, mision, marca, setMem, getMem: () => MEM, shuffle, pick, rnd, quitaTildes, G };
 })();
 if (typeof module !== 'undefined') module.exports = ENG;
