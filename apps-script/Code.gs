@@ -223,7 +223,7 @@ function guardarNino_(d) {
   }
   const st = D.st || {};
   let nivel = 0; const plan = D.plan || {};
-  Object.keys(plan).forEach(k => { if (plan[k].m >= 2) nivel = Math.max(nivel, Number(k) + 1); });
+  Object.keys(plan).forEach(k => { if (plan[k].m >= 2 || plan[k].e >= 3) nivel = Math.max(nivel, Number(k) + 1); });
   const fila_ = [n.id, email, String(n.nombre).slice(0, 20), Number(n.edad) || 6, Number(n.color) || 0, nivel, D.est || 0, D.chispas || 0,
     (D.racha && D.racha.n) || 0, Math.round((st.seg || 0) / 60), st.ej || 0, st.ej ? Math.round(st.ok / st.ej * 100) : 0, new Date(), json];
   if (fila > 0) {
@@ -267,7 +267,7 @@ function resumenSemanal(soloEmail) {
       const st = d.st || {}, porDia = st.dias || {};
       const minDias = dias.map(k => Math.round((porDia[k] || 0) / 60));
       const minSemana = minDias.reduce((a, b) => a + b, 0), diasActivo = minDias.filter(x => x > 0).length;
-      let nivel = 0; const plan = d.plan || {}; Object.keys(plan).forEach(k => { if (plan[k].m >= 2) nivel = Math.max(nivel, Number(k) + 1); });
+      let nivel = 0; const plan = d.plan || {}; Object.keys(plan).forEach(k => { if (plan[k].m >= 2 || plan[k].e >= 3) nivel = Math.max(nivel, Number(k) + 1); });
       const dificiles = Object.keys((d.mem && d.mem.fail) || {}).filter(k => k.indexOf('p:') === 0).sort((a, b) => d.mem.fail[b] - d.mem.fail[a]).slice(0, 8).map(k => k.slice(2));
       const pct = st.ej ? Math.round(st.ok / st.ej * 100) : 0;
       const barras = minDias.slice().reverse().map((m, i) => '<td style="vertical-align:bottom;text-align:center;padding:0 3px"><div style="width:22px;margin:auto;height:' + Math.min(80, m * 4 + 2) + 'px;background:#17ff5f;border-radius:6px 6px 0 0"></div><div style="font-size:11px;color:#9ab">' + ['L', 'M', 'X', 'J', 'V', 'S', 'D'][(new Date(Date.now() - (6 - i) * 864e5).getDay() + 6) % 7] + '</div></td>').join('');
