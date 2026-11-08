@@ -595,7 +595,7 @@ var FOTO_NOCHE = (() => {
     cuenta = false;
     setTimeout(() => VOZ.decir('¡Qué foto tan bonita! Puedes enviársela a mamá, a papá o a los abuelos. ¡Buenas noches!'), 500);
   }
-  const textoCompartir = () => `🌙 ¡Buenas noches! Hoy ${info.nombre} ha leído «${info.titulo}» y ha conseguido ${info.n} de 10 estrellas ⭐ con Leo con Lucas.`;
+  const textoCompartir = () => `🌙 ¡Buenas noches! Hoy ${info.nombre} ha leído «${info.titulo}» y ha conseguido ${info.n} de 10 estrellas ⭐ con Leo con Lucas.\n\n📚 Aprende a leer jugando con Lucas: https://puntofibra.github.io/leoconlucas/`;
   function descargar(url) { SFX.clic(); const a = document.createElement('a'); a.href = url; a.download = 'buenas-noches-' + info.nombre.toLowerCase().replace(/\s+/g, '-') + '.jpg'; document.body.appendChild(a); a.click(); a.remove(); toast('Foto guardada 📸'); }
   async function compartir(url) {
     SFX.clic();
