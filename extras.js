@@ -435,13 +435,13 @@ function compruebaDiplomaNuevo() {
    personaje, marco nocturno con estrellas y texto, y compartir (WhatsApp…)
    ===================================================================== */
 var FOTO_NOCHE = (() => {
-  const W = 1080, H = 1350;
-  let ov = null, stream = null, video = null, raf = 0, info = null, pj = null, final = null, cuenta = false;
+  const W = 1080, H = 1920;
+  let ov = null, stream = null, video = null, raf = 0, info = null, marco = null, dormido = null, final = null, cuenta = false;
   const css = document.createElement('style');
   css.textContent = `
   .fn-ov{position:fixed;inset:0;z-index:9000;background:radial-gradient(circle at 50% 0%,#1d1a5e,#050a1a 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(12px + var(--safe-t)) 16px calc(14px + var(--safe-b));animation:fnIn .35s ease-out}
   @keyframes fnIn{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
-  .fn-marco{position:relative;width:min(92vw,calc((100vh - 190px) * .8));aspect-ratio:4/5;border-radius:26px;overflow:hidden;box-shadow:0 0 0 3px rgba(255,210,63,.55),0 0 40px rgba(139,92,255,.6),0 20px 60px rgba(0,0,0,.6);background:#050a1a}
+  .fn-marco{position:relative;width:min(92vw,calc((100vh - 200px) * .5625));aspect-ratio:9/16;border-radius:18px;overflow:hidden;box-shadow:0 0 0 3px rgba(255,210,63,.55),0 0 40px rgba(139,92,255,.6),0 20px 60px rgba(0,0,0,.6);background:#050a1a}
   .fn-marco canvas,.fn-marco img{position:absolute;inset:0;width:100%;height:100%;display:block}
   .fn-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-titulo);font-size:min(40vw,200px);color:#fff;text-shadow:0 0 30px #8b5cff,0 0 60px #ffd23f;pointer-events:none}
   .fn-num b{animation:fnNum .9s ease-out forwards}
@@ -493,42 +493,47 @@ var FOTO_NOCHE = (() => {
     ctx.shadowBlur = 0; ctx.fillStyle = '#3a1d00'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, cx, cy + 2); ctx.restore();
   }
 
+  /* MARCO de la foto según la fecha (de momento el genérico todo el año; aquí irán Navidad y Halloween) */
+  function marcoHoy() { return 'img/marco-generico.png'; }
+  /* hueco transparente del marco genérico (en px del PNG de 941×1672) → se escala a 1080×1920 */
+  const KM = W / 941, HUECO = { x: 80 * KM, y: 288 * KM, w: 781 * KM, h: 1074 * KM };
+
   /* dibuja la foto completa (se usa para la vista previa en vivo y para la final) */
   function pinta(ctx, k) {
     ctx.save(); ctx.scale(k, k);
     ctx.fillStyle = '#050a1a'; ctx.fillRect(0, 0, W, H);
-    const hayVideo = video && video.videoWidth;
+    const Hx = HUECO, hayVideo = video && video.videoWidth;
+    /* 1) foto del niño dentro del hueco (efecto espejo, como un selfie) */
+    ctx.save(); ctx.beginPath(); ctx.rect(Hx.x - 6, Hx.y - 6, Hx.w + 12, Hx.h + 12); ctx.clip();
     if (hayVideo) {
-      const vw = video.videoWidth, vh = video.videoHeight, s = Math.max(W / vw, H / vh), dw = vw * s, dh = vh * s;
-      ctx.save(); ctx.translate(W, 0); ctx.scale(-1, 1); ctx.drawImage(video, (W - dw) / 2, (H - dh) / 2, dw, dh); ctx.restore();
+      const vw = video.videoWidth, vh = video.videoHeight, s = Math.max(Hx.w / vw, Hx.h / vh), dw = vw * s, dh = vh * s;
+      ctx.translate(Hx.x * 2 + Hx.w, 0); ctx.scale(-1, 1);
+      ctx.drawImage(video, Hx.x + (Hx.w - dw) / 2, Hx.y + (Hx.h - dh) / 2, dw, dh);
     } else {
-      const g = ctx.createRadialGradient(W / 2, H * .45, 50, W / 2, H * .45, H * .8); g.addColorStop(0, '#2b2380'); g.addColorStop(1, '#050a1a');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      const g = ctx.createRadialGradient(W / 2, Hx.y + Hx.h * .55, 40, W / 2, Hx.y + Hx.h * .55, Hx.h * .8); g.addColorStop(0, '#2b2380'); g.addColorStop(1, '#070b24');
+      ctx.fillStyle = g; ctx.fillRect(Hx.x, Hx.y, Hx.w, Hx.h);
+      ESTRELLAS.forEach(s => { ctx.globalAlpha = s.a; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(Hx.x + s.x / W * Hx.w, Hx.y + s.y / H * Hx.h * 3 % Hx.h, s.r, 0, 7); ctx.fill(); }); ctx.globalAlpha = 1;
+      if (dormido) { const dw = Hx.w * .8, dh = dw * dormido.height / dormido.width; ctx.drawImage(dormido, W / 2 - dw / 2, Hx.y + Hx.h * .62 - dh / 2, dw, dh); }
     }
-    /* velos nocturnos arriba y abajo */
-    let g = ctx.createLinearGradient(0, 0, 0, 470); g.addColorStop(0, 'rgba(10,8,45,.92)'); g.addColorStop(1, 'rgba(10,8,45,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, 470);
-    g = ctx.createLinearGradient(0, 830, 0, H); g.addColorStop(0, 'rgba(10,8,45,0)'); g.addColorStop(.45, 'rgba(10,8,45,.85)'); g.addColorStop(1, 'rgba(8,6,35,.97)'); ctx.fillStyle = g; ctx.fillRect(0, 830, W, H - 830);
-    ESTRELLAS.forEach(s => { ctx.globalAlpha = s.a; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill(); }); ctx.globalAlpha = 1;
-    /* luna */
-    ctx.save(); ctx.shadowColor = 'rgba(255,233,168,.9)'; ctx.shadowBlur = 45; ctx.drawImage(LUNA, 940, 28); ctx.restore();
-    /* textos de arriba */
+    ctx.restore();
+    /* 2) velo oscuro arriba de la foto para que se lea el texto */
+    let g = ctx.createLinearGradient(0, Hx.y, 0, Hx.y + 420); g.addColorStop(0, 'rgba(10,8,45,.88)'); g.addColorStop(.55, 'rgba(10,8,45,.45)'); g.addColorStop(1, 'rgba(10,8,45,0)');
+    ctx.fillStyle = g; ctx.fillRect(Hx.x, Hx.y, Hx.w, 420);
+    /* 3) el marco encima */
+    if (marco) ctx.drawImage(marco, 0, 0, W, H);
+    /* 4) textos de arriba (dentro de la foto) */
     ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-    texto(ctx, '¡Buenas noches!', W / 2, 150, '400 118px "Lilita One", sans-serif', 780, '#fff', 'rgba(139,92,255,1)', 34);
-    texto(ctx, info.frase, W / 2, 228, '600 46px Fredoka, sans-serif', 940, '#e9e4ff', 'rgba(0,0,0,.6)', 12);
-    pill(ctx, '⭐ ESTRELLA DE LA LECTURA', W / 2, 305);
-    /* personaje */
-    if (pj) {
-      const pw = hayVideo ? 430 : 640, ph = pw * pj.height / pj.width, px = hayVideo ? W - pw + 20 : (W - pw) / 2, py = hayVideo ? 1080 - ph : 380;
-      ctx.save(); ctx.shadowColor = PJ_ON ? colorDe(NINO.color).c : '#17ff5f'; ctx.shadowBlur = 40;
-      if (pj._f && 'filter' in ctx) ctx.filter = pj._f;
-      ctx.drawImage(pj, px, py, pw, ph); ctx.restore();
-    }
-    /* estrellas del cuento y textos de abajo */
-    for (let j = 0; j < 10; j++) estrella(ctx, W / 2 + (j - 4.5) * 84, 1132, 34, j < info.n);
+    const cx = Hx.x + Hx.w / 2, tw = Hx.w - 70;
+    texto(ctx, '¡Buenas noches!', cx, Hx.y + 120, '400 104px "Lilita One", sans-serif', tw, '#fff', 'rgba(139,92,255,1)', 32);
+    texto(ctx, info.frase, cx, Hx.y + 190, '600 40px Fredoka, sans-serif', tw, '#e9e4ff', 'rgba(0,0,0,.7)', 12);
+    pill(ctx, '⭐ ESTRELLA DE LA LECTURA', cx, Hx.y + 262);
+    /* 5) estrellas del cuento y textos en la banda de abajo (a la derecha del planeta) */
+    const bx = 745, bw = 600;
+    for (let j = 0; j < 10; j++) estrella(ctx, bx + (j - 4.5) * 58, 1688, 24, j < info.n);
     ctx.textAlign = 'center';
-    texto(ctx, `${info.nombre} · ${info.n} de 10 estrellas`, W / 2, 1222, '700 50px Fredoka, sans-serif', 980, '#ffd23f', 'rgba(255,170,0,.6)', 16);
-    texto(ctx, `He leído «${info.titulo}» con ${nomPj()}`, W / 2, 1278, '500 34px Fredoka, sans-serif', 980, '#fff', 'rgba(0,0,0,.6)', 8);
-    ctx.globalAlpha = .7; texto(ctx, `Leo con Lucas · ${fechaTxt()}`, W / 2, 1325, '500 26px Fredoka, sans-serif', 980, '#a9c3d9', 'rgba(0,0,0,0)', 0); ctx.globalAlpha = 1;
+    texto(ctx, `${info.nombre} · ${info.n} de 10 estrellas`, bx, 1756, '700 44px Fredoka, sans-serif', bw, '#ffd23f', 'rgba(255,170,0,.6)', 16);
+    texto(ctx, `He leído «${info.titulo}»`, bx, 1800, '500 30px Fredoka, sans-serif', bw, '#fff', 'rgba(0,0,0,.7)', 8);
+    ctx.globalAlpha = .75; texto(ctx, `Leo con Lucas · ${fechaTxt()}`, bx, 1836, '500 23px Fredoka, sans-serif', bw, '#a9c3d9', 'rgba(0,0,0,0)', 0); ctx.globalAlpha = 1;
     ctx.restore();
   }
 
@@ -542,12 +547,12 @@ var FOTO_NOCHE = (() => {
     info = { n, titulo: datosCuento.titulo || 'el cuento de hoy', nombre: NINO.nombre,
       frase: n >= 9 ? 'Ya he leído mi cuento… ¡y me voy a dormir!' : n >= 6 ? 'He estudiado mucho… ¡ahora a dormir!' : 'Hoy he leído mi cuento… ¡dulces sueños!' };
     final = null;
-    const im = imgPj(NINO.color, 'senala'); pj = await cargaImg(im.src); if (pj) pj._f = im.filter;
+    [marco, dormido] = await Promise.all([cargaImg(marcoHoy()), cargaImg('img/lucas/dormido.png')]);
     try { await Promise.all([document.fonts.load('118px "Lilita One"'), document.fonts.load('700 50px Fredoka')]); } catch (e) {}
     ov = el('div', 'fn-ov');
     ov.innerHTML = `<button class="fn-cerrar" id="fnX">✕</button>
-      <div class="fn-marco" id="fnMarco"><canvas id="fnCv" width="540" height="675"></canvas><div class="fn-num" id="fnNum"></div><div class="fn-flash" id="fnFlash"></div></div>
-      <p class="fn-txt" id="fnTxt">Ponte al lado de ${esc(nomPj())} y sonríe 😊</p>
+      <div class="fn-marco" id="fnMarco"><canvas id="fnCv" width="540" height="960"></canvas><div class="fn-num" id="fnNum"></div><div class="fn-flash" id="fnFlash"></div></div>
+      <p class="fn-txt" id="fnTxt">Colócate dentro del marco y sonríe 😊</p>
       <div class="fn-bots" id="fnBots"><button class="fn-disparo" id="fnDisparo">📸</button></div>`;
     document.body.appendChild(ov);
     document.addEventListener('visibilitychange', alOcultar);
@@ -559,10 +564,10 @@ var FOTO_NOCHE = (() => {
       stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 1600 } }, audio: false });
       if (!ov) { paraCamara(); return; }
       video.srcObject = stream; await video.play();
-      VOZ.decir(`¡Ponte al lado de ${nomPj()} y sonríe! Cuando estés listo, pulsa el botón de la cámara.`);
+      VOZ.decir('¡Colócate dentro del marco y sonríe! Cuando estés listo, pulsa el botón de la cámara.');
     } catch (e) {
       video = null;
-      $('#fnTxt').textContent = 'No se ha podido abrir la cámara. Puedes hacer la tarjeta solo con ' + nomPj() + '.';
+      $('#fnTxt').textContent = 'No se ha podido abrir la cámara. Puedes hacer la tarjeta con Lucas.';
       $('#fnDisparo').textContent = '✨';
     }
     bucle();
