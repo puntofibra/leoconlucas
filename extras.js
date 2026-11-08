@@ -429,3 +429,178 @@ function compruebaDiplomaNuevo() {
   if (screen.orientation) screen.orientation.addEventListener('change', revisa);
   document.addEventListener('click', bloquea, { once: true });   // algunos navegadores solo bloquean tras tocar
 })();
+
+/* =====================================================================
+   FOTO DE BUENAS NOCHES · después del cuento: selfie del niño con su
+   personaje, marco nocturno con estrellas y texto, y compartir (WhatsApp…)
+   ===================================================================== */
+var FOTO_NOCHE = (() => {
+  const W = 1080, H = 1350;
+  let ov = null, stream = null, video = null, raf = 0, info = null, pj = null, final = null, cuenta = false;
+  const css = document.createElement('style');
+  css.textContent = `
+  .fn-ov{position:fixed;inset:0;z-index:9000;background:radial-gradient(circle at 50% 0%,#1d1a5e,#050a1a 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(12px + var(--safe-t)) 16px calc(14px + var(--safe-b));animation:fnIn .35s ease-out}
+  @keyframes fnIn{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
+  .fn-marco{position:relative;width:min(92vw,calc((100vh - 190px) * .8));aspect-ratio:4/5;border-radius:26px;overflow:hidden;box-shadow:0 0 0 3px rgba(255,210,63,.55),0 0 40px rgba(139,92,255,.6),0 20px 60px rgba(0,0,0,.6);background:#050a1a}
+  .fn-marco canvas,.fn-marco img{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .fn-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-titulo);font-size:min(40vw,200px);color:#fff;text-shadow:0 0 30px #8b5cff,0 0 60px #ffd23f;pointer-events:none}
+  .fn-num b{animation:fnNum .9s ease-out forwards}
+  @keyframes fnNum{0%{transform:scale(2.2);opacity:0}25%{transform:scale(1);opacity:1}100%{transform:scale(.6);opacity:0}}
+  .fn-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+  .fn-flash.on{animation:fnFlash .6s ease-out}
+  @keyframes fnFlash{0%{opacity:.95}100%{opacity:0}}
+  .fn-txt{color:var(--txt2);font-size:15px;text-align:center;margin:0;max-width:440px}
+  .fn-bots{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:min(92vw,460px)}
+  .fn-bots .btn{flex:1;min-width:130px}
+  .fn-disparo{width:84px;height:84px;border-radius:50%;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.25),0 0 30px #ffd23f;font-size:34px;display:flex;align-items:center;justify-content:center;flex:none!important;min-width:0!important;padding:0}
+  .fn-disparo:active{transform:scale(.92)}
+  .fn-cerrar{position:absolute;top:calc(10px + var(--safe-t));right:12px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.12);font-size:22px;color:#fff}
+  .btn-foto{background:linear-gradient(180deg,#ffd23f,#ff9a2e);color:#3a1d00;box-shadow:0 5px 0 #b35a00,0 0 26px rgba(255,210,63,.6);font-size:19px;animation:fnLate 1.8s ease-in-out infinite}
+  @keyframes fnLate{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+  .btn-wa{background:linear-gradient(180deg,#2bd96b,#128c4a);color:#fff;box-shadow:0 5px 0 #0b5e31}`;
+  document.head.appendChild(css);
+
+  /* estrellas fijas del fondo (siempre las mismas en la foto) */
+  let sem = 7; const rnd = () => (sem = (sem * 9301 + 49297) % 233280) / 233280;
+  const ESTRELLAS = Array.from({ length: 70 }, () => ({ x: rnd() * W, y: rnd() < .7 ? rnd() * 380 : 1000 + rnd() * 340, r: .8 + rnd() * 2.6, a: .35 + rnd() * .65 }));
+
+  /* luna creciente (se dibuja una vez en un lienzo aparte) */
+  const LUNA = document.createElement('canvas'); LUNA.width = LUNA.height = 110;
+  { const c = LUNA.getContext('2d'); c.fillStyle = '#fff1b8'; c.beginPath(); c.arc(55, 55, 48, 0, 7); c.fill(); c.globalCompositeOperation = 'destination-out'; c.beginPath(); c.arc(78, 38, 44, 0, 7); c.fill(); }
+  const nomPj = () => { const c = colorDe(NINO.color); return PJ_ON ? c.nom : 'Lucas'; };
+  const cargaImg = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = src; });
+  const fechaTxt = () => { const f = new Date(); return f.getDate() + ' de ' + ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'][f.getMonth()] + ' de ' + f.getFullYear(); };
+
+  function texto(ctx, t, x, y, font, max, col = '#fff', glow = 'rgba(139,92,255,.9)', blur = 24) {
+    let s = parseInt(font.match(/(\d+)px/)[1], 10);
+    do { ctx.font = font.replace(/\d+px/, s + 'px'); s -= 2; } while (ctx.measureText(t).width > max && s > 14);
+    ctx.save(); ctx.shadowColor = glow; ctx.shadowBlur = blur; ctx.fillStyle = col; ctx.fillText(t, x, y); ctx.shadowBlur = 0; ctx.fillText(t, x, y); ctx.restore();
+  }
+  function estrella(ctx, cx, cy, r, on) {
+    ctx.save(); ctx.beginPath();
+    for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; ctx.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); }
+    ctx.closePath();
+    if (on) { ctx.shadowColor = '#ffd23f'; ctx.shadowBlur = 22; const g = ctx.createLinearGradient(0, cy - r, 0, cy + r); g.addColorStop(0, '#fff3a8'); g.addColorStop(1, '#ffb000'); ctx.fillStyle = g; }
+    else ctx.fillStyle = 'rgba(255,255,255,.18)';
+    ctx.fill(); ctx.restore();
+  }
+  function pill(ctx, t, cx, cy) {
+    ctx.save(); ctx.font = '700 36px Fredoka, sans-serif';
+    const w = ctx.measureText(t).width + 64, h = 64, x = cx - w / 2, y = cy - h / 2;
+    const g = ctx.createLinearGradient(x, 0, x + w, 0); g.addColorStop(0, '#ffd23f'); g.addColorStop(1, '#ff9a2e');
+    ctx.shadowColor = 'rgba(255,170,0,.8)'; ctx.shadowBlur = 24; ctx.fillStyle = g;
+    ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, 32); else ctx.rect(x, y, w, h); ctx.fill();
+    ctx.shadowBlur = 0; ctx.fillStyle = '#3a1d00'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, cx, cy + 2); ctx.restore();
+  }
+
+  /* dibuja la foto completa (se usa para la vista previa en vivo y para la final) */
+  function pinta(ctx, k) {
+    ctx.save(); ctx.scale(k, k);
+    ctx.fillStyle = '#050a1a'; ctx.fillRect(0, 0, W, H);
+    const hayVideo = video && video.videoWidth;
+    if (hayVideo) {
+      const vw = video.videoWidth, vh = video.videoHeight, s = Math.max(W / vw, H / vh), dw = vw * s, dh = vh * s;
+      ctx.save(); ctx.translate(W, 0); ctx.scale(-1, 1); ctx.drawImage(video, (W - dw) / 2, (H - dh) / 2, dw, dh); ctx.restore();
+    } else {
+      const g = ctx.createRadialGradient(W / 2, H * .45, 50, W / 2, H * .45, H * .8); g.addColorStop(0, '#2b2380'); g.addColorStop(1, '#050a1a');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    }
+    /* velos nocturnos arriba y abajo */
+    let g = ctx.createLinearGradient(0, 0, 0, 470); g.addColorStop(0, 'rgba(10,8,45,.92)'); g.addColorStop(1, 'rgba(10,8,45,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, 470);
+    g = ctx.createLinearGradient(0, 830, 0, H); g.addColorStop(0, 'rgba(10,8,45,0)'); g.addColorStop(.45, 'rgba(10,8,45,.85)'); g.addColorStop(1, 'rgba(8,6,35,.97)'); ctx.fillStyle = g; ctx.fillRect(0, 830, W, H - 830);
+    ESTRELLAS.forEach(s => { ctx.globalAlpha = s.a; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill(); }); ctx.globalAlpha = 1;
+    /* luna */
+    ctx.save(); ctx.shadowColor = 'rgba(255,233,168,.9)'; ctx.shadowBlur = 45; ctx.drawImage(LUNA, 940, 28); ctx.restore();
+    /* textos de arriba */
+    ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+    texto(ctx, '¡Buenas noches!', W / 2, 150, '400 118px "Lilita One", sans-serif', 780, '#fff', 'rgba(139,92,255,1)', 34);
+    texto(ctx, info.frase, W / 2, 228, '600 46px Fredoka, sans-serif', 940, '#e9e4ff', 'rgba(0,0,0,.6)', 12);
+    pill(ctx, '⭐ ESTRELLA DE LA LECTURA', W / 2, 305);
+    /* personaje */
+    if (pj) {
+      const pw = hayVideo ? 430 : 640, ph = pw * pj.height / pj.width, px = hayVideo ? W - pw + 20 : (W - pw) / 2, py = hayVideo ? 1080 - ph : 380;
+      ctx.save(); ctx.shadowColor = PJ_ON ? colorDe(NINO.color).c : '#17ff5f'; ctx.shadowBlur = 40;
+      if (pj._f && 'filter' in ctx) ctx.filter = pj._f;
+      ctx.drawImage(pj, px, py, pw, ph); ctx.restore();
+    }
+    /* estrellas del cuento y textos de abajo */
+    for (let j = 0; j < 10; j++) estrella(ctx, W / 2 + (j - 4.5) * 84, 1132, 34, j < info.n);
+    ctx.textAlign = 'center';
+    texto(ctx, `${info.nombre} · ${info.n} de 10 estrellas`, W / 2, 1222, '700 50px Fredoka, sans-serif', 980, '#ffd23f', 'rgba(255,170,0,.6)', 16);
+    texto(ctx, `He leído «${info.titulo}» con ${nomPj()}`, W / 2, 1278, '500 34px Fredoka, sans-serif', 980, '#fff', 'rgba(0,0,0,.6)', 8);
+    ctx.globalAlpha = .7; texto(ctx, `Leo con Lucas · ${fechaTxt()}`, W / 2, 1325, '500 26px Fredoka, sans-serif', 980, '#a9c3d9', 'rgba(0,0,0,0)', 0); ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  function paraCamara() { cancelAnimationFrame(raf); raf = 0; if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; } }
+  function cerrar() { paraCamara(); cuenta = false; if (ov) { ov.remove(); ov = null; } document.removeEventListener('visibilitychange', alOcultar); }
+  function alOcultar() { if (document.hidden) cerrar(); }
+
+  async function abrir(datosCuento) {
+    if (ov) return;
+    const n = datosCuento.n;
+    info = { n, titulo: datosCuento.titulo || 'el cuento de hoy', nombre: NINO.nombre,
+      frase: n >= 9 ? 'Ya he leído mi cuento… ¡y me voy a dormir!' : n >= 6 ? 'He estudiado mucho… ¡ahora a dormir!' : 'Hoy he leído mi cuento… ¡dulces sueños!' };
+    final = null;
+    const im = imgPj(NINO.color, 'senala'); pj = await cargaImg(im.src); if (pj) pj._f = im.filter;
+    try { await Promise.all([document.fonts.load('118px "Lilita One"'), document.fonts.load('700 50px Fredoka')]); } catch (e) {}
+    ov = el('div', 'fn-ov');
+    ov.innerHTML = `<button class="fn-cerrar" id="fnX">✕</button>
+      <div class="fn-marco" id="fnMarco"><canvas id="fnCv" width="540" height="675"></canvas><div class="fn-num" id="fnNum"></div><div class="fn-flash" id="fnFlash"></div></div>
+      <p class="fn-txt" id="fnTxt">Ponte al lado de ${esc(nomPj())} y sonríe 😊</p>
+      <div class="fn-bots" id="fnBots"><button class="fn-disparo" id="fnDisparo">📸</button></div>`;
+    document.body.appendChild(ov);
+    document.addEventListener('visibilitychange', alOcultar);
+    $('#fnX').onclick = () => { SFX.clic(); VOZ.callar(); cerrar(); };
+    video = document.createElement('video'); video.setAttribute('playsinline', ''); video.muted = true; video.autoplay = true;
+    const cv = $('#fnCv'), ctx = cv.getContext('2d');
+    const bucle = () => { if (!ov) return; pinta(ctx, cv.width / W); raf = requestAnimationFrame(bucle); };
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 1600 } }, audio: false });
+      if (!ov) { paraCamara(); return; }
+      video.srcObject = stream; await video.play();
+      VOZ.decir(`¡Ponte al lado de ${nomPj()} y sonríe! Cuando estés listo, pulsa el botón de la cámara.`);
+    } catch (e) {
+      video = null;
+      $('#fnTxt').textContent = 'No se ha podido abrir la cámara. Puedes hacer la tarjeta solo con ' + nomPj() + '.';
+      $('#fnDisparo').textContent = '✨';
+    }
+    bucle();
+    $('#fnDisparo').onclick = disparar;
+  }
+
+  async function disparar() {
+    if (cuenta || !ov) return; cuenta = true;
+    if (video) {
+      for (const k of [3, 2, 1]) { if (!ov) return; $('#fnNum').innerHTML = `<b>${k}</b>`; SFX.clic(); await esperar(900); }
+      if (!ov) return; $('#fnNum').innerHTML = ''; VOZ.decir('¡Patata!');
+    }
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H; pinta(cv.getContext('2d'), 1);
+    paraCamara();
+    const fl = $('#fnFlash'); fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on'); SFX.pop();
+    final = await new Promise(r => cv.toBlob(r, 'image/jpeg', .92));
+    const url = URL.createObjectURL(final);
+    $('#fnMarco').insertAdjacentHTML('afterbegin', `<img src="${url}" alt="">`); $('#fnCv').remove();
+    FX.confeti(70);
+    $('#fnTxt').textContent = '¡Qué foto tan bonita! Envíasela a mamá, papá o los abuelos 💌';
+    $('#fnBots').innerHTML = `<button class="btn btn-wa" id="fnShare">📤 Compartir</button><button class="btn" id="fnGuardar">💾 Guardar</button><button class="btn btn-mini" id="fnOtra">🔁 Repetir</button>`;
+    $('#fnShare').onclick = () => compartir(url);
+    $('#fnGuardar').onclick = () => descargar(url);
+    $('#fnOtra').onclick = () => { SFX.clic(); const d = { n: info.n, titulo: info.titulo }; cerrar(); abrir(d); };
+    cuenta = false;
+    setTimeout(() => VOZ.decir('¡Qué foto tan bonita! Puedes enviársela a mamá, a papá o a los abuelos. ¡Buenas noches!'), 500);
+  }
+  const textoCompartir = () => `🌙 ¡Buenas noches! Hoy ${info.nombre} ha leído «${info.titulo}» y ha conseguido ${info.n} de 10 estrellas ⭐ con Leo con Lucas.`;
+  function descargar(url) { SFX.clic(); const a = document.createElement('a'); a.href = url; a.download = 'buenas-noches-' + info.nombre.toLowerCase().replace(/\s+/g, '-') + '.jpg'; document.body.appendChild(a); a.click(); a.remove(); toast('Foto guardada 📸'); }
+  async function compartir(url) {
+    SFX.clic();
+    const f = new File([final], 'buenas-noches.jpg', { type: 'image/jpeg' });
+    if (navigator.canShare && navigator.canShare({ files: [f] })) {
+      try { await navigator.share({ files: [f], text: textoCompartir(), title: 'Buenas noches' }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    /* sin compartir nativo: guarda la foto y abre WhatsApp con el mensaje para adjuntarla */
+    descargar(url);
+    setTimeout(() => window.open('https://wa.me/?text=' + encodeURIComponent(textoCompartir()), '_blank'), 600);
+  }
+  return { abrir };
+})();

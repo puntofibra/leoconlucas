@@ -1813,12 +1813,16 @@ var CUENTO = (() => {
       <div class="constelacion mini">${Array.from({ length: 10 }, (_, j) => `<i class="${j < n ? 'on' : ''}" style="--a:${j * 36}deg"></i>`).join('')}<div class="cu-luna">🌙</div></div>
       <p class="dlg-txt">${frase}${nuevo ? `<br>+${n * 3} chispas ⚡` : ''}</p>
       <p class="dlg-txt" style="font-size:20px">Buenas noches, ${esc(NINO.nombre)}. 💤</p>
+      <button class="btn btn-foto btn-grande" id="cuFoto">📸 FOTO DE BUENAS NOCHES</button>
       <button class="btn btn-cuento" id="cuOtra">🔁 Escucharlo otra vez</button>
       <button class="btn btn-mini" id="cuMapa">Volver al mapa</button>
     </div>`);
     if (n >= 6) FX.confeti(90);
     $('#cuOtra').onclick = () => abrir(fecha); $('#cuMapa').onclick = () => ir('mapa');
-    VOZ.decir(frase + ' Buenas noches, ' + NINO.nombre + '. Que tengas dulces sueños.');
+    $('#cuFoto').onclick = () => { SFX.clic(); VOZ.callar(); FOTO_NOCHE.abrir({ n, titulo: C && C.t }); };
+    const pjN = PJ_ON ? colorDe(NINO.color).nom : 'Lucas';
+    VOZ.decir(frase + ' Buenas noches, ' + NINO.nombre + '. Que tengas dulces sueños.')
+      .then(() => { if (pantallaActual === 'pCuento' && !document.querySelector('.fn-ov')) VOZ.decir(`Antes de ir a la cama, ¿te haces una foto de buenas noches con ${pjN}? Se la puedes enviar a mamá, a papá o a los abuelos. Pulsa el botón amarillo de la cámara.`); });
   }
   function dias() {
     const hoy = new Date(); const d = datos();
