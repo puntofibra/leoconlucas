@@ -138,7 +138,7 @@ function jugar(id) {
     d.tk--; d._t = Date.now(); guardarNino();
   }
   SFX.woosh(); pintaRecreoFichas();
-  ({ lluvia: juegoLluvia, memory: juegoMemory, carrera: juegoCarrera })[id]();
+  ({ lluvia: juegoLluvia, memory: juegoMemory, carrera: juegoCarrera, ...(typeof JUEGOS_EXTRA !== 'undefined' ? JUEGOS_EXTRA : {}) })[id]();
 }
 /* TRUCO OCULTO: 5 toques rápidos en las fichas del recreo = +1 ficha (hasta el máximo de 5) */
 (function () {
