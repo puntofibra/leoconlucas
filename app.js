@@ -1,3 +1,6 @@
+/* Reintenta las imágenes que fallen al cargar (red lenta o caché estropeada) */
+document.addEventListener('error', ev => { const t = ev.target; if (!t || t.tagName !== 'IMG') return; const n = +(t.dataset.re || 0); if (n >= 3) return; t.dataset.re = n + 1; setTimeout(() => { t.src = t.src.split('?')[0] + '?r=' + Date.now(); }, 700 * (n + 1)); }, true);
+
 /* =====================================================================
    LEO CON LUCAS · App (FuturMovil)
    Frontend en GitHub Pages · Backend Apps Script + Google Sheet
