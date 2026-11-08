@@ -1,19 +1,15 @@
 /* =====================================================================
    LEO CON LUCAS · Recreo PRO — 4 minijuegos arcade de lectura
-   4 · Lucas Runner       — cruza el portal de la palabra correcta
-   5 · Garra espacial     — pesca el meteorito con la palabra buena
-   6 · Serpiente de sílabas — come las sílabas en orden
-   7 · Marcianos del cráter — machaca solo a los marcianos buenos (+ jefe final)
+   · Garra espacial     — toca el meteorito bueno y la garra lo pesca
+   · Marcianos del cráter — machaca solo a los marcianos buenos (+ jefe final)
    Usa lo de extras.js: JUEGOS, finJuego, REC, palabrasDibujo, silabasHasta
    ===================================================================== */
 'use strict';
 
 JUEGOS.push(
-  { id: 'runner', n: 'Lucas Runner', e: '🚀', d: 'Esquiva asteroides y cruza el portal de la palabra correcta.' },
-  { id: 'garra', n: 'Garra espacial', e: '🦾', d: 'Lanza la garra y pesca el meteorito con la palabra buena.' },
-  { id: 'serpiente', n: 'Serpiente de sílabas', e: '🐍', d: 'Come las sílabas en orden para formar la palabra.' },
+  { id: 'garra', n: 'Garra espacial', e: '🦾', d: 'Toca el meteorito con la palabra buena y la garra lo pescará.' },
   { id: 'marcianos', n: 'Marcianos del cráter', e: '👾', d: '¡Pam! Golpea solo a los marcianos buenos y vence al jefe.' });
-const JUEGOS_EXTRA = { runner: () => juegoRunner(), garra: () => juegoGarra(), serpiente: () => juegoSerpiente(), marcianos: () => juegoMarcianos() };
+const JUEGOS_EXTRA = { garra: () => juegoGarra(), marcianos: () => juegoMarcianos() };
 
 /* ---------------- estilos ---------------- */
 (function () {
@@ -138,134 +134,13 @@ function rcPintaRoca(x, forma, r, c1 = '#8b7a6b', c2 = '#3b2f2a') {
 const rcFin = (txt, pts) => Math.min(25, 5 + Math.round(pts / 10));
 
 /* =====================================================================
-   4 · LUCAS RUNNER — 3 carriles, portales con palabras, asteroides y estrellas
-   ===================================================================== */
-function juegoRunner() {
-  const lv = nivelActual(), pal = palabrasDibujo(lv), conPal = pal.length >= 6, sil = silabasHasta(lv);
-  const META = 15;
-  const E = rcEscena(`<span id="ruV">${rcVidas(3)}</span><span class="rc-obj" id="ruObj"></span><span>⭐ <b id="ruP">0</b></span>`);
-  const { x } = E, est = rcEstrellas(80), L = [];
-  let vidas = 3, pts = 0, combo = 0, hechas = 0, vivo = true, inv = 0, carril = 1, yPj = 0, vel = 150 + (NINO.edad >= 7 ? 35 : NINO.edad <= 5 ? -15 : 0);
-  let obs = [], obj = null, ult = null, dist = -280, ciclo = 0, flags = {}, meta = null;
-  const anchoPj = Math.min(96, E.W * .22);
-  const pj = rcRobot(E, 'vuela', anchoPj);
-  const xPj = () => E.W * .18, yC = c => E.H * (.2 + c * .3);
-  yPj = yC(1);
-  const gap = () => Math.max(560, E.W * 1.25);
-
-  function nuevaPuerta() {
-    let ok, ops;
-    if (conPal) { do { ok = pick(pal); } while (ult && ok.e === ult.e); ops = ENG.shuffle([ok, ...rcOtros(pal, ok, 2, (a, b) => a.e === b.e)]); }
-    else { do { ok = pick(sil); } while (sil.length > 1 && ok === ult); ops = ENG.shuffle([ok, ...rcOtros(sil, ok, 2)]); }
-    ult = ok; obj = ok;
-    obs.push({ t: 'puerta', x: E.W + 70, ops, ok, res: -1, hecha: false });
-    $('#ruObj').innerHTML = conPal ? `<span class="rc-emo">${ok.e}</span>` : `<button class="rc-oir" id="ruOir">🔊</button>`;
-    if (!conPal) { $('#ruOir').onclick = () => VOZ.decir(sv(obj), { rate: .8 }); VOZ.decir(sv(ok), { rate: .8, cola: true }); }
-  }
-  const lbl = o => conPal ? o.w : o;
-  function aCarril(c) { c = rcClamp(c, 0, 2); if (c !== carril) { carril = c; SFX.pieza(); } }
-  E.S.onpointerdown = e => { if (!vivo) return; const r = E.S.getBoundingClientRect(); aCarril(Math.floor((e.clientY - r.top) / (r.height / 3))); };
-  const tecla = e => { if (!vivo) return; if (e.key === 'ArrowUp') { aCarril(carril - 1); e.preventDefault(); } if (e.key === 'ArrowDown') { aCarril(carril + 1); e.preventDefault(); } };
-  document.addEventListener('keydown', tecla);
-
-  function golpe(txt) {
-    vidas--; combo = 0; inv = 1.4; $('#ruV').innerHTML = rcVidas(vidas); SFX.mal(); rcSacude(E);
-    rcFlota(L, txt || '¡Ay!', xPj() + 30, yPj - 40, '#ff4d5e');
-    if (vidas <= 0) acabar();
-  }
-  function bucle(dt, t) {
-    const W = E.W, H = E.H, xp = xPj();
-    if (vivo && !meta) { vel = Math.min(340, vel + dt * 1.2); dist += vel * dt; }
-    /* programación: puerta → estrellas → asteroide → estrellas → puerta... */
-    if (vivo && !meta) {
-      const g = gap(), fase = dist - ciclo * g;
-      if (!flags.p && fase >= 0 && hechas + obs.filter(o => o.t === 'puerta').length < META) { flags.p = 1; nuevaPuerta(); }
-      if (!flags.e1 && fase > g * .3) { flags.e1 = 1; const c = Math.floor(Math.random() * 3); for (let i = 0; i < 3; i++) obs.push({ t: 'est', x: W + 40 + i * 46, c, f: i }); }
-      if (!flags.a && fase > g * .55) { flags.a = 1; const c = Math.floor(Math.random() * 3); obs.push({ t: 'ast', x: W + 60, c, r: 24 + Math.random() * 10, rot: 0, vr: (Math.random() - .5) * 3, forma: rcRoca() }); if (hechas > 4 && Math.random() < .5) obs.push({ t: 'ast', x: W + 230, c: (c + 1 + Math.floor(Math.random() * 2)) % 3, r: 22 + Math.random() * 8, rot: 0, vr: (Math.random() - .5) * 3, forma: rcRoca() }); }
-      if (!flags.e2 && fase > g * .8) { flags.e2 = 1; const c = Math.floor(Math.random() * 3); for (let i = 0; i < 2; i++) obs.push({ t: 'est', x: W + 40 + i * 46, c, f: i }); }
-      if (fase >= g) { ciclo++; flags = {}; }
-      if (hechas >= META && !obs.some(o => o.t === 'puerta') && !meta) { meta = { x: W + 80 }; }
-    }
-    rcFondo(E, est, (meta && meta.x < xp) ? 0 : vel * dt, t);
-    /* carriles */
-    for (let c = 0; c < 3; c++) { x.strokeStyle = 'rgba(24,224,255,.08)'; x.lineWidth = 2; x.setLineDash([18, 22]); x.lineDashOffset = (dist % 40); x.beginPath(); x.moveTo(0, yC(c)); x.lineTo(W, yC(c)); x.stroke(); }
-    x.setLineDash([]);
-    /* objetos */
-    const mov = vivo && !(meta && meta.x <= xp) ? vel * dt : 0;
-    for (const o of obs) {
-      o.x -= mov;
-      if (o.t === 'puerta') {
-        if (!o.hecha && o.x <= xp) {
-          o.hecha = true; o.res = carril;
-          if (o.ops[carril] === o.ok) {
-            hechas++; combo++; const p = 10 + Math.min(combo, 5) * 2; pts += p; $('#ruP').textContent = pts;
-            SFX.ok(); rcChispas(E, xp + 20, yC(carril), 22); rcFlota(L, '+' + p, xp + 40, yC(carril) - 50);
-            VOZ.decir(conPal ? o.ok.w : sv(o.ok), { rate: .9 });
-          } else {
-            hechas++; golpe('¡Ahí no!');
-            if (vidas > 0) VOZ.decir('Ahí ponía ' + (conPal ? o.ops[carril].w : sv(o.ops[carril])) + '.', { rate: .9 });
-          }
-        }
-        const ry = Math.min(E.H * .12, 54);
-        o.ops.forEach((op, c) => {
-          const cy = yC(c), es = o.res === c, okC = op === o.ok;
-          const col = o.res < 0 ? `hsl(${(t * 80 + c * 120) % 360},100%,60%)` : (es ? (okC ? '#17ff5f' : '#ff4d5e') : 'rgba(150,170,200,.4)');
-          x.save(); x.translate(o.x, cy);
-          const g2 = x.createRadialGradient(0, 0, 2, 0, 0, ry); g2.addColorStop(0, 'rgba(255,255,255,.35)'); g2.addColorStop(.6, 'rgba(139,92,255,.25)'); g2.addColorStop(1, 'rgba(24,224,255,0)');
-          x.fillStyle = g2; x.beginPath(); x.ellipse(0, 0, 24, ry, 0, 0, 7); x.fill();
-          x.strokeStyle = col; x.lineWidth = 6; x.shadowColor = col; x.shadowBlur = 18; x.beginPath(); x.ellipse(0, 0, 24, ry, 0, 0, 7); x.stroke();
-          x.lineWidth = 2; x.globalAlpha = .6; x.beginPath(); x.ellipse(0, 0, 14, ry * .7, Math.sin(t * 3 + c) * .2, 0, 7); x.stroke();
-          x.restore();
-          rcCartel(x, lbl(op), o.x, cy, conPal ? (lbl(op).length > 7 ? 19 : 22) : 28, { borde: es ? (okC ? '#17ff5f' : '#ff4d5e') : 'rgba(24,224,255,.8)', glow: es ? (okC ? '#17ff5f' : '#ff4d5e') : null });
-        });
-      } else if (o.t === 'ast') {
-        o.rot += o.vr * dt; const cy = yC(o.c);
-        x.save(); x.translate(o.x, cy); x.rotate(o.rot); x.shadowColor = '#ff8a3d'; x.shadowBlur = 10; rcPintaRoca(x, o.forma, o.r); x.restore();
-        if (!o.tocado && inv <= 0 && vivo && Math.abs(o.x - xp) < o.r + anchoPj * .3 && Math.abs(cy - yPj) < o.r + 22) { o.tocado = true; golpe('¡Pum!'); rcChispas(E, o.x, cy, 14, '#ff8a3d'); }
-      } else if (o.t === 'est') {
-        if (o.cogida) continue;
-        const cy = yC(o.c) + Math.sin(t * 4 + o.f) * 4;
-        x.save(); x.translate(o.x, cy); x.scale(Math.abs(Math.cos(t * 3 + o.f)) * .7 + .3, 1); x.fillStyle = '#ffd23f'; x.shadowColor = '#ffb000'; x.shadowBlur = 14; rcEstrella(x, 13); x.fill(); x.restore();
-        if (vivo && Math.abs(o.x - xp) < 30 && Math.abs(cy - yPj) < 34) { o.cogida = true; pts += 2; $('#ruP').textContent = pts; SFX.moneda(); rcFlota(L, '+2', o.x, cy - 20, '#ffd23f', 20); }
-      }
-    }
-    obs = obs.filter(o => o.x > -90 && !(o.t === 'est' && o.cogida));
-    /* meta */
-    if (meta) {
-      if (meta.x > xp) meta.x -= vel * dt;
-      for (let i = 0; i < 12; i++) { x.fillStyle = i % 2 ? '#fff' : '#111'; x.fillRect(meta.x, i * E.H / 12, 14, E.H / 12); x.fillStyle = i % 2 ? '#111' : '#fff'; x.fillRect(meta.x + 14, i * E.H / 12, 14, E.H / 12); }
-      if (meta.x <= xp && vivo) { pts += 50; $('#ruP').textContent = pts; FX.confeti(100); acabar(true); }
-    }
-    /* barra de progreso */
-    x.fillStyle = 'rgba(255,255,255,.12)'; rcRR(x, 12, 8, W - 24, 6, 3); x.fill();
-    x.fillStyle = '#17ff5f'; x.shadowColor = '#17ff5f'; x.shadowBlur = 8; rcRR(x, 12, 8, (W - 24) * Math.min(1, hechas / META), 6, 3); x.fill(); x.shadowBlur = 0;
-    x.font = `700 13px ${RC_F}`; x.fillStyle = 'rgba(255,255,255,.7)'; x.textAlign = 'right'; x.textBaseline = 'top'; x.fillText('🏁 ' + hechas + '/' + META, W - 14, 18);
-    rcPintaFlota(x, L, dt);
-    /* Lucas */
-    if (inv > 0) inv -= dt;
-    const yt = yC(carril); yPj += (yt - yPj) * Math.min(1, dt * 12);
-    pj.pon(xp, yPj + Math.sin(t * 5) * 3, (yt - yPj) * .004);
-    pj.style.opacity = inv > 0 && Math.floor(inv * 10) % 2 ? .35 : 1;
-  }
-  const para = rcBucle(E, bucle);
-  function acabar(gano, salir) {
-    if (!vivo) return; vivo = false; REC.fin = null; document.removeEventListener('keydown', tecla); E.quita();
-    if (salir) { para(); return; }
-    setTimeout(() => { para(); finJuego('runner', pts, gano ? '¡Has llegado a la meta, piloto!' : hechas >= 8 ? '¡Qué buen vuelo!' : '¡Buen intento, piloto!', rcFin('', pts) + (gano ? 5 : 0)); }, 900);
-  }
-  E.alPerder = () => acabar(false, true);
-  REC.fin = () => acabar(false, true);
-  VOZ.decir(conPal ? '¡Despegamos! Toca arriba, en medio o abajo para mover a tu robot. Cruza el portal de la palabra que va con el dibujo.' : '¡Despegamos! Toca arriba, en medio o abajo para moverte. Escucha y cruza el portal de la sílaba que dice Lucas.');
-}
-
-/* =====================================================================
-   5 · GARRA ESPACIAL — la garra oscila, toca para lanzarla
+   GARRA ESPACIAL — toca el meteorito y la garra va directa a por él
    ===================================================================== */
 function juegoGarra() {
   const lv = nivelActual(), pal = palabrasDibujo(lv), conPal = pal.length >= 7, sil = silabasHasta(lv);
   const E = rcEscena(`<span>⏱️ <b id="gaT">75</b></span><span class="rc-obj" id="gaObj"></span><span>⭐ <b id="gaP">0</b></span>`);
   const { x } = E, est = rcEstrellas(60), L = [];
-  let t = 75, pts = 0, combo = 0, vivo = true, aciertos = 0, fase = 0, ang = 0, len = 34, estado = 'osc', carga = null, obj = null, ult = null, rocas = [];
+  let t = 75, pts = 0, combo = 0, vivo = true, aciertos = 0, fase = 0, ang = 0, len = 34, estado = 'osc', carga = null, blanco = null, angIni = 0, apT = 0, obj = null, ult = null, rocas = [];
   const LMIN = 34, anchoPj = Math.min(80, E.W * .2);
   const pj = rcRobot(E, 'vuela', anchoPj);
   const O = () => ({ x: E.W / 2, y: 92 });
@@ -296,24 +171,33 @@ function juegoGarra() {
     $('#gaObj').innerHTML = conPal ? `<span class="rc-emo">${ok.e}</span>` : `<button class="rc-oir" id="gaOir">🔊</button>`;
     if (!conPal) { $('#gaOir').onclick = () => VOZ.decir(sv(obj), { rate: .8 }); VOZ.decir(sv(ok), { rate: .8, cola: true }); }
   }
-  E.S.onpointerdown = () => { if (vivo && estado === 'osc') { estado = 'baja'; SFX.woosh(); } };
-  const tecla = e => { if (e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); E.S.onpointerdown(); } };
-  document.addEventListener('keydown', tecla);
+  /* el niño toca un meteorito: la garra gira hacia él y baja recta, atravesando lo que haya por encima */
+  E.S.onpointerdown = e => {
+    if (!vivo || estado !== 'osc') return;
+    const r = E.S.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+    let m = null, dm = 1e9;
+    for (const k of rocas) { const d = Math.hypot(k.x - px, k.y - py); if (d < k.r + 16 && d - k.r < dm) { dm = d - k.r; m = k; } }
+    if (!m) return;
+    blanco = m; m.marca = 1; angIni = ang; apT = 0; estado = 'apunta'; SFX.woosh();
+  };
+  const tecla = () => {};
 
   function resuelve(m) {
     const o = O();
     rocas.splice(rocas.indexOf(m), 1);
     if (m.bonus) { t += 5; pts += 5; SFX.moneda(); rcFlota(L, '+5 s', o.x, o.y + 30, '#18e0ff'); rcChispas(E, o.x, o.y + 20, 20, '#18e0ff'); return; }
-    if (m.l === lbl(obj)) {
+    {
       aciertos++; combo++; const p = 10 + Math.min(combo, 5) * 2; pts += p; SFX.ok(); rcChispas(E, o.x, o.y + 30, 26); rcFlota(L, '+' + p, o.x, o.y + 40);
       VOZ.decir(conPal ? obj.w : sv(obj), { rate: .9 });
-    } else {
-      combo = 0; t = Math.max(0, t - 3); SFX.mal(); rcSacude(E); rcFlota(L, '-3 s', o.x, o.y + 40, '#ff4d5e');
-      VOZ.decir('Ahí pone ' + (conPal ? m.l : sv(m.l)) + '.', { rate: .9 });
     }
     $('#gaP').textContent = pts;
     nuevaRoca(); if (!rocas.some(r => r.bonus) && Math.random() < .25) nuevaRoca(true);
     reetiqueta();
+  }
+  function falla(m) {
+    combo = 0; t = Math.max(0, t - 3); SFX.mal(); rcSacude(E); m.mal = 1;
+    rcFlota(L, '-3 s', m.x, m.y - m.r - 10, '#ff4d5e');
+    VOZ.decir('Ahí pone ' + (conPal ? m.l : sv(m.l)) + '. ¡Prueba otra vez!', { rate: .9 });
   }
   function bucle(dt, tt) {
     const W = E.W, H = E.H, o = O();
@@ -324,9 +208,11 @@ function juegoGarra() {
     /* rocas */
     for (const m of rocas) {
       if (m === carga) continue;
-      m.ap = Math.min(1, m.ap + dt * 3); m.rot += m.vr * dt; m.flash = Math.max(0, m.flash - dt * 2);
-      const fy = Math.sin(tt * 1.5 + m.f) * 3, s = m.ap < 1 ? m.ap * (1.2 - .2 * m.ap) : 1;
-      x.save(); x.translate(m.x, m.y + fy); x.scale(s, s);
+      m.ap = Math.min(1, m.ap + dt * 3); m.rot += m.vr * dt; m.flash = Math.max(0, m.flash - dt * 2); m.mal = Math.max(0, (m.mal || 0) - dt * 1.6);
+      const fy = m === blanco ? 0 : Math.sin(tt * 1.5 + m.f) * 3, s = m.ap < 1 ? m.ap * (1.2 - .2 * m.ap) : 1, sx = m.mal ? Math.sin(tt * 60) * 6 * m.mal : 0;
+      x.save(); x.translate(m.x + sx, m.y + fy); x.scale(s, s);
+      if (m.marca) { x.save(); x.strokeStyle = '#17ff5f'; x.lineWidth = 3; x.shadowColor = '#17ff5f'; x.shadowBlur = 16; x.setLineDash([8, 6]); x.lineDashOffset = -tt * 40; x.beginPath(); x.arc(0, 0, m.r + 9, 0, 7); x.stroke(); x.restore(); }
+      if (m.mal) { x.save(); x.fillStyle = `rgba(255,77,94,${.45 * m.mal})`; x.shadowColor = '#ff4d5e'; x.shadowBlur = 24 * m.mal; x.beginPath(); x.arc(0, 0, m.r + 6, 0, 7); x.fill(); x.restore(); }
       if (m.bonus) { x.rotate(tt); x.fillStyle = '#18e0ff'; x.shadowColor = '#18e0ff'; x.shadowBlur = 20; rcEstrella(x, m.r, .5); x.fill(); x.rotate(-tt); x.shadowBlur = 0; x.fillStyle = '#05203a'; x.font = `700 15px ${RC_F}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('+5s', 0, 1); }
       else {
         x.save(); x.rotate(m.rot); if (m.flash > 0) { x.shadowColor = '#fff'; x.shadowBlur = 30 * m.flash; } rcPintaRoca(x, m.forma, m.r, '#9a8bb0', '#3a2d55'); x.restore();
@@ -336,20 +222,29 @@ function juegoGarra() {
     }
     /* garra */
     if (vivo) {
-      if (estado === 'osc') { fase += dt * vOsc; ang = Math.sin(fase) * 1.15; }
-      else if (estado === 'baja') {
-        len += (430 + (NINO.edad >= 7 ? 60 : 0)) * dt;
-        const tx = o.x + Math.sin(ang) * len, ty = o.y + Math.cos(ang) * len;
-        const m = rocas.find(m => Math.hypot(m.x - tx, m.y - ty) < m.r + 6);
-        if (m) { carga = m; estado = 'sube'; SFX.pop(); }
-        else if (tx < -10 || tx > W + 10 || ty > H + 10) estado = 'sube';
+      if (estado === 'osc') { fase += dt * vOsc * .6; ang = Math.sin(fase) * .5; }
+      else if (estado === 'apunta') {
+        /* gira suave hacia el meteorito elegido */
+        apT = Math.min(1, apT + dt * 4.5); const e2 = 1 - Math.pow(1 - apT, 3);
+        const aObj = Math.atan2(blanco.x - o.x, blanco.y - o.y);
+        ang = angIni + (aObj - angIni) * e2;
+        if (apT >= 1) estado = 'baja';
+      } else if (estado === 'baja') {
+        const aObj = Math.atan2(blanco.x - o.x, blanco.y - o.y), dist = Math.hypot(blanco.x - o.x, blanco.y - o.y);
+        ang = aObj;
+        const bueno = blanco.bonus || blanco.l === lbl(obj), meta = bueno ? dist - blanco.r * .8 : dist - blanco.r - 4;
+        len = Math.min(meta, len + (520 + (NINO.edad >= 7 ? 60 : 0)) * dt);
+        if (len >= meta) {
+          if (bueno) { carga = blanco; SFX.pop(); }
+          else falla(blanco);
+          blanco.marca = 0; blanco = null; estado = 'sube';
+        }
       } else if (estado === 'sube') {
-        len -= (carga ? (carga.bonus ? 520 : rcClamp(560 - carga.r * 7, 200, 420)) : 640) * dt;
-        if (len <= LMIN) { len = LMIN; estado = 'osc'; if (carga) { const c = carga; carga = null; resuelve(c); } }
+        len -= (carga ? (carga.bonus ? 560 : 420) : 700) * dt;
+        if (len <= LMIN) { len = LMIN; estado = 'osc'; fase = Math.asin(rcClamp(ang / .5, -1, 1)); if (carga) { const c = carga; carga = null; resuelve(c); } }
       }
     }
     const tx = o.x + Math.sin(ang) * len, ty = o.y + Math.cos(ang) * len;
-    if (estado === 'osc' && vivo) { x.save(); x.strokeStyle = 'rgba(23,255,95,.25)'; x.setLineDash([6, 10]); x.lineWidth = 2; x.beginPath(); x.moveTo(tx, ty); x.lineTo(o.x + Math.sin(ang) * 2000, o.y + Math.cos(ang) * 2000); x.stroke(); x.restore(); }
     x.strokeStyle = '#a9c3d9'; x.lineWidth = 3; x.shadowColor = '#18e0ff'; x.shadowBlur = 6; x.beginPath(); x.moveTo(o.x, o.y); x.lineTo(tx, ty); x.stroke(); x.shadowBlur = 0;
     x.fillStyle = '#5b6b85'; x.beginPath(); x.arc(o.x, o.y, 8, 0, 7); x.fill(); x.fillStyle = '#18e0ff'; x.beginPath(); x.arc(o.x, o.y, 3, 0, 7); x.fill();
     if (carga) { const cx = o.x + Math.sin(ang) * (len + carga.r * .8), cy = o.y + Math.cos(ang) * (len + carga.r * .8); carga.x = cx; carga.y = cy; x.save(); x.translate(cx, cy); if (carga.bonus) { x.fillStyle = '#18e0ff'; x.shadowColor = '#18e0ff'; x.shadowBlur = 20; rcEstrella(x, carga.r, .5); x.fill(); } else { x.save(); x.rotate(carga.rot); rcPintaRoca(x, carga.forma, carga.r, '#9a8bb0', '#3a2d55'); x.restore(); rcCartel(x, carga.l, 0, 0, rcClamp(carga.r * .48, 15, 22)); } x.restore(); }
@@ -371,150 +266,7 @@ function juegoGarra() {
   }
   E.alPerder = () => acabar(true);
   REC.fin = () => acabar(true);
-  VOZ.decir(conPal ? 'La garra se mueve sola. Toca la pantalla para lanzarla y pesca el meteorito con la palabra del dibujo.' : 'La garra se mueve sola. Escucha a Lucas y toca la pantalla para pescar el meteorito con esa sílaba.');
-}
-
-/* =====================================================================
-   6 · SERPIENTE DE SÍLABAS — come las sílabas en orden (sin choques: es para peques)
-   ===================================================================== */
-function juegoSerpiente() {
-  const lv = nivelActual(), sil = silabasHasta(lv);
-  const corta = NINO.edad <= 6 && lv < 12;
-  let pool = palabrasDibujo(lv).filter(p => p.s.length >= 2 && p.s.length <= (corta ? 2 : 3));
-  if (pool.length < 4) pool = palabrasDibujo(lv).filter(p => p.s.length >= 2 && p.s.length <= 3);
-  const modo = pool.length >= 4 ? 'dib' : lv === 0 ? 'voc' : 'voz';
-  if (modo === 'voz') pool = ENG.PAL.filter(p => p.lv <= Math.max(1, lv) && p.s.length >= 2 && p.s.length <= 3 && /^[a-záéíóúñ]+$/.test(p.w));
-  const E = rcEscena(`<span id="seV">${rcVidas(3)}</span><span class="rc-obj" id="seObj"></span><span>⏱️ <b id="seT">90</b></span>`);
-  const { x } = E, est = rcEstrellas(50), L = [];
-  let t = 90, vidas = 3, pts = 0, palabras = 0, fallosPal = 0, vivo = true, pausa = 0;
-  let cols, rows, cell, oy;
-  const calc = () => { cols = rcClamp(Math.round(E.W / 46), 7, 12); cell = E.W / cols; rows = Math.max(7, Math.floor(E.H / cell)); oy = (E.H - rows * cell) / 2; };
-  calc();
-  let serp = [], prev = [], dir = { x: 1, y: 0 }, cola = [], crecer = 0, acc = 0, fichas = [], pal = null, ult = null;
-  let paso = NINO.edad <= 5 ? .46 : NINO.edad >= 7 ? .33 : .39;
-  const cx0 = Math.floor(cols / 2), cy0 = Math.floor(rows / 2);
-  for (let i = 0; i < 3; i++) serp.push({ x: cx0 - i, y: cy0 });
-  prev = serp.map(p => ({ ...p }));
-  E.alTam = () => { const oc = cols, or = rows; calc(); if (oc !== cols || or !== rows) { serp.forEach(p => { p.x = Math.min(p.x, cols - 1); p.y = Math.min(p.y, rows - 1); }); prev = serp.map(p => ({ ...p })); fichas.forEach(f => { f.x = Math.min(f.x, cols - 1); f.y = Math.min(f.y, rows - 1); }); } };
-  /* cabeza: imagen del robot del niño */
-  const im = imgPj(NINO.color, 'vuela'), img = new Image(); img.src = im.src;
-  const colPj = (typeof colorDe === 'function' ? colorDe(NINO.color).c : '#17ff5f');
-  let mira = 1;
-
-  function nuevaPalabra() {
-    if (modo === 'voc') { const v = ENG.shuffle(['a', 'e', 'i', 'o', 'u']).slice(0, NINO.edad <= 5 ? 3 : 4); pal = { s: v, w: v.join(''), i: 0 }; }
-    else { let p; do { p = pick(pool); } while (pool.length > 1 && ult && p.w === ult.w); ult = p; pal = { s: p.s.slice(), w: p.w, e: p.e, i: 0 }; }
-    fallosPal = 0; pintaObj(); ponFichas();
-    if (modo === 'voz') VOZ.decir(pal.w, { rate: .85, cola: true });
-  }
-  function pintaObj() {
-    const sl = pal.s.map((s, i) => i < pal.i ? `<b>${rcTx(s)}</b>` : modo === 'voc' ? `<u>${rcTx(s)}</u>` : '<i>?</i>').join('');
-    $('#seObj').innerHTML = (modo === 'dib' ? `<span class="rc-emo">${pal.e}</span>` : modo === 'voz' ? `<button class="rc-oir" id="seOir">🔊</button>` : '') + `<span class="rc-slots">${sl}</span>`;
-    const b = $('#seOir'); if (b) b.onclick = () => VOZ.decir(pal.w, { rate: .85 });
-  }
-  function libre(px, py) { return !serp.some(p => p.x === px && p.y === py) && !fichas.some(f => f.x === px && f.y === py); }
-  function sitio() {
-    const h = serp[0];
-    for (let k = 0; k < 200; k++) { const px = Math.floor(Math.random() * cols), py = Math.floor(Math.random() * rows); if (libre(px, py) && Math.abs(px - h.x) + Math.abs(py - h.y) >= 3) return { x: px, y: py }; }
-    for (let px = 0; px < cols; px++) for (let py = 0; py < rows; py++) if (libre(px, py)) return { x: px, y: py };
-    return { x: 0, y: 0 };
-  }
-  function ponFichas() {
-    fichas = [];
-    const sig = pal.s[pal.i], base = sig.normalize('NFD').replace(/[́]/g, '').normalize('NFC');
-    const malas = ENG.shuffle([...new Set([...pal.s.filter((s, i) => i !== pal.i), ...(modo === 'voc' ? ['a', 'e', 'i', 'o', 'u'] : sil)])]
-      .filter(s => s.normalize('NFD').replace(/[́]/g, '').normalize('NFC') !== base)).slice(0, NINO.edad <= 5 ? 2 : 3);
-    [sig, ...malas].forEach(s => { const p = sitio(); fichas.push({ ...p, s, ap: 0, f: Math.random() * 7 }); });
-  }
-  function giro(d) {
-    const ultD = cola.length ? cola[cola.length - 1] : dir;
-    if ((d.x === -ultD.x && d.y === -ultD.y) || (d.x === ultD.x && d.y === ultD.y)) return;
-    if (cola.length < 2) cola.push(d);
-  }
-  let pd = null;
-  E.S.onpointerdown = e => { pd = { x: e.clientX, y: e.clientY }; };
-  E.S.onpointerup = e => {
-    if (!pd || !vivo) return; const dx = e.clientX - pd.x, dy = e.clientY - pd.y; pd = null;
-    if (Math.hypot(dx, dy) > 22) { giro(Math.abs(dx) > Math.abs(dy) ? { x: Math.sign(dx), y: 0 } : { x: 0, y: Math.sign(dy) }); return; }
-    const r = E.S.getBoundingClientRect(), h = serp[0], hx = r.left + (h.x + .5) * cell, hy = r.top + oy + (h.y + .5) * cell;
-    const ex = e.clientX - hx, ey = e.clientY - hy;
-    const ultD = cola.length ? cola[cola.length - 1] : dir;
-    if (ultD.x !== 0) giro({ x: 0, y: Math.sign(ey) || 1 }); else giro({ x: Math.sign(ex) || 1, y: 0 });
-  };
-  const tecla = e => { const m = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] }[e.key]; if (m && vivo) { e.preventDefault(); giro({ x: m[0], y: m[1] }); } };
-  document.addEventListener('keydown', tecla);
-
-  function avanza() {
-    if (cola.length) dir = cola.shift();
-    if (dir.x) mira = dir.x;
-    prev = serp.map(p => ({ ...p }));
-    const h = serp[0], n = { x: (h.x + dir.x + cols) % cols, y: (h.y + dir.y + rows) % rows };
-    serp.unshift(n);
-    if (crecer > 0) { crecer--; prev.push({ ...prev[prev.length - 1] }); } else serp.pop();
-    const fi = fichas.findIndex(f => f.x === n.x && f.y === n.y);
-    if (fi < 0) return;
-    const f = fichas[fi], px = (n.x + .5) * cell, py = oy + (n.y + .5) * cell;
-    if (f.s === pal.s[pal.i]) {
-      pal.i++; crecer++; SFX.pieza(); rcChispas(E, px, py, 14); fichas.splice(fi, 1);
-      VOZ.decir(sv(f.s), { rate: .85 });
-      if (pal.i >= pal.s.length) {
-        palabras++; const p = 10 * pal.s.length + (fallosPal ? 0 : 5); pts += p; pintaObj();
-        rcFlota(L, (modo === 'voc' ? '¡Bien!' : rcTx(pal.w)) + ' +' + p, E.W / 2, E.H * .35, '#17ff5f', 30);
-        SFX.ok();
-        if (modo !== 'voc') VOZ.decir(pal.w + '.', { rate: .85, cola: true });
-        fichas = []; pausa = .9; paso = Math.max(.24, paso - .012);
-        setTimeout(() => { if (vivo) nuevaPalabra(); }, 900);
-      } else { pintaObj(); ponFichas(); }
-    } else {
-      vidas--; fallosPal++; $('#seV').innerHTML = rcVidas(vidas); SFX.mal(); rcSacude(E); rcFlota(L, '¡Uy!', px, py - 20, '#ff4d5e');
-      const p = sitio(); f.x = p.x; f.y = p.y; f.ap = 0;
-      if (vidas <= 0) { acabar(); return; }
-      VOZ.decir('Esa es ' + sv(f.s) + '. Busca ' + sv(pal.s[pal.i]) + '.', { rate: .9 });
-    }
-  }
-  function bucle(dt, tt) {
-    const W = E.W, H = E.H;
-    if (vivo) { t -= dt; $('#seT').textContent = Math.max(0, Math.ceil(t)); if (t <= 0) { acabar(); } }
-    if (vivo) { if (pausa > 0) pausa -= dt; else { acc += dt; while (acc >= paso) { acc -= paso; avanza(); if (!vivo) break; } } }
-    rcFondo(E, est, 0, tt, '#06142e', '#140a33');
-    /* rejilla */
-    x.fillStyle = 'rgba(24,224,255,.12)';
-    for (let i = 0; i <= cols; i++) for (let j = 0; j <= rows; j++) { x.beginPath(); x.arc(i * cell, oy + j * cell, 1.3, 0, 7); x.fill(); }
-    /* fichas */
-    for (const f of fichas) {
-      f.ap = Math.min(1, f.ap + dt * 3);
-      const px = (f.x + .5) * cell, py = oy + (f.y + .5) * cell + Math.sin(tt * 3 + f.f) * 2, r = Math.max(3, cell * .47 * (f.ap < 1 ? f.ap * (1.25 - .25 * f.ap) : 1));
-      const g = x.createRadialGradient(px - r * .3, py - r * .3, 1, px, py, r); g.addColorStop(0, '#ffffff'); g.addColorStop(1, '#bfe9ff');
-      x.save(); x.shadowColor = '#18e0ff'; x.shadowBlur = 14; x.fillStyle = g; x.beginPath(); x.arc(px, py, r, 0, 7); x.fill(); x.restore();
-      x.strokeStyle = 'rgba(24,224,255,.9)'; x.lineWidth = 2; x.beginPath(); x.arc(px, py, r, 0, 7); x.stroke();
-      const txt = rcTx(f.s); let fs = cell * .44; x.font = `700 ${fs}px ${RC_F}`; while (x.measureText(txt).width > r * 1.8 && fs > 10) { fs -= 1; x.font = `700 ${fs}px ${RC_F}`; }
-      x.fillStyle = '#0b1633'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(txt, px, py + 1);
-    }
-    /* cuerpo (de la cola a la cabeza) con movimiento suave */
-    const fr = pausa > 0 ? 1 : Math.min(1, acc / paso);
-    const pos = serp.map((p, i) => { const q = prev[i] || p; let X = q.x + (p.x - q.x) * fr, Y = q.y + (p.y - q.y) * fr; if (Math.abs(p.x - q.x) > 1) X = p.x; if (Math.abs(p.y - q.y) > 1) Y = p.y; return { X: (X + .5) * cell, Y: oy + (Y + .5) * cell }; });
-    for (let i = pos.length - 1; i >= 1; i--) {
-      const p = pos[i], k = 1 - i / (pos.length + 2), r = cell * (.22 + .18 * k);
-      x.save(); x.globalAlpha = .55 + .45 * k; x.shadowColor = colPj; x.shadowBlur = 16; x.fillStyle = colPj; x.beginPath(); x.arc(p.X, p.Y, r, 0, 7); x.fill();
-      x.fillStyle = 'rgba(255,255,255,.6)'; x.beginPath(); x.arc(p.X - r * .3, p.Y - r * .3, r * .32, 0, 7); x.fill(); x.restore();
-    }
-    const h = pos[0];
-    x.save(); x.translate(h.X, h.Y); x.scale(mira, 1);
-    if (img.complete && img.naturalWidth) { const w = cell * 1.55, hh = w * img.naturalHeight / img.naturalWidth; try { if ('filter' in x) x.filter = im.filter || 'none'; } catch (e) {} x.drawImage(img, -w / 2, -hh / 2 + Math.sin(tt * 6) * 2, w, hh); try { x.filter = 'none'; } catch (e) {} }
-    else { x.fillStyle = colPj; x.beginPath(); x.arc(0, 0, cell * .45, 0, 7); x.fill(); }
-    x.restore();
-    rcPintaFlota(x, L, dt);
-  }
-  nuevaPalabra();
-  const para = rcBucle(E, bucle);
-  function acabar(salir) {
-    if (!vivo) return; vivo = false; REC.fin = null; document.removeEventListener('keydown', tecla); E.quita();
-    if (salir) { para(); return; }
-    setTimeout(() => { para(); finJuego('serpiente', pts, palabras >= 8 ? '¡Serpiente maestra de sílabas!' : palabras >= 4 ? '¡Qué bien formas palabras!' : '¡Buen intento!', rcFin('', pts)); }, 700);
-  }
-  E.alPerder = () => acabar(true);
-  REC.fin = () => acabar(true);
-  VOZ.decir(modo === 'dib' ? 'Desliza el dedo o toca hacia donde quieras ir. Come las sílabas en orden para formar la palabra del dibujo.' : modo === 'voc' ? 'Desliza el dedo para moverte. Come las vocales en el orden que ves arriba.' : 'Desliza el dedo para moverte. Escucha la palabra y come sus sílabas en orden.');
+  VOZ.decir(conPal ? 'Toca el meteorito que tiene la palabra del dibujo y la garra irá a por él.' : 'Escucha a Lucas y toca el meteorito con esa sílaba. La garra irá a por él.');
 }
 
 /* =====================================================================
