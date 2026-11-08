@@ -527,13 +527,14 @@ var FOTO_NOCHE = (() => {
     texto(ctx, '¡Buenas noches!', cx, Hx.y + 120, '400 104px "Lilita One", sans-serif', tw, '#fff', 'rgba(139,92,255,1)', 32);
     texto(ctx, info.frase, cx, Hx.y + 190, '600 40px Fredoka, sans-serif', tw, '#e9e4ff', 'rgba(0,0,0,.7)', 12);
     pill(ctx, '⭐ ESTRELLA DE LA LECTURA', cx, Hx.y + 262);
+    ctx.globalAlpha = .8; texto(ctx, fechaTxt(), cx, Hx.y + 330, '500 26px Fredoka, sans-serif', tw, '#d6d0ff', 'rgba(0,0,0,.8)', 10); ctx.globalAlpha = 1;
     /* 5) estrellas del cuento y textos en la banda de abajo (a la derecha del planeta) */
     const bx = 745, bw = 600;
-    for (let j = 0; j < 10; j++) estrella(ctx, bx + (j - 4.5) * 58, 1688, 24, j < info.n);
+    for (let j = 0; j < 10; j++) estrella(ctx, bx + (j - 4.5) * 58, 1678, 24, j < info.n);
     ctx.textAlign = 'center';
-    texto(ctx, `${info.nombre} · ${info.n} de 10 estrellas`, bx, 1756, '700 44px Fredoka, sans-serif', bw, '#ffd23f', 'rgba(255,170,0,.6)', 16);
-    texto(ctx, `He leído «${info.titulo}»`, bx, 1800, '500 30px Fredoka, sans-serif', bw, '#fff', 'rgba(0,0,0,.7)', 8);
-    ctx.globalAlpha = .75; texto(ctx, `Leo con Lucas · ${fechaTxt()}`, bx, 1836, '500 23px Fredoka, sans-serif', bw, '#a9c3d9', 'rgba(0,0,0,0)', 0); ctx.globalAlpha = 1;
+    texto(ctx, `${info.nombre} · ${info.n} de 10 estrellas`, bx, 1744, '700 44px Fredoka, sans-serif', bw, '#ffd23f', 'rgba(255,170,0,.6)', 16);
+    texto(ctx, `He leído «${info.titulo}»`, bx, 1786, '500 30px Fredoka, sans-serif', bw, '#fff', 'rgba(0,0,0,.7)', 8);
+    texto(ctx, 'Juega en puntofibra.github.io/leoconlucas', bx, 1828, '700 26px Fredoka, sans-serif', bw, '#17ff5f', 'rgba(23,255,95,.7)', 12);
     ctx.restore();
   }
 
