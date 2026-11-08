@@ -326,6 +326,7 @@ function nombresLetras(t) {
 const TILDE = { a: 'á', e: 'é', i: 'í', o: 'ó', u: 'ú' };
 function sv(s) {
   if (/^[aeiouáéíóú]$/i.test(s)) return s.normalize('NFD').replace(/[\u0301]/g, '');   // vocal sola: «i», no «i con tilde»
+  if (/^[aeiouáéíóú]/i.test(s)) return s.normalize('NFD').replace(/[\u0301]/g, '').normalize('NFC');   // empieza por vocal («il», «es», «un»): sin tilde, si no la voz dice «i con acento agudo»
   if (/[áéíóú]/.test(s)) return s;
   const m = s.match(/[aeiou](?!.*[aeiou])/);
   return m ? s.slice(0, m.index) + TILDE[m[0]] + s.slice(m.index + 1) : s;
@@ -356,7 +357,9 @@ const VOZ = (() => {
   function prepara(t) {
     return nombresLetras(String(t)
       .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}️‍]/gu, '')   // emojis fuera
-      .replace(/\.{3}/g, '…').replace(/\s+/g, ' ').trim());
+      .replace(/\.{3}/g, '…').replace(/\s+/g, ' ').trim())
+      /* nunca nombrar las tildes: vocal acentuada suelta o al inicio de una sílaba corta («í», «íl», «ás») → sin tilde */
+      .replace(/(^|[^\p{L}])([áéíóú])([b-df-hj-np-tv-zñ]{0,2})(?=$|[^\p{L}])/giu, (m, a1, v, c) => a1 + v.normalize('NFD').replace(/[\u0301]/g, '') + c);
   }
   /* trocea en frases para que respete puntos y pausas (y no se corte en Android) */
   function trozos(t) {
