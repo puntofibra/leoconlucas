@@ -140,6 +140,26 @@ function jugar(id) {
   SFX.woosh(); pintaRecreoFichas();
   ({ lluvia: juegoLluvia, memory: juegoMemory, carrera: juegoCarrera })[id]();
 }
+/* TRUCO OCULTO: 5 toques rápidos en las fichas del recreo = +1 ficha (hasta el máximo de 5) */
+(function () {
+  const z = document.getElementById('recFichas'); if (!z) return;
+  z.style.touchAction = 'manipulation'; z.style.userSelect = 'none'; z.style.webkitUserSelect = 'none';
+  let n = 0, ult = 0;
+  z.addEventListener('pointerdown', () => {
+    if (!NINO) return;
+    const ahora = Date.now();
+    n = (ahora - ult < 450) ? n + 1 : 1; ult = ahora;
+    if (n < 5) return;
+    n = 0;
+    if (tickets() >= TK_MAX) return;
+    const d = datos(); d.tk = Math.min(TK_MAX, tickets() + 1); guardarNino();
+    pintaRecreoFichas();
+    const b = $('#bRecreoSub'); if (b) b.textContent = tickets() + ' 🎟️';
+    SFX.moneda();
+    const f = z.querySelectorAll('.ficha.on'); const nueva = f[f.length - 1];
+    if (nueva) { try { FX.chispas(nueva, 16); } catch (e) {} if (nueva.animate) nueva.animate([{ transform: 'scale(.3) rotate(-30deg)', opacity: 0 }, { transform: 'scale(1.5) rotate(10deg)', opacity: 1, offset: .6 }, { transform: 'scale(1) rotate(0)' }], { duration: 450, easing: 'cubic-bezier(.2,.9,.3,1)' }); }
+  });
+})();
 function pintaRecreoFichas() { const tk = tickets(); $('#recFichas').innerHTML = Array.from({ length: TK_MAX }, (_, i) => `<span class="ficha${i < tk ? ' on' : ''}">🎟️</span>`).join(''); }
 function finJuego(id, puntos, txt, chispas) {
   const d = datos(); d.rec = d.rec || {};
