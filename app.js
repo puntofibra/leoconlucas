@@ -1,11 +1,33 @@
-/* Reintenta las imágenes que fallen al cargar (red lenta o caché estropeada) */
-document.addEventListener('error', ev => { const t = ev.target; if (!t || t.tagName !== 'IMG') return; const n = +(t.dataset.re || 0); if (n >= 3) return; t.dataset.re = n + 1; setTimeout(() => { t.src = t.src.split('?')[0] + '?r=' + Date.now(); }, 700 * (n + 1)); }, true);
-
 /* =====================================================================
    LEO CON LUCAS · App (FuturMovil)
    Frontend en GitHub Pages · Backend Apps Script + Google Sheet
    ===================================================================== */
 'use strict';
+/* Imágenes que fallan: se ocultan (nunca se ve el icono roto), se reintentan 2 veces y,
+   si es un planeta y sigue fallando, se pone la foto de otro planeta que sí carga con un
+   DESTELLO dorado para que el admin vea que está duplicado y lo corrija */
+(function () {
+  const css = document.createElement('style');
+  css.textContent = '@keyframes destelloDup{0%,78%,100%{filter:brightness(1) drop-shadow(0 0 10px rgba(255,210,63,.5))}86%{filter:brightness(2) drop-shadow(0 0 28px #ffd23f) drop-shadow(0 0 50px #fff)}}' +
+    'img.img-dup{animation:destelloDup 2.4s ease-in-out infinite !important}img.img-espera{visibility:hidden}';
+  document.head.appendChild(css);
+  document.addEventListener('load', ev => { const t = ev.target; if (t && t.tagName === 'IMG') t.classList.remove('img-espera'); }, true);
+  document.addEventListener('error', ev => {
+    const t = ev.target; if (!t || t.tagName !== 'IMG') return;
+    t.classList.add('img-espera');
+    const n = +(t.dataset.re || 0);
+    if (n < 2) { t.dataset.re = n + 1; setTimeout(() => { t.src = t.src.split('?')[0] + '?r=' + Date.now(); }, 700 * (n + 1)); return; }
+    if (t.classList.contains('pimg') && !t.dataset.dup) {
+      t.dataset.dup = '1';
+      const ok = [...document.querySelectorAll('img.pimg')].find(x => x !== t && x.complete && x.naturalWidth > 0 && !x.dataset.dup);
+      const roto = t.src.split('?')[0].split('/').pop();
+      console.warn('[Leo con Lucas] Imagen rota sustituida:', roto);
+      t.classList.add('img-dup'); t.title = 'Imagen duplicada (falla ' + roto + ')';
+      t.src = ok ? ok.src : 'img/planetas/planeta01.png';
+    }
+  }, true);
+})();
+
 
 const CFG = {
   API: 'https://script.google.com/macros/s/AKfycbwnOU0rZqjHtpKsUBurIv7-kkDMxQX8t9gUjNTma36sWXrPTyaV42y7fBjLldmJ5mTmMg/exec',   // URL /exec de Apps Script "leo con lucas"
