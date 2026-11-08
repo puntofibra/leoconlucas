@@ -710,14 +710,14 @@ function pintaMapa() {
     requestAnimationFrame(() => centra(pos[d].y, false));
     setTimeout(() => {
       const dx = pos[act].x - pos[d].x, dy = pos[act].y - pos[d].y;
-      nave.classList.add('viajando'); nave.firstChild.dataset.fuerza = '2.6'; nave.style.transform = orienta(dx, dy) + ' scale(1.15)';
+      nave.classList.add('viajando'); nave.firstChild.dataset.fuerza = '2.6'; ponTf(nave, orienta(dx, dy) + ' scale(1.15)');
       nave.style.transition = 'left 2.2s cubic-bezier(.55,0,.35,1), top 2.2s cubic-bezier(.55,0,.35,1)';
       nave.style.left = pos[act].x + 'px'; nave.style.top = pos[act].y + 'px';
       SFX.woosh(); ESTELA.start(nave, M); centra(pos[act].y, true);
       VOZ.decir(pick(NARRADOR.viaje));
       setTimeout(() => {
         ESTELA.stop(); nave.classList.remove('viajando'); nave.firstChild.dataset.fuerza = '1.4'; nave.style.transform = dx < 0 ? 'scaleX(-1)' : ''; MAPA.donde = act;
-        if (dx < 0) setTimeout(() => { nave.style.transition = 'transform .45s cubic-bezier(.3,1.5,.5,1)'; nave.style.transform = ''; }, 150);
+        if (dx < 0) setTimeout(() => ponTf(nave, ''), 150);
         destino.classList.remove('bloq', 'por-abrir'); destino.classList.add('recien');
         destino.querySelector('.letra').textContent = PLANETAS[act].letra;
         SFX.planeta(); FX.chispas(destino, 50); FX.confeti(90);
@@ -731,6 +731,25 @@ function pintaMapa() {
   }
 }
 /* ---- vuelo del robot entre planetas: mira y se inclina hacia el destino ---- */
+/* Cambio de lado "pro": en vez de voltearse en espejo de golpe, se desvanece con
+   desenfoque y brillo, cambia de lado mientras es invisible y reaparece con rebote */
+function ponTf(nave, tf) {
+  const espejo = s => /scaleX\(-1\)/.test(s || '');
+  if (espejo(nave.style.transform) === espejo(tf)) { nave.style.transform = tf; return; }
+  const r = nave.firstChild;
+  const cambia = () => { nave.style.transition = (nave.style.transition || '').replace(/(^|,\s*)transform\b.*$/, ''); nave.style.transform = tf; };
+  if (!r || !r.animate) { cambia(); return; }
+  if (nave._giro) { try { nave._giro.cancel(); } catch (e) {} }
+  const oculto = { opacity: 0, filter: 'blur(9px) brightness(2.2)', transform: 'scale(.6) rotate(-12deg)' };
+  const a1 = r.animate([{ opacity: 1, filter: 'blur(0px) brightness(1)', transform: 'scale(1) rotate(0deg)' }, oculto], { duration: 170, easing: 'ease-in', fill: 'forwards' });
+  nave._giro = a1;
+  a1.onfinish = () => {
+    cambia();
+    const a2 = r.animate([oculto, { opacity: 1, filter: 'blur(0px) brightness(1.4)', transform: 'scale(1.12) rotate(4deg)', offset: .6 }, { opacity: 1, filter: 'blur(0px) brightness(1)', transform: 'scale(1) rotate(0deg)' }], { duration: 340, easing: 'cubic-bezier(.2,.9,.3,1)' });
+    a1.cancel(); nave._giro = a2;
+    try { FX.chispas(nave, 10); } catch (e) {}
+  };
+}
 var MAPA = { donde: null, mira: 1 };
 function orienta(dx, dy) {
   const th = Math.atan2(dy, dx), lim = 40 * Math.PI / 180, cl = v => Math.max(-lim, Math.min(lim, v));
@@ -745,7 +764,7 @@ function volarA(i) {
     const a = pos[d0], b = pos[i], dx = b.x - a.x, dy = b.y - a.y, dist = Math.hypot(dx, dy);
     const dur = Math.min(2600, Math.max(900, dist * 2.4));   // cerca: normal; lejos: más rápido (máx. ~2,6 s)
     MAPA.volando = true; MAPA.mira = dx < 0 ? -1 : 1;
-    nave.style.transition = 'transform .35s ease-out'; nave.style.transform = orienta(dx, dy) + ' scale(1.1)';
+    nave.style.transition = 'transform .35s ease-out'; ponTf(nave, orienta(dx, dy) + ' scale(1.1)');
     nave.classList.add('viajando'); nave.firstChild.dataset.fuerza = String(1.8 + Math.min(1.4, dist / 600));
     SFX.woosh(); ESTELA.start(nave, M);
     setTimeout(() => {
@@ -756,7 +775,7 @@ function volarA(i) {
       ESTELA.stop(); nave.classList.remove('viajando'); nave.firstChild.dataset.fuerza = '1.4';
       nave.style.transform = MAPA.mira < 0 ? 'scaleX(-1)' : '';
       /* al aterrizar se gira para mirar siempre hacia su planeta (queda a su izquierda) */
-      if (MAPA.mira < 0) { setTimeout(() => { nave.style.transition = 'transform .45s cubic-bezier(.3,1.5,.5,1)'; nave.style.transform = ''; MAPA.mira = 1; }, 150); }
+      if (MAPA.mira < 0) { setTimeout(() => { ponTf(nave, ''); MAPA.mira = 1; }, 150); }
       MAPA.donde = i; MAPA.volando = false; FX.chispas(M.querySelectorAll('.planeta')[i], 18); SFX.pop();
       setTimeout(res, 300);
     }, dur + 220);
