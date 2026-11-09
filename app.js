@@ -699,7 +699,7 @@ ON_PANTALLA.pMapa = () => {
 };
 function pintaMapa() {
   const M = $('#mapa'), W = Math.min($('#mapaScroll').clientWidth, 560), PASO = 165, N = PLANETAS.length;
-  const H = N * PASO + 160; M.style.height = H + 'px'; M.innerHTML = '';
+  const LUNA_HUECO = 210, H = N * PASO + 160 + LUNA_HUECO; M.style.height = H + 'px'; M.innerHTML = '';
   const pos = PLANETAS.map((p, i) => ({ x: W / 2 + Math.sin(i * 1.15) * (W * .3), y: H - 110 - i * PASO }));
   let path = `M${pos[0].x},${pos[0].y}`;
   for (let i = 1; i < N; i++) { const a = pos[i - 1], b = pos[i]; path += ` C${a.x},${a.y - PASO / 2} ${b.x},${b.y + PASO / 2} ${b.x},${b.y}`; }
@@ -726,6 +726,16 @@ function pintaMapa() {
       abrePlaneta(i); };
     M.appendChild(b);
   });
+  /* Luna Lectora: mundo aparte, arriba del todo, siempre abierto y sin unir con la línea de puntos */
+  if (typeof abreLuna === 'function') {
+    const top = pos[N - 1], lx = top.x > W / 2 ? W * .3 : W * .7;
+    const lu = el('button', 'planeta luna-mundo');
+    lu.style.left = lx + 'px'; lu.style.top = (top.y - LUNA_HUECO) + 'px'; lu.style.setProperty('--c', '#bcd4ff');
+    lu.innerHTML = `<img class="pimg" src="${LUNA_IMG}" onerror="this.onerror=null;this.src='${LUNA_IMG_TEMP}'" alt="">
+      <span class="luna-tag">🎤 LEER FRASES</span><span class="nombre">Luna Lectora</span>`;
+    lu.onclick = () => { if (MAPA.volando) return; abreLuna(); };
+    M.appendChild(lu);
+  }
   const nave = el('span', 'nave-mapa'); nave.innerHTML = robotHTML(NINO.color, 'vuela'); nave.firstChild.dataset.fuerza = '1.4';
   const SC = $('#mapaScroll');
   const centra = (y, suave) => { SC.style.scrollBehavior = suave ? 'smooth' : 'auto'; SC.scrollTop = Math.max(0, y - SC.clientHeight / 2); };
