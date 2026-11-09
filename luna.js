@@ -25,7 +25,11 @@ const LUNA_EXIGE = {
 #pLuna { overflow-y: auto; overflow-x: hidden; }
 #pLuna .noche { position: fixed; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(120,160,255,.35), transparent 60%), rgba(2,4,14,.35); pointer-events: none; z-index: -1; }
 .lu-cuerpo { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 6px 0 24px; }
-.lu-luna { width: 120px; height: 120px; object-fit: contain; filter: drop-shadow(0 0 22px rgba(190,215,255,.7)); animation: luFlota 4s ease-in-out infinite; }
+.lu-luna { width: 170px; height: 170px; margin: -14px 0 -18px; object-fit: contain; animation: luFlota 4s ease-in-out infinite, luBrillo 3s ease-in-out infinite; }
+/* brillo blanco por detrás que asoma por los bordes */
+@keyframes luBrillo {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(255,255,255,.95)) drop-shadow(0 0 18px rgba(255,255,255,.75)) drop-shadow(0 0 38px rgba(200,225,255,.55)); }
+  50% { filter: drop-shadow(0 0 9px rgba(255,255,255,1)) drop-shadow(0 0 26px rgba(255,255,255,.9)) drop-shadow(0 0 54px rgba(200,225,255,.7)); } }
 @keyframes luFlota { 50% { transform: translateY(-8px) rotate(4deg); } }
 .lu-tit { font-family: var(--f-titulo); font-size: 24px; text-align: center; margin: 0; }
 .lu-sub { text-align: center; opacity: .8; margin: -6px 0 2px; font-size: 15px; }
@@ -74,7 +78,9 @@ const LUNA_EXIGE = {
 .lu-aviso { border-radius: 18px; padding: 14px; background: rgba(255,77,94,.12); border: 1.5px solid rgba(255,77,94,.5); text-align: center; }
 /* mundo en el mapa */
 .planeta.luna-mundo { width: 118px; height: 118px; margin: -59px 0 0 -59px; }
-.planeta.luna-mundo .pimg { filter: drop-shadow(0 0 22px rgba(190,215,255,.85)); animation: luFlota 4s ease-in-out infinite; }
+.planeta.luna-mundo .pimg { inset: -16%; width: 132%; height: 132%; animation: luFlota 4s ease-in-out infinite, luBrillo 3s ease-in-out infinite; }
+.planeta.luna-mundo::before { content: ''; position: absolute; inset: 6%; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.55) 0%, rgba(220,235,255,.25) 45%, transparent 72%); filter: blur(10px); transform: scale(1.35); animation: luHalo 3s ease-in-out infinite; pointer-events: none; }
+@keyframes luHalo { 50% { transform: scale(1.5); opacity: .8; } }
 .planeta.luna-mundo .letra { font-size: 30px; }
 .planeta.luna-mundo .nombre { background: linear-gradient(90deg, rgba(24,224,255,.35), rgba(139,92,255,.35)); border: 1px solid rgba(190,215,255,.5); }
 .planeta.luna-mundo .luna-tag { position: absolute; top: -16px; font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 20px; background: var(--verde); color: #032b12; white-space: nowrap; box-shadow: var(--sombra-verde); }

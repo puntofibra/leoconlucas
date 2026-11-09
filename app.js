@@ -727,7 +727,8 @@ function pintaMapa() {
     M.appendChild(b);
   });
   /* Luna Lectora: mundo aparte, arriba del todo, siempre abierto y sin unir con la línea de puntos */
-  if (typeof abreLuna === 'function') {
+  /* solo para niños de 5, 6 y 7 años (las frases están pensadas para esas edades) */
+  if (typeof abreLuna === 'function' && NINO.edad >= 5 && NINO.edad <= 7) {
     const top = pos[N - 1], lx = top.x > W / 2 ? W * .3 : W * .7;
     const lu = el('button', 'planeta luna-mundo');
     lu.style.left = lx + 'px'; lu.style.top = (top.y - LUNA_HUECO) + 'px'; lu.style.setProperty('--c', '#bcd4ff');
