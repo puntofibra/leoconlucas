@@ -36,7 +36,9 @@ var ESC = (() => {
     /* personajes nuevos de cuentos (se suben a COSMOLUCAS como cu-*.webp); mientras no estén, emoji grande con brillo */
     noel: { img: 'cu-papa-noel', fr: 4, h: 1.05, emo: '🎅', nom: 'Papá Noel' }, reno: { img: 'cu-reno', fr: 4, h: .95, emo: '🦌', nom: 'Reno' },
     melchor: { img: 'cu-rey-melchor', fr: 4, h: 1.05, emo: '🤴', nom: 'Melchor' }, gaspar: { img: 'cu-rey-gaspar', fr: 4, h: 1.05, emo: '🤴', nom: 'Gaspar' },
-    baltasar: { img: 'cu-rey-baltasar', fr: 4, h: 1.05, emo: '🤴', nom: 'Baltasar' }
+    baltasar: { img: 'cu-rey-baltasar', fr: 4, h: 1.05, emo: '🤴', nom: 'Baltasar' },
+    fallera: { img: 'cu-fallera', fr: 4, h: 1, nom: 'Flor' }, calabacin: { img: 'cu-calabacin', fr: 4, h: .9, nom: 'Calabacín' },
+    escobina: { img: 'cu-escobina', fr: 4, h: 1, nom: 'Escobina' }
   };
   const ANIM = { doctora: 1, profe: 1, chef: 1, granjera: 1, bombera: 1, cartero: 1, mago: 1, buho: .8, sirenita: 1, venda: .95, concha: .62, bolita: .8,
     rayo: 1, byte: 1, chispas: .7, tuercas: 1, tambor: 1, pelusin: .78, helice: .6, muelle: .85, copito: .9, brisa: .95, escarcha: 1.15, brasa: .95, magma: 1.15,
@@ -77,14 +79,19 @@ var ESC = (() => {
     calle: EXT('fondo-lejos', 'fondo-cerca-jugueteria', 'suelo'),
     nieve: EXT('fondo-lejos-hielo', 'fondo-cerca-hielo', 'suelo-hielo', { frio: 1 }),
     bosque: EXT('fondo-lejos-selva', 'fondo-cerca-selva', 'suelo-selva'),
-    parque: EXT('fondo-lejos', 'fondo-cerca-selva', 'suelo-selva'),
     desierto_ext: EXT('fondo-lejos-desierto', 'fondo-cerca-desierto', 'suelo-desierto-arriba'),
     juguetes: EXT('fondo-lejos-jugueteria', 'fondo-cerca-jugueteria', 'suelo-jugueteria-arriba'),
     nubes: EXT('fondo-lejos-cielo', 'fondo-cerca-cielo', 'suelo-cielo-arriba'),
     fondomar: EXT('fondo-lejos-oceano', 'fondo-cerca-oceano', 'suelo-oceano-arriba', { agua: 1 }),
     chatarreria: EXT('fondo-lejos-chatarra', 'fondo-cerca-chatarra', 'suelo-chatarra-arriba'),
     lava: EXT('fondo-lejos-lava', 'fondo-cerca-lava', 'suelo-lava'),
-    playa: { ext: 1, playa: 1, piso: 10 },
+    playa: { sala: 'sala-cu-playa', piso: 7 },
+    playa_dibujo: { ext: 1, playa: 1, piso: 10 },
+    parque: { sala: 'sala-cu-parque', piso: 8 },
+    feria: { sala: 'sala-cu-feria', piso: 8 },
+    piscina: { sala: 'sala-cu-piscina', piso: 8 },
+    halloween: { sala: 'sala-cu-halloween', piso: 8 },
+    fallas: { sala: 'sala-cu-fallas', piso: 8 },
     espacio: { espacio: 1, piso: 30 },
     luna_sup: { espacio: 1, superficie: 1, piso: 14 }
   });

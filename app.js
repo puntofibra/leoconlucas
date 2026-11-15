@@ -1577,6 +1577,7 @@ var ADMIN = (() => {
         <button class="btn" id="admStats">📊 Estadísticas</button>
         <button class="btn" id="admResumen">📧 Enviarme el resumen semanal ahora</button>
         <button class="btn" id="admVoz">🔊 Probar voz</button>
+        <button class="btn" id="admCuentos">📅 Calendario de cuentos</button>
         <button class="btn" id="admAct">🔄 Forzar actualización</button>
         <button class="btn btn-rojo" id="admLlave">🔑 Olvidar llave</button>
       </div>
@@ -1624,6 +1625,7 @@ var ADMIN = (() => {
         r.lista.map(x => `• <b>${esc(x.nombre)}</b> (${x.edad}) — ${esc(x.email)} · planeta ${x.nivel + 1} · ⭐${x.est} · ${x.min} min · ${x.ult}`).join('<br>'));
     };
     $('#admResumen').onclick = async () => { out('Enviando…'); const r = await op('resumen'); out(r.ok ? '📧 Enviado a ' + esc(r.a) + ' (si tienes lectores con actividad).' : r.error); };
+    $('#admCuentos').onclick = () => { SFX.clic(); CUENTO.calendario(); };
     $('#admVoz').onclick = () => { VOZ.decir('¡Hola, Manu! Soy Lucas. Mamá me mima. ¿Leemos un cuento? ¡Genial, campeón!'); out('Voces en español de este dispositivo: ' + (VOZ.voces().map(v => esc(v.name)).join(', ') || 'ninguna')); };
     $('#admAct').onclick = async () => { out('Actualizando…'); try { const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); const reg = await navigator.serviceWorker.getRegistration(); if (reg) await reg.unregister(); } catch (e) {} ACT.recargar(); };
     $('#admLlave').onclick = async () => { if (!await pregunta({ icono: '🔑', titulo: '¿Olvidar la llave?', texto: 'La próxima vez tendrás que guardarla de nuevo con la cuenta de administrador.', si: 'Olvidar', peligro: true })) return; const r = await op('nfcBorrar'); if (r.ok) { toast('Llave olvidada'); salir(); } else out(r.error); };
@@ -1943,28 +1945,58 @@ var CUENTO = (() => {
     VOZ.decir(frase + ' Buenas noches, ' + NINO.nombre + '. Que tengas dulces sueños.')
       .then(() => { if (pantallaActual === 'pCuento' && !document.querySelector('.fn-ov')) VOZ.decir(`Antes de ir a la cama, ¿te haces una foto de buenas noches con ${pjN}? Se la puedes enviar a mamá, a papá o a los abuelos. Pulsa el botón amarillo de la cámara.`); });
   }
+  /* calendario de admin: todos los cuentos, mes a mes; los días con cuento nuevo (con escenas) salen marcados */
+  async function calendario(y, m) {
+    const hoy = new Date(); y = y == null ? hoy.getFullYear() : y; m = m == null ? hoy.getMonth() : m;
+    const am = y + '-' + String(m + 1).padStart(2, '0');
+    if (cache[am] === undefined) { try { const r = await fetch('cuentos/' + am + '.json'); cache[am] = r.ok ? await r.json() : null; } catch (e) { cache[am] = null; } }
+    const lista = cache[am] || [], porDia = {}; lista.forEach(c => porDia[c.d] = c);
+    const ini = (new Date(y, m, 1).getDay() + 6) % 7, nd = new Date(y, m + 1, 0).getDate();
+    let celdas = Array.from({ length: ini }, () => '<i></i>').join('');
+    for (let d = 1; d <= nd; d++) {
+      const c = porDia[d], esHoyD = y === hoy.getFullYear() && m === hoy.getMonth() && d === hoy.getDate();
+      celdas += `<button class="cal-d${c ? ' nuevo' : ''}${esHoyD ? ' hoy' : ''}" data-d="${d}" title="${c ? esc(c.t) : 'Cuento clásico'}"><b>${d}</b><span>${c ? c.e : '·'}</span></button>`;
+    }
+    modal(`<h2>📅 Calendario de cuentos</h2>
+      <div class="cal-nav"><button class="btn btn-mini" id="calAnt">◀</button><b>${MESES[m].toUpperCase()} ${y}</b><button class="btn btn-mini" id="calSig">▶</button></div>
+      <div class="cal-g"><em>L</em><em>M</em><em>X</em><em>J</em><em>V</em><em>S</em><em>D</em>${celdas}</div>
+      <p class="cal-ley"><span class="cal-mk"></span> cuento nuevo con escenas (${lista.length}/${nd}) · los demás días salen cuentos clásicos</p>
+      <div id="calInfo" class="cal-info">Toca un día para ver su cuento.</div>
+      <button class="btn btn-mini" onclick="cerrarModal()">Cerrar</button>`);
+    if (!document.getElementById('calCss')) { const st = document.createElement('style'); st.id = 'calCss'; st.textContent = `
+      .cal-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 10px;font-size:18px}
+      .cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;width:100%}
+      .cal-g em{font-style:normal;text-align:center;font-size:12px;opacity:.6;font-weight:700}
+      .cal-d{aspect-ratio:1;border:0;border-radius:12px;background:rgba(255,255,255,.07);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;padding:2px}
+      .cal-d b{font-size:14px}.cal-d span{font-size:16px;line-height:1}
+      .cal-d.nuevo{background:linear-gradient(160deg,rgba(123,108,255,.55),rgba(40,30,120,.7));box-shadow:0 0 10px rgba(123,108,255,.5)}
+      .cal-d.hoy{outline:2px solid #ffd23f}
+      .cal-ley{font-size:12px;opacity:.75;margin:8px 0 4px}.cal-mk{display:inline-block;width:12px;height:12px;border-radius:4px;background:#6a5cff;vertical-align:middle}
+      .cal-info{min-height:42px;font-size:15px;margin-bottom:8px}`; document.head.appendChild(st); }
+    $('#calAnt').onclick = () => calendario(m === 0 ? y - 1 : y, (m + 11) % 12);
+    $('#calSig').onclick = () => calendario(m === 11 ? y + 1 : y, (m + 1) % 12);
+    $$('.cal-d').forEach(b => b.onclick = () => {
+      const d = +b.dataset.d, c = porDia[d];
+      $('#calInfo').innerHTML = `<b>${d} de ${MESES[m]}</b> · ${c ? c.e + ' ' + esc(c.t) : 'cuento clásico'}<br><button class="btn btn-verde" id="calVer" style="margin-top:6px">▶ Ver este cuento</button>`;
+      $('#calVer').onclick = () => { cerrarModal(); revisando = true; abrir(new Date(y, m, d)); };
+    });
+  }
   function dias() {
     const hoy = new Date(); const d = datos();
     const items = Array.from({ length: 14 }, (_, k) => new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - k));
     const adm = window.ADMIN && ADMIN.activo();
     const hoyS = claveF(hoy);
     modal(`<h2>📅 Cuentos de otros días</h2>
-      ${adm ? `<div class="cu-adm"><b>🛠️ Admin · revisar cuentos futuros</b><div style="display:flex;gap:8px;margin-top:8px"><input type="date" id="cuAdmF" value="${hoyS}" min="2026-01-01" max="2028-12-31" style="flex:1;font-size:18px;padding:8px;border-radius:12px;border:0"><button class="btn btn-verde" id="cuAdmVer">Ver</button></div>
-        <div style="display:flex;gap:6px;margin-top:8px"><button class="btn btn-mini" data-sal="1">Mañana</button><button class="btn btn-mini" data-sal="7">+7 días</button><button class="btn btn-mini" data-sal="30">+30 días</button></div>
-        <small style="opacity:.7">Los cuentos que abras desde aquí no cuentan estrellas para el lector.</small></div>` : ''}
+      ${adm ? `<div class="cu-adm"><b>🛠️ Admin</b><br><button class="btn btn-verde" id="cuAdmCal" style="margin-top:8px;width:100%">📅 Calendario de todos los cuentos</button><small style="opacity:.7">Los que abras desde ahí no cuentan estrellas para el lector.</small></div>` : ''}
       <div class="cu-dias">${items.map((f, k) => {
       const h = (d.cuentos || {})[claveF(f)];
       return `<button class="btn" data-k="${k}">${k === 0 ? 'Hoy' : k === 1 ? 'Ayer' : f.getDate() + ' de ' + MESES[f.getMonth()]}${h != null ? ` · ⭐${h}` : ''}</button>`;
     }).join('')}</div><button class="btn btn-mini" onclick="cerrarModal()">Cerrar</button>`);
     $$('.cu-dias [data-k]').forEach(b => b.onclick = () => { cerrarModal(); abrir(items[+b.dataset.k]); });
-    if (adm) {
-      const verF = s => { const [y, m, dd] = s.split('-').map(Number); if (!y) return; cerrarModal(); revisando = true; abrir(new Date(y, m - 1, dd)); };
-      $('#cuAdmVer').onclick = () => verF($('#cuAdmF').value);
-      $$('.cu-adm [data-sal]').forEach(b => b.onclick = () => { const f = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + +b.dataset.sal); $('#cuAdmF').value = claveF(f); });
-    }
+    if (adm) $('#cuAdmCal').onclick = () => calendario();
   }
   $('#bCuento').onclick = () => { SFX.clic(); if (LICENCIA.comprobar()) return; abrir(new Date()); };
   $('#bCuentoSalir').onclick = () => { parar = true; VOZ.callar(); cierraEscena(); pideHoriz(false); try { rec && rec.abort(); } catch (e) {} ir('mapa'); };
   $('#bCuentoDias').onclick = () => { SFX.clic(); dias(); };
-  return { abrir };
+  return { abrir, calendario };
 })();
