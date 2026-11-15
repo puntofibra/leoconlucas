@@ -917,6 +917,7 @@ const silabeo = p => p.s.map(sv).join('... ') + '... ' + p.w;
 function pic(p) {
   const slug = ENG.quitaTildes(p.w.toLowerCase()).replace('ñ', 'n');
   if (IMAGENES.includes(slug)) return `<img src="img/palabras/${slug}.png" alt="">`;
+  const d = window.DIB && DIB.palabra(p.w, p.e); if (d) return d;   // dibujos de COSMOLUCAS al estilo de Lucas
   return p.e;
 }
 
