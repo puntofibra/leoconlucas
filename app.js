@@ -1704,7 +1704,11 @@ var CUENTO = (() => {
   const DORMIDO_LISTO = true;   // true cuando Manu suba img/lucas/dormido.png
   let C = null, fecha = null, parar = false, enPregunta = false, rec = null;
   async function carga(f) {
-    const mm = String(f.getMonth() + 1).padStart(2, '0');
+    const mm = String(f.getMonth() + 1).padStart(2, '0'), am = f.getFullYear() + '-' + mm;
+    /* cuentos nuevos con escenas: cuentos/AAAA-MM.json (uno por fecha exacta) */
+    if (cache[am] === undefined) { try { const r = await fetch('cuentos/' + am + '.json'); cache[am] = r.ok ? await r.json() : null; } catch (e) { cache[am] = null; } }
+    if (cache[am]) { const c = cache[am].find(c => c.d === f.getDate()); if (c) return c; }
+    /* días sin cuento nuevo todavía: los clásicos (cuentos/MM.json) */
     if (!cache[mm]) { const r = await fetch('cuentos/' + mm + '.json'); if (!r.ok) throw new Error('sin cuento'); cache[mm] = await r.json(); }
     const lista = cache[mm]; return lista.find(c => c.d === f.getDate()) || lista[lista.length - 1];
   }
@@ -1712,13 +1716,32 @@ var CUENTO = (() => {
   const lucasDuerme = () => DORMIDO_LISTO ? `<img src="img/lucas/dormido.png" class="cu-lucas" alt="">`
     : `<div class="cu-lucas-wrap"><span class="robot cu-lucas" data-pose="lucas-vuela" data-fuerza=".6"><canvas class="fuego"></canvas><img src="img/lucas/vuela.png" alt=""></span><div class="zzz"><b>Z</b><b>Z</b><b>Z</b></div></div>`;
   function cuerpo(html) { $('#cuCuerpo').innerHTML = html; }
+  let S = null;   // escenario animado (ESC) del cuento en curso
+  let revisando = false;   // admin viendo un cuento futuro: no guarda estrellas
+  const conEscenas = () => C && C.p && C.p[0] && C.p[0].s && window.ESC;
+  const sinIco = t => String(t).replace(/^(@\S+|[^\p{L}\p{N}¿¡"«—]+)\s+/u, '');
+  const optHtml = t => { const m = /^@(\S+)\s+(.*)$/.exec(t); return m && window.ESC ? ESC.icono(m[1]) + esc(m[2]) : esc(t); };
+  function cierraEscena() { if (S) { ESC.destruir(S); S = null; } }
   async function abrir(f) {
+    cierraEscena();
+    if (f && claveF(f) <= claveF(new Date())) revisando = false;
     fecha = f || new Date(); parar = false; enPregunta = false;
     SFX.musica(false); ir('cuento');
     cuerpo(`<div class="cu-portada">${lucasDuerme()}<p class="dlg-txt">Buscando el cuento…</p></div>`);
     try { C = await carga(fecha); } catch (e) { cuerpo(`<div class="cu-portada">${lucasDuerme()}<p class="dlg-txt">No he podido cargar el cuento. Comprueba la conexión.</p></div>`); return; }
     const d = datos(); const hecho = (d.cuentos || {})[claveF(fecha)];
     $('#cuTitulo').textContent = esHoy(fecha) ? 'El cuento de hoy' : fecha.getDate() + ' de ' + MESES[fecha.getMonth()];
+    if (conEscenas()) {
+      cuerpo(`<div class="cu-portada cu-portada-esc">
+        <div id="cuPortEsc" style="width:100%"></div>
+        ${hecho != null ? `<p class="dlg-txt">Ya lo escuchaste: <b>${hecho}/10</b> estrellas ⭐</p>` : '<p class="dlg-txt">Ponte cómodo, tápate bien… ¡y a escuchar!</p>'}
+        <button class="btn btn-cuento btn-grande" id="cuPlay">▶ ESCUCHAR EL CUENTO</button>
+      </div>`);
+      const yo = C; ESC.portada($('#cuPortEsc'), C, fecha.getDate() + ' de ' + MESES[fecha.getMonth()]).then(s => { if (C === yo && pantallaActual === 'pCuento') S = s; else ESC.destruir(s); });
+      $('#cuPlay').onclick = () => { SFX.clic(); narrar(); };
+      VOZ.decir(`${NINO.nombre}, hoy te voy a contar: ${C.t}.`);
+      return;
+    }
     cuerpo(`<div class="cu-portada">
       ${lucasDuerme()}
       <div class="cu-fecha">${fecha.getDate()} de ${MESES[fecha.getMonth()]}</div>
@@ -1733,6 +1756,7 @@ var CUENTO = (() => {
   const esHoy = f => claveF(f) === claveF(new Date());
   async function narrar() {
     parar = false;
+    if (conEscenas()) return narrarEscenas(0);
     for (let k = 0; k < C.p.length; k++) {
       if (parar || pantallaActual !== 'pCuento') return;
       const P = C.p[k];
@@ -1754,6 +1778,38 @@ var CUENTO = (() => {
     }
     if (!parar) preguntas();
   }
+  /* cuento con escenas: el escenario se mantiene y solo cambian los personajes,
+     objetos, luces y efectos de una página a otra (transiciones suaves) */
+  async function narrarEscenas(desde) {
+    parar = false;
+    cierraEscena();
+    cuerpo(`<div class="cu-escena esc-modo">
+      <div class="cu-prog">${C.p.map(() => '<i></i>').join('')}</div>
+      <div id="cuEsc" style="width:100%"></div>
+      <div class="cu-texto" id="cuTexto"></div>
+      <div class="fila-btns"><button class="btn" id="cuPausa">⏸ Pausa</button><button class="btn" id="cuSalta">⏭ Siguiente</button></div>
+    </div>`);
+    S = ESC.crear($('#cuEsc')); await ESC.precarga(C);
+    let saltar = false, k = desde;
+    $('#cuSalta').onclick = () => { SFX.clic(); saltar = true; VOZ.callar(); };
+    $('#cuPausa').onclick = async () => {
+      SFX.clic(); parar = true; VOZ.callar();
+      if (await pregunta({ icono: '🌙', titulo: 'Cuento en pausa', texto: '¿Seguimos con el cuento?', si: '▶ Seguir', no: 'Salir' })) narrarEscenas(k); else { cierraEscena(); ir('mapa'); }
+    };
+    for (; k < C.p.length; k++) {
+      if (parar || pantallaActual !== 'pCuento') return;
+      const P = C.p[k]; saltar = false;
+      $$('.cu-prog i').forEach((e, j) => e.className = j < k ? 'on' : j === k ? 'ya' : '');
+      $('#cuTexto').innerHTML = P.x.split(' ').map(w => `<span>${esc(w)}</span>`).join(' ');
+      await ESC.esperaHorizontal(); if (parar || pantallaActual !== 'pCuento') return;
+      await ESC.mostrar(S, P.s);
+      if (parar) return;
+      await leeParrafo(P.x);
+      if (parar) return;
+      if (!saltar) await esperar(700);
+    }
+    if (!parar) { cierraEscena(); preguntas(); }
+  }
   function narrarDesde(k) { const p = C.p; C = Object.assign({}, C, { p: p.slice(k) }); narrar().then(() => { C.p = p; }); }
   function splitEmoji(s) { try { return [...new Intl.Segmenter('es', { granularity: 'grapheme' }).segment(s)].map(x => x.segment).filter(x => x.trim()); } catch (e) { return [...s]; } }
   function leeParrafo(x) {
@@ -1761,10 +1817,51 @@ var CUENTO = (() => {
     const starts = []; let pos = 0; palabras.forEach(w => { starts.push(pos); pos += w.length + 1; });
     return VOZ.decir(x, { rate: .9, pitch: 1, onBoundary: e => {
       const idx = starts.findIndex((st, i) => e.charIndex >= st && (i === starts.length - 1 || e.charIndex < starts[i + 1]));
-      spans.forEach(s => s.classList.remove('lee')); if (spans[idx]) { spans[idx].classList.add('lee'); }
+      spans.forEach(s => s.classList.remove('lee')); if (spans[idx]) { spans[idx].classList.add('lee'); const bx = spans[idx].parentElement; if (bx && bx.scrollHeight > bx.clientHeight + 4) { const t = spans[idx].offsetTop - bx.offsetTop; if (t < bx.scrollTop || t > bx.scrollTop + bx.clientHeight - 40) bx.scrollTop = t - 20; } }
     } });
   }
+  /* Preguntas en modo escenario: el protagonista del cuento hace de presentador,
+     reacciona a cada respuesta y las estrellas vuelan hasta el cielo del escenario */
+  async function preguntasEsc() {
+    enPregunta = true; let estrellas = 0;
+    const P0 = C.p[0].s || {}, Pn = C.p[C.p.length - 2] && C.p[C.p.length - 2].s || P0;
+    const prota = (P0.p && P0.p[0] && P0.p[0][0]) || 'lucas';
+    const base = { b: Pn.b, l: Pn.l, a: Pn.a };
+    const host = st => Object.assign({}, base, { p: [[prota, 50, st + 'g']], f: st === 'f' ? 'confeti chispas' : 'estrellas', c: 'kb' });
+    cuerpo(`<div class="cq">
+      <div class="cq-esc" id="cqEsc"><div class="cq-cielo" id="cuConst">${Array.from({ length: 10 }, () => '<i><img src="img/estrella-off.png" alt=""></i>').join('')}</div></div>
+      <div class="cq-der">
+        <div class="cq-card"><div class="cq-num" id="cqNum">¡A VER SI ESTABAS ATENTO!</div><div class="cq-txt" id="cuPregTxt">Cada respuesta buena enciende una estrella.</div></div>
+        <div id="cuPregZona" class="cq-zona"></div>
+      </div>
+    </div>`);
+    S = ESC.crear($('#cqEsc')); $('#cqEsc').appendChild($('#cuConst')); await ESC.precarga(C); await ESC.mostrar(S, host('h'), { sinTrans: true });
+    await VOZ.decir('¡Colorín, colorado, este cuento se ha acabado! Ahora te haré diez preguntas. Cada vez que aciertes, se encenderá una estrella en el cielo. ¡Vamos allá!');
+    for (let k = 0; k < C.q.length; k++) {
+      if (pantallaActual !== 'pCuento') return;
+      $('#cqNum').textContent = 'PREGUNTA ' + (k + 1) + ' DE ' + C.q.length;
+      await ESC.esperaHorizontal(); if (pantallaActual !== 'pCuento') return;
+      if (S) ESC.mostrar(S, host('h'));
+      const ok = await unaPregunta(C.q[k], k, true);
+      const st = $('#cuConst').children[k];
+      if (ok) {
+        estrellas++; if (S) ESC.mostrar(S, host('f'));
+        const b = $('.cu-opts .opt.ok'); if (b && st) vuelaEstrella(b, st);
+        await esperar(750); st.classList.add('on'); st.querySelector('img').src = 'img/estrella-on.png'; FX.chispas(st, 18, '#ffd23f'); SFX.estrella(Math.min(2, k % 3));
+      } else if (S) ESC.mostrar(S, host('t'));
+      await esperar(700);
+    }
+    cierraEscena(); fin(estrellas);
+  }
+  function vuelaEstrella(desde, hasta) {
+    const a = desde.getBoundingClientRect(), b = hasta.getBoundingClientRect();
+    const e = document.createElement('img'); e.src = 'img/estrella-on.png'; e.className = 'cq-vuela';
+    e.style.left = (a.left + a.width / 2 - 30) + 'px'; e.style.top = (a.top + a.height / 2 - 30) + 'px'; document.body.appendChild(e);
+    requestAnimationFrame(() => requestAnimationFrame(() => { e.style.transform = `translate(${b.left + b.width / 2 - a.left - a.width / 2}px,${b.top + b.height / 2 - a.top - a.height / 2}px) scale(.45) rotate(360deg)`; }));
+    setTimeout(() => e.remove(), 850);
+  }
   async function preguntas() {
+    if (conEscenas()) return preguntasEsc();
     enPregunta = true;
     let estrellas = 0;
     cuerpo(`<div class="cu-preg">
@@ -1781,11 +1878,11 @@ var CUENTO = (() => {
     }
     fin(estrellas);
   }
-  function unaPregunta(q, k) {
+  function unaPregunta(q, k, modoEsc) {
     return new Promise(async res => {
       const ords = q.o.map((t, i) => ({ t, ok: i === q.k }));
-      $('#cuPregTxt').innerHTML = `<b>Pregunta ${k + 1} de 10</b><br>${esc(q.p)}`;
-      $('#cuPregZona').innerHTML = `<div class="opciones lista cu-opts">${ords.map((o, i) => `<button class="opt" data-i="${i}"><span class="opt-txt" style="font-size:24px">${esc(o.t)}</span></button>`).join('')}</div>
+      $('#cuPregTxt').innerHTML = modoEsc ? esc(q.p) : `<b>Pregunta ${k + 1} de 10</b><br>${esc(q.p)}`;
+      $('#cuPregZona').innerHTML = `<div class="opciones lista cu-opts">${ords.map((o, i) => `<button class="opt" data-i="${i}"><span class="opt-txt" style="font-size:24px">${optHtml(o.t)}</span></button>`).join('')}</div>
         ${SR ? '<button class="btn btn-micro-mini" id="cuMic">🎤 Decirlo en voz alta</button>' : ''}`;
       let fallos = 0, hecho = false;
       const termina = (bien, btn) => {
@@ -1793,7 +1890,7 @@ var CUENTO = (() => {
         $$('.cu-opts .opt').forEach(b => b.classList.add('apagada'));
         const buena = $$('.cu-opts .opt')[q.k]; buena.classList.remove('apagada'); buena.classList.add('ok');
         if (bien) { SFX.ok(); VOZ.decir(pick(NARRADOR.bien)).then(() => res(true)); }
-        else { VOZ.decir('Era: ' + q.o[q.k].replace(/^\S+\s/, '') + '. ¡La próxima seguro que sí!').then(() => res(false)); }
+        else { VOZ.decir('Era: ' + sinIco(q.o[q.k]) + '. ¡La próxima seguro que sí!').then(() => res(false)); }
       };
       const elige = i => {
         if (hecho) return;
@@ -1809,7 +1906,7 @@ var CUENTO = (() => {
           rec = new SR(); rec.lang = 'es-ES'; rec.maxAlternatives = 5; mic.classList.add('escucha'); mic.textContent = '👂 Te escucho…';
           rec.onresult = e => {
             const alts = [...e.results[0]].map(a => norm(a.transcript));
-            const idx = q.o.findIndex(o => { const ws = norm(o.replace(/^\S+\s/, '')).split(' ').filter(w => w.length > 2); return ws.length && alts.some(a => ws.some(w => a.includes(w))); });
+            const idx = q.o.findIndex(o => { const ws = norm(sinIco(o)).split(' ').filter(w => w.length > 2); return ws.length && alts.some(a => ws.some(w => a.includes(w))); });
             if (idx >= 0) elige(idx); else VOZ.decir('No te he entendido bien. ¡Toca la respuesta!');
           };
           rec.onend = () => { mic.classList.remove('escucha'); mic.textContent = '🎤 Decirlo en voz alta'; };
@@ -1817,13 +1914,14 @@ var CUENTO = (() => {
         } catch (e) {}
       };
       await VOZ.decir(q.p);
-      if (!hecho) await VOZ.decir(q.o.map((o, i) => ['¿', '¿', '¿'][i] + o.replace(/^\S+\s/, '') + '?').join(' '), { cola: true, rate: .95 });
+      if (!hecho) await VOZ.decir(q.o.map(o => '¿' + sinIco(o) + '?').join(' '), { cola: true, rate: .95 });
     });
   }
   function fin(n) {
     const d = datos(); d.cuentos = d.cuentos || {}; const k = claveF(fecha);
-    const nuevo = d.cuentos[k] == null; d.cuentos[k] = Math.max(n, d.cuentos[k] || 0);
-    if (nuevo) d.chispas += n * 3; d._t = Date.now(); guardarNino();
+    const futuro = revisando || k > claveF(new Date());
+    const nuevo = !futuro && d.cuentos[k] == null;
+    if (!futuro) { d.cuentos[k] = Math.max(n, d.cuentos[k] || 0); if (nuevo) d.chispas += n * 3; d._t = Date.now(); guardarNino(); }
     const frase = n >= 9 ? '¡Constelación completa! Has escuchado el cuento como un campeón.' : n >= 6 ? '¡Muy bien! Has encendido muchas estrellas.' : '¡Bien hecho! Mañana encenderemos todavía más estrellas.';
     cuerpo(`<div class="cu-portada">
       ${lucasDuerme()}
@@ -1845,14 +1943,25 @@ var CUENTO = (() => {
   function dias() {
     const hoy = new Date(); const d = datos();
     const items = Array.from({ length: 14 }, (_, k) => new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - k));
-    modal(`<h2>📅 Cuentos de otros días</h2><div class="cu-dias">${items.map((f, k) => {
+    const adm = window.ADMIN && ADMIN.activo();
+    const hoyS = claveF(hoy);
+    modal(`<h2>📅 Cuentos de otros días</h2>
+      ${adm ? `<div class="cu-adm"><b>🛠️ Admin · revisar cuentos futuros</b><div style="display:flex;gap:8px;margin-top:8px"><input type="date" id="cuAdmF" value="${hoyS}" min="2026-01-01" max="2028-12-31" style="flex:1;font-size:18px;padding:8px;border-radius:12px;border:0"><button class="btn btn-verde" id="cuAdmVer">Ver</button></div>
+        <div style="display:flex;gap:6px;margin-top:8px"><button class="btn btn-mini" data-sal="1">Mañana</button><button class="btn btn-mini" data-sal="7">+7 días</button><button class="btn btn-mini" data-sal="30">+30 días</button></div>
+        <small style="opacity:.7">Los cuentos que abras desde aquí no cuentan estrellas para el lector.</small></div>` : ''}
+      <div class="cu-dias">${items.map((f, k) => {
       const h = (d.cuentos || {})[claveF(f)];
       return `<button class="btn" data-k="${k}">${k === 0 ? 'Hoy' : k === 1 ? 'Ayer' : f.getDate() + ' de ' + MESES[f.getMonth()]}${h != null ? ` · ⭐${h}` : ''}</button>`;
     }).join('')}</div><button class="btn btn-mini" onclick="cerrarModal()">Cerrar</button>`);
     $$('.cu-dias [data-k]').forEach(b => b.onclick = () => { cerrarModal(); abrir(items[+b.dataset.k]); });
+    if (adm) {
+      const verF = s => { const [y, m, dd] = s.split('-').map(Number); if (!y) return; cerrarModal(); revisando = true; abrir(new Date(y, m - 1, dd)); };
+      $('#cuAdmVer').onclick = () => verF($('#cuAdmF').value);
+      $$('.cu-adm [data-sal]').forEach(b => b.onclick = () => { const f = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + +b.dataset.sal); $('#cuAdmF').value = claveF(f); });
+    }
   }
   $('#bCuento').onclick = () => { SFX.clic(); if (LICENCIA.comprobar()) return; abrir(new Date()); };
-  $('#bCuentoSalir').onclick = () => { parar = true; VOZ.callar(); try { rec && rec.abort(); } catch (e) {} ir('mapa'); };
+  $('#bCuentoSalir').onclick = () => { parar = true; VOZ.callar(); cierraEscena(); try { rec && rec.abort(); } catch (e) {} ir('mapa'); };
   $('#bCuentoDias').onclick = () => { SFX.clic(); dias(); };
   return { abrir };
 })();
