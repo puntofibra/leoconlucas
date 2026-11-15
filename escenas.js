@@ -255,7 +255,8 @@ var ESC = (() => {
 /* ---- aviso de girar el móvil (los cuentos se ven siempre en horizontal) ---- */
 .esc-gira{position:fixed;inset:0;z-index:5000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;
   background:radial-gradient(ellipse at 50% 35%,#2a1f7a,#0a0b2e 70%);color:#fff;font-family:'Fredoka',system-ui}
-@media (orientation:portrait) and (pointer:coarse){#pCuento.activa .esc-gira{display:flex}}
+@media (orientation:portrait) and (pointer:coarse){#pCuento.activa.pide-horiz .esc-gira{display:flex}}
+body:has(.fn-ov) .esc-gira{display:none!important}
 .esc-gira .eg-movil{position:relative;width:96px;height:168px;border-radius:20px;border:5px solid #cfd6ff;box-shadow:0 0 30px rgba(123,108,255,.8),inset 0 0 20px rgba(123,108,255,.5);
   animation:egGira 2.6s cubic-bezier(.6,0,.3,1) infinite;background:linear-gradient(160deg,#3a2aa0,#120f40)}
 .esc-gira .eg-movil::after{content:"";position:absolute;left:50%;bottom:8px;width:26px;height:4px;border-radius:3px;background:#cfd6ff;transform:translateX(-50%)}
@@ -278,7 +279,7 @@ var ESC = (() => {
   .cq{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr);gap:14px;align-items:stretch}
   .cq-esc .esc{aspect-ratio:auto;height:min(76vh,560px);max-height:none}
   .cq .cu-opts.opciones{grid-template-columns:1fr!important}
-  .cq .opt{min-height:clamp(54px,15vh,92px)}}
+  .cq .opt{min-height:clamp(20px,9vh,60px)!important}}
 .cq .cu-opts.opciones{max-width:none}
 .cq-cielo{position:absolute;left:0;right:0;top:6px;z-index:20;display:flex;justify-content:center;gap:clamp(2px,1vw,8px);pointer-events:none}
 .cq-cielo i{width:clamp(22px,6.4vw,40px);aspect-ratio:1;display:grid;place-items:center;transition:transform .4s}
@@ -293,20 +294,27 @@ var ESC = (() => {
 .cq-txt{font-family:var(--f-lectura,'Andika'),system-ui;font-weight:700;font-size:clamp(20px,3vw,28px);line-height:1.3;color:#fff}
 .cq-zona{width:100%}
 .cq .cu-opts{display:grid;grid-template-columns:1fr;gap:10px;width:100%}
-.cq .opt{min-height:74px;border-radius:20px;background:linear-gradient(180deg,#2b3f80,#18245a);border:2px solid rgba(123,200,255,.35);
-  box-shadow:0 5px 0 #0b1236,0 0 18px rgba(80,170,255,.18);display:flex;align-items:center;justify-content:center;animation:cqEntra .5s cubic-bezier(.3,1.4,.5,1) backwards}
+.cq .opt{min-height:40px;border-radius:30px;background:transparent;border:18px solid transparent;border-image:var(--btn-azul) 38% 18% fill / 18px 28px stretch;
+  box-shadow:none;filter:drop-shadow(0 4px 8px rgba(0,0,0,.45));display:flex;align-items:center;justify-content:center;animation:cqEntra .5s cubic-bezier(.3,1.4,.5,1) backwards}
 .cq .opt:nth-child(2){animation-delay:.08s}.cq .opt:nth-child(3){animation-delay:.16s}
 .cq .opt{justify-content:flex-start;padding:8px 16px;width:100%}
 .cq .opt .opt-txt{font-size:clamp(19px,2.6vw,26px)!important;display:flex;align-items:center;gap:12px;text-align:left}
-.cq .opt .esc-ico,.cq .opt .esc-ico-spr{height:clamp(40px,10vh,64px)!important;width:auto!important;max-width:none!important;margin:0;filter:drop-shadow(0 0 8px rgba(255,255,255,.35)) drop-shadow(0 3px 4px rgba(0,0,0,.5))}
-.cq .opt.ok{background:linear-gradient(180deg,#4dff8a,#10c94a);border-color:#fff;color:#032b12;box-shadow:0 5px 0 #087a2c,0 0 34px rgba(23,255,95,.8)}
+.cq .opt .esc-ico,.cq .opt .esc-ico-spr{height:clamp(30px,9vh,58px)!important;width:auto!important;max-width:none!important;margin:0;filter:drop-shadow(0 0 8px rgba(255,255,255,.35)) drop-shadow(0 3px 4px rgba(0,0,0,.5))}
+.cq .opt.ok{background:transparent;border-image:var(--btn-verde) 38% 18% fill / 18px 28px stretch;color:#fff;box-shadow:none;filter:drop-shadow(0 0 16px rgba(23,255,95,.8))}
+.cq .opt.mal{background:transparent;border-image:var(--btn-rojo) 38% 18% fill / 18px 28px stretch;box-shadow:none}
+.cq .opt .opt-txt{text-shadow:0 2px 3px rgba(0,0,0,.6)}
+.cq .opt{padding:0 6px!important}
+.cq-badge{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:clamp(40px,7vw,64px);filter:drop-shadow(0 0 10px rgba(80,170,255,.7));animation:escFlota 3s ease-in-out infinite}
+.cq-card{padding-left:clamp(56px,9vw,84px)!important}
+.cq-medalla{width:110px;filter:drop-shadow(0 0 18px rgba(255,210,63,.8));animation:escPop .9s cubic-bezier(.3,1.7,.5,1) backwards,escFlota 3s ease-in-out .9s infinite}
 .cq .opt.ok .esc-ico,.cq .opt.ok .esc-ico-spr{animation:cqIco .6s cubic-bezier(.3,1.8,.5,1)}
 @keyframes cqIco{0%{transform:scale(.6) rotate(-15deg)}100%{transform:scale(1) rotate(0)}}
 @keyframes cqEntra{from{transform:translateY(20px) scale(.9);opacity:0}to{transform:none;opacity:1}}
 .cq-vuela{position:fixed;width:60px;height:60px;z-index:9999;pointer-events:none;transition:transform .8s cubic-bezier(.5,0,.3,1);filter:drop-shadow(0 0 12px #ffd23f) drop-shadow(0 0 24px #ffb000)}
 `;
   let cssPuesto = false;
-  function ponCSS() { if (cssPuesto) return; cssPuesto = true; const s = document.createElement('style'); s.textContent = CSS; document.head.appendChild(s); }
+  function ponCSS() { if (cssPuesto) return; cssPuesto = true; const s = document.createElement('style'); s.textContent = CSS; document.head.appendChild(s);
+    const r = document.documentElement.style; ['azul', 'verde', 'rojo'].forEach(c => r.setProperty('--btn-' + c, `url("${src('cu-ui-btn-' + c)}")`)); }
 
   /* ---------------- utilidades ---------------- */
   const h = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
@@ -657,7 +665,7 @@ var ESC = (() => {
   }
 
   /* aviso de girar: se pone una vez dentro de la pantalla del cuento */
-  const enVertical = () => matchMedia('(orientation: portrait) and (pointer: coarse)').matches;
+  const enVertical = () => matchMedia('(orientation: portrait) and (pointer: coarse)').matches && !!document.querySelector('#pCuento.pide-horiz');
   function ponAvisoGiro() {
     const p = document.getElementById('pCuento'); if (!p || p.querySelector('.esc-gira')) return; ponCSS();
     const d = h('div', 'esc-gira', `<div class="eg-flecha">↻</div><div class="eg-movil"><img src="img/lucas/senala.png" alt=""></div>
@@ -672,5 +680,5 @@ var ESC = (() => {
   }
   if (typeof document === 'undefined') {} else if (document.readyState !== 'loading') ponAvisoGiro(); else document.addEventListener('DOMContentLoaded', ponAvisoGiro);
 
-  return { crear, destruir, mostrar, precarga, portada, icono, esperaHorizontal, enVertical, PJ, FONDOS, NUEVOS, FALTA };
+  return { src, crear, destruir, mostrar, precarga, portada, icono, esperaHorizontal, enVertical, PJ, FONDOS, NUEVOS, FALTA };
 })();

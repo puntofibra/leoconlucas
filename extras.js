@@ -414,17 +414,20 @@ function compruebaDiplomaNuevo() {
     if (!tactil) return 'pc';                 // PC / TV: libre
     return corto < 600 ? 'movil' : 'tablet';
   };
-  const quiere = () => tipo() === 'movil' ? 'portrait' : tipo() === 'tablet' ? 'landscape' : null;
+  /* los cuentos con escenas se ven en horizontal también en el móvil (su propio aviso lo explica) */
+  const cuentoHoriz = () => typeof pantallaActual !== 'undefined' && pantallaActual === 'pCuento' && !!document.querySelector('#pCuento.pide-horiz');
+  const quiere = () => cuentoHoriz() ? (tipo() === 'pc' ? null : 'landscape') : tipo() === 'movil' ? 'portrait' : tipo() === 'tablet' ? 'landscape' : null;
   function bloquea() { const q = quiere(); if (q && screen.orientation && screen.orientation.lock) screen.orientation.lock(q).catch(() => {}); }
   function revisa() {
     const q = quiere(), apaisado = innerWidth > innerHeight;
-    const mal = (q === 'portrait' && apaisado) || (q === 'landscape' && !apaisado);
+    const mal = !cuentoHoriz() && ((q === 'portrait' && apaisado) || (q === 'landscape' && !apaisado));
     const g = $('#giraPantalla'); if (!g) return;
     $('#giraTxt').textContent = q === 'portrait' ? 'Pon el móvil en vertical' : 'Pon la tablet en horizontal';
     g.classList.toggle('ver', mal); g.classList.toggle('a-horiz', q === 'landscape');
     if (mal) { try { VOZ.callar(); } catch (e) {} }
   }
   bloquea(); revisa();
+  let ultimoQ = quiere(); setInterval(() => { const q = quiere(); if (q !== ultimoQ) { ultimoQ = q; bloquea(); } revisa(); }, 600);
   addEventListener('resize', revisa);
   if (screen.orientation) screen.orientation.addEventListener('change', revisa);
   document.addEventListener('click', bloquea, { once: true });   // algunos navegadores solo bloquean tras tocar

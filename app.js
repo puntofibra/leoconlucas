@@ -1722,6 +1722,7 @@ var CUENTO = (() => {
   const sinIco = t => String(t).replace(/^(@\S+|[^\p{L}\p{N}¿¡"«—]+)\s+/u, '');
   const optHtml = t => { const m = /^@(\S+)\s+(.*)$/.exec(t); return m && window.ESC ? ESC.icono(m[1]) + esc(m[2]) : esc(t); };
   function cierraEscena() { if (S) { ESC.destruir(S); S = null; } }
+  const pideHoriz = on => { const p = $('#pCuento'); if (p) p.classList.toggle('pide-horiz', !!on); };
   async function abrir(f) {
     cierraEscena();
     if (f && claveF(f) <= claveF(new Date())) revisando = false;
@@ -1731,6 +1732,7 @@ var CUENTO = (() => {
     try { C = await carga(fecha); } catch (e) { cuerpo(`<div class="cu-portada">${lucasDuerme()}<p class="dlg-txt">No he podido cargar el cuento. Comprueba la conexión.</p></div>`); return; }
     const d = datos(); const hecho = (d.cuentos || {})[claveF(fecha)];
     $('#cuTitulo').textContent = esHoy(fecha) ? 'El cuento de hoy' : fecha.getDate() + ' de ' + MESES[fecha.getMonth()];
+    pideHoriz(conEscenas());
     if (conEscenas()) {
       cuerpo(`<div class="cu-portada cu-portada-esc">
         <div id="cuPortEsc" style="width:100%"></div>
@@ -1829,9 +1831,9 @@ var CUENTO = (() => {
     const base = { b: Pn.b, l: Pn.l, a: Pn.a };
     const host = st => Object.assign({}, base, { p: [[prota, 50, st + 'g']], f: st === 'f' ? 'confeti chispas' : 'estrellas', c: 'kb' });
     cuerpo(`<div class="cq">
-      <div class="cq-esc" id="cqEsc"><div class="cq-cielo" id="cuConst">${Array.from({ length: 10 }, () => '<i><img src="img/estrella-off.png" alt=""></i>').join('')}</div></div>
+      <div class="cq-esc" id="cqEsc"><div class="cq-cielo" id="cuConst">${Array.from({ length: 10 }, () => `<i><img src="${ESC.src('cu-ui-estrella-off')}" alt="" onerror="this.src='img/estrella-off.png'"></i>`).join('')}</div></div>
       <div class="cq-der">
-        <div class="cq-card"><div class="cq-num" id="cqNum">¡A VER SI ESTABAS ATENTO!</div><div class="cq-txt" id="cuPregTxt">Cada respuesta buena enciende una estrella.</div></div>
+        <div class="cq-card"><img class="cq-badge" src="${ESC.src('cu-ui-pregunta')}" alt="" onerror="this.remove()"><div class="cq-num" id="cqNum">¡A VER SI ESTABAS ATENTO!</div><div class="cq-txt" id="cuPregTxt">Cada respuesta buena enciende una estrella.</div></div>
         <div id="cuPregZona" class="cq-zona"></div>
       </div>
     </div>`);
@@ -1847,7 +1849,7 @@ var CUENTO = (() => {
       if (ok) {
         estrellas++; if (S) ESC.mostrar(S, host('f'));
         const b = $('.cu-opts .opt.ok'); if (b && st) vuelaEstrella(b, st);
-        await esperar(750); st.classList.add('on'); st.querySelector('img').src = 'img/estrella-on.png'; FX.chispas(st, 18, '#ffd23f'); SFX.estrella(Math.min(2, k % 3));
+        await esperar(750); st.classList.add('on'); st.querySelector('img').src = ESC.src('cu-ui-estrella-on'); FX.chispas(st, 18, '#ffd23f'); SFX.estrella(Math.min(2, k % 3));
       } else if (S) ESC.mostrar(S, host('t'));
       await esperar(700);
     }
@@ -1855,7 +1857,7 @@ var CUENTO = (() => {
   }
   function vuelaEstrella(desde, hasta) {
     const a = desde.getBoundingClientRect(), b = hasta.getBoundingClientRect();
-    const e = document.createElement('img'); e.src = 'img/estrella-on.png'; e.className = 'cq-vuela';
+    const e = document.createElement('img'); e.src = ESC.src('cu-ui-estrella-on'); e.className = 'cq-vuela';
     e.style.left = (a.left + a.width / 2 - 30) + 'px'; e.style.top = (a.top + a.height / 2 - 30) + 'px'; document.body.appendChild(e);
     requestAnimationFrame(() => requestAnimationFrame(() => { e.style.transform = `translate(${b.left + b.width / 2 - a.left - a.width / 2}px,${b.top + b.height / 2 - a.top - a.height / 2}px) scale(.45) rotate(360deg)`; }));
     setTimeout(() => e.remove(), 850);
@@ -1925,6 +1927,7 @@ var CUENTO = (() => {
     const frase = n >= 9 ? '¡Constelación completa! Has escuchado el cuento como un campeón.' : n >= 6 ? '¡Muy bien! Has encendido muchas estrellas.' : '¡Bien hecho! Mañana encenderemos todavía más estrellas.';
     cuerpo(`<div class="cu-portada">
       ${lucasDuerme()}
+      ${conEscenas() && n >= 6 ? `<img class="cq-medalla" src="${ESC.src('cu-ui-medalla')}" alt="">` : ''}
       <h2 class="cu-t">${n} de 10 estrellas ⭐</h2>
       <div class="constelacion mini">${Array.from({ length: 10 }, (_, j) => `<i class="${j < n ? 'on' : ''}" style="--a:${j * 36}deg"></i>`).join('')}<div class="cu-luna">🌙</div></div>
       <p class="dlg-txt">${frase}${nuevo ? `<br>+${n * 3} chispas ⚡` : ''}</p>
@@ -1961,7 +1964,7 @@ var CUENTO = (() => {
     }
   }
   $('#bCuento').onclick = () => { SFX.clic(); if (LICENCIA.comprobar()) return; abrir(new Date()); };
-  $('#bCuentoSalir').onclick = () => { parar = true; VOZ.callar(); cierraEscena(); try { rec && rec.abort(); } catch (e) {} ir('mapa'); };
+  $('#bCuentoSalir').onclick = () => { parar = true; VOZ.callar(); cierraEscena(); pideHoriz(false); try { rec && rec.abort(); } catch (e) {} ir('mapa'); };
   $('#bCuentoDias').onclick = () => { SFX.clic(); dias(); };
   return { abrir };
 })();
