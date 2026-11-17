@@ -1728,6 +1728,13 @@ var CUENTO = (() => {
   const optHtml = t => { const m = /^@(\S+)\s+(.*)$/.exec(t); return m && window.ESC ? ESC.icono(m[1]) + esc(m[2]) : esc(t); };
   function cierraEscena() { if (S) { ESC.destruir(S); S = null; } }
   const pideHoriz = on => { const p = $('#pCuento'); if (p) p.classList.toggle('pide-horiz', !!on); };
+  /* en el móvil, espera a que vuelvan a ponerlo en vertical (el aviso de girar ya se ve en pantalla) */
+  const esperaVertical = () => new Promise(res => {
+    const movil = () => (matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0) && Math.min(screen.width, screen.height) < 600;
+    const ok = () => !movil() || innerHeight >= innerWidth;
+    if (ok()) return res();
+    const iv = setInterval(() => { if (ok() || pantallaActual !== 'pCuento') { clearInterval(iv); setTimeout(res, 600); } }, 300);
+  });
   async function abrir(f) {
     cierraEscena();
     if (f && claveF(f) <= claveF(new Date())) revisando = false;
@@ -1930,7 +1937,9 @@ var CUENTO = (() => {
     const nuevo = !futuro && d.cuentos[k] == null;
     if (!futuro) { d.cuentos[k] = Math.max(n, d.cuentos[k] || 0); if (nuevo) d.chispas += n * 3; d._t = Date.now(); guardarNino(); }
     const frase = n >= 9 ? '¡Constelación completa! Has escuchado el cuento como un campeón.' : n >= 6 ? '¡Muy bien! Has encendido muchas estrellas.' : '¡Bien hecho! Mañana encenderemos todavía más estrellas.';
-    cuerpo(`<div class="cu-portada">
+    pideHoriz(false);   // el resto de la app (estrellas, foto de buenas noches) va en vertical en el móvil
+    window.__giraMsg = '¡Genial! Vuelve a poner el móvil en vertical para ver tus estrellas y hacerte la foto de buenas noches 📸';
+    cuerpo(`<div class="cu-portada cu-fin">
       ${lucasDuerme()}
       ${conEscenas() && n >= 6 ? `<img class="cq-medalla" src="${ESC.src('cu-ui-medalla')}" alt="">` : ''}
       <h2 class="cu-t">${n} de 10 estrellas ⭐</h2>
@@ -1938,15 +1947,17 @@ var CUENTO = (() => {
       <p class="dlg-txt">${frase}${nuevo ? `<br>+${n * 3} chispas ⚡` : ''}</p>
       <p class="dlg-txt" style="font-size:20px">Buenas noches, ${esc(NINO.nombre)}. 💤</p>
       <button class="btn btn-foto btn-grande" id="cuFoto">📸 FOTO DE BUENAS NOCHES</button>
-      <button class="btn btn-cuento" id="cuOtra">🔁 Escucharlo otra vez</button>
-      <button class="btn btn-mini" id="cuMapa">Volver al mapa</button>
+      <div class="cu-fin-bots"><button class="btn btn-cuento" id="cuOtra">🔁 Escucharlo otra vez</button>
+      <button class="btn btn-mini" id="cuMapa">Volver al mapa</button></div>
     </div>`);
     if (n >= 6) FX.confeti(90);
     $('#cuOtra').onclick = () => abrir(fecha); $('#cuMapa').onclick = () => ir('mapa');
     $('#cuFoto').onclick = () => { SFX.clic(); VOZ.callar(); FOTO_NOCHE.abrir({ n, titulo: C && C.t }); };
     const pjN = PJ_ON ? colorDe(NINO.color).nom : 'Lucas';
+    esperaVertical().then(() => { window.__giraMsg = ''; if (pantallaActual !== 'pCuento') return;
     VOZ.decir(frase + ' Buenas noches, ' + NINO.nombre + '. Que tengas dulces sueños.')
       .then(() => { if (pantallaActual === 'pCuento' && !document.querySelector('.fn-ov')) VOZ.decir(`Antes de ir a la cama, ¿te haces una foto de buenas noches con ${pjN}? Se la puedes enviar a mamá, a papá o a los abuelos. Pulsa el botón amarillo de la cámara.`); });
+    });
   }
   /* calendario de admin: todos los cuentos, mes a mes; los días con cuento nuevo (con escenas) salen marcados */
   async function calendario(y, m) {

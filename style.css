@@ -677,3 +677,59 @@ body, button, input, select, .btn, .titulo-pantalla, .cabecera h2, .btn-grande, 
 @keyframes giraH { 0%, 25% { transform: rotate(0deg); } 60%, 100% { transform: rotate(-90deg); } }
 .gira p { margin: 6px 0 0; font-size: 24px; font-weight: 700; color: var(--verde); text-shadow: var(--sombra-verde); }
 .gira small { color: var(--txt2); font-size: 15px; }
+
+/* =====================================================================
+   CUENTOS EN MÓVIL HORIZONTAL: todo cabe en pantalla, sin desplazarse
+   (pantallas bajas en apaisado: móviles)
+   ===================================================================== */
+@media (orientation: landscape) and (max-height: 520px) {
+  #pCuento { padding: calc(4px + var(--safe-t)) calc(10px + env(safe-area-inset-right, 0px)) calc(4px + var(--safe-b)) calc(10px + env(safe-area-inset-left, 0px)); overflow: hidden; }
+  #pCuento .cabecera { min-height: 34px; }
+  #pCuento .cabecera h2 { font-size: 17px; }
+  #pCuento .cabecera .btn-ico { width: 34px; height: 34px; min-width: 34px; font-size: 16px; border-radius: 10px; }
+  #pCuento .cuento-cuerpo { padding-bottom: 0; justify-content: center; min-height: 0; }
+  /* portada: escena a la izquierda, texto y botón a la derecha */
+  #pCuento .cu-portada.cu-portada-esc { display: grid; grid-template-columns: auto minmax(160px, 240px); grid-template-rows: 1fr auto auto 1fr; column-gap: 16px; row-gap: 12px; align-items: center; justify-content: center; max-width: none; }
+  #pCuento .cu-portada-esc #cuPortEsc { width: auto !important; grid-column: 1; grid-row: 1 / 5; }
+  #pCuento .cu-portada-esc > p { grid-column: 2; grid-row: 2; }
+  #pCuento .cu-portada-esc > button { grid-column: 2; grid-row: 3; width: 100%; }
+  #pCuento .cu-portada-esc .esc { height: calc(100dvh - 58px - var(--safe-t) - var(--safe-b)); width: auto; max-width: 62vw; max-height: none; }
+  #pCuento .cu-portada-esc .dlg-txt { font-size: 15px; margin: 0; }
+  #pCuento .cu-portada-esc .btn-grande { font-size: 16px; padding: 12px 14px; }
+  /* páginas del cuento: escena + texto a la derecha, todo dentro de la pantalla */
+  .cu-escena.esc-modo { display: grid !important; grid-template-columns: auto minmax(0, 1fr) !important; grid-template-rows: auto minmax(0, 1fr) auto; grid-template-areas: "prog prog" "esc txt" "esc btn" !important; gap: 6px 10px !important; height: calc(100dvh - 46px - var(--safe-t) - var(--safe-b)); align-items: stretch !important; }
+  .cu-escena.esc-modo .cu-prog { grid-area: prog; justify-self: center; }
+  .cu-escena.esc-modo .cu-prog i { height: 4px; }
+  .cu-escena.esc-modo #cuEsc { grid-area: esc; width: auto !important; align-self: center; }
+  .cu-escena.esc-modo .esc { height: calc(100dvh - 62px - var(--safe-t) - var(--safe-b)); width: auto; max-width: 64vw; max-height: none !important; }
+  .cu-escena.esc-modo .cu-texto { grid-area: txt; font-size: clamp(14px, 2.3vw, 19px) !important; line-height: 1.45 !important; padding: 8px 12px !important; max-height: none !important; min-height: 0; overflow: auto; border-radius: 16px; }
+  .cu-escena.esc-modo .fila-btns { grid-area: btn; gap: 8px; flex-wrap: nowrap; }
+  .cu-escena.esc-modo .fila-btns .btn { padding: 8px 12px; font-size: 14px; min-height: 0; flex: 1; }
+  /* preguntas: escena a la izquierda, pregunta y respuestas a la derecha, sin desplazarse */
+  .cq { grid-template-columns: auto minmax(0, 1fr) !important; gap: 10px !important; height: calc(100dvh - 46px - var(--safe-t) - var(--safe-b)); max-width: none !important; align-items: center !important; }
+  .cq-esc .esc { height: calc(100dvh - 58px - var(--safe-t) - var(--safe-b)) !important; width: auto !important; aspect-ratio: 4 / 5 !important; max-width: 40vw; }
+  .cq-der { gap: 6px !important; max-height: 100%; overflow: auto; justify-content: center; }
+  .cq-card { padding: 8px 12px 9px 58px !important; border-radius: 16px !important; text-align: left !important; }
+  .cq-badge { width: 40px !important; left: 8px !important; }
+  .cq-num { font-size: 11px !important; letter-spacing: 2px !important; margin-bottom: 2px !important; }
+  .cq-txt { font-size: clamp(15px, 2.4vw, 19px) !important; line-height: 1.25 !important; }
+  .cq .cu-opts.opciones { gap: 6px !important; }
+  .cq .opt { min-height: 0 !important; padding: 6px 10px !important; border-radius: 14px !important; }
+  .cq .opt .opt-txt { font-size: clamp(15px, 2.4vw, 19px) !important; }
+  .cq #cuMic { margin-top: 2px; padding: 6px 12px; font-size: 13px; }
+  .cq-cielo i { width: clamp(16px, 3.2vw, 26px) !important; }
+}
+
+/* fin del cuento (estrellas y foto de buenas noches), de nuevo en vertical: todo cabe en pantalla */
+#pCuento .cu-fin { gap: clamp(4px, 1vh, 10px); max-width: 460px; }
+#pCuento .cu-fin img.cu-lucas { width: auto; height: min(150px, 15vh); margin: 0; }
+#pCuento .cu-fin .cq-medalla { width: auto; height: min(80px, 8vh); }
+#pCuento .cu-fin .cu-t { font-size: clamp(22px, 3.4vh, 30px); }
+#pCuento .cu-fin .constelacion.mini { width: min(150px, 15vh); height: min(150px, 15vh); }
+#pCuento .cu-fin .constelacion.mini i { transform: rotate(var(--a)) translateY(calc(min(150px, 15vh) * -.41)) rotate(calc(-1 * var(--a))); width: min(22px, 2.6vh); height: min(22px, 2.6vh); margin: calc(min(22px, 2.6vh) / -2); }
+#pCuento .cu-fin .constelacion.mini i.on { width: min(28px, 3.2vh); height: min(28px, 3.2vh); margin: calc(min(28px, 3.2vh) / -2); }
+#pCuento .cu-fin .cu-luna { font-size: min(52px, 5vh); }
+#pCuento .cu-fin .dlg-txt { margin: 0; font-size: clamp(14px, 2vh, 17px) !important; }
+#pCuento .cu-fin .btn-foto { padding-top: clamp(10px, 1.6vh, 16px); padding-bottom: clamp(10px, 1.6vh, 16px); font-size: clamp(16px, 2.4vh, 19px); width: 100%; }
+#pCuento .cu-fin .cu-fin-bots { display: flex; gap: 8px; width: 100%; }
+#pCuento .cu-fin .cu-fin-bots .btn { flex: 1; margin: 0; padding: clamp(8px, 1.3vh, 12px) 8px; font-size: clamp(13px, 1.9vh, 16px); min-height: 0; }

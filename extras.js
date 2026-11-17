@@ -422,7 +422,7 @@ function compruebaDiplomaNuevo() {
     const q = quiere(), apaisado = innerWidth > innerHeight;
     const mal = !cuentoHoriz() && ((q === 'portrait' && apaisado) || (q === 'landscape' && !apaisado));
     const g = $('#giraPantalla'); if (!g) return;
-    $('#giraTxt').textContent = q === 'portrait' ? 'Pon el móvil en vertical' : 'Pon la tablet en horizontal';
+    $('#giraTxt').textContent = q === 'portrait' ? ((window.__giraMsg && pantallaActual === 'pCuento') ? window.__giraMsg : 'Pon el móvil en vertical') : 'Pon la tablet en horizontal';
     g.classList.toggle('ver', mal); g.classList.toggle('a-horiz', q === 'landscape');
     if (mal) { try { VOZ.callar(); } catch (e) {} }
   }
