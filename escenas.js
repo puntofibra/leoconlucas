@@ -71,8 +71,6 @@ var ESC = (() => {
     d: [['duerme', 0, 9], ['duerme', 1, 9], ['duerme', 0, 9], ['duerme', 1, 9], ['duerme', 0, 9], ['duerme', 1, 9], ['duerme', 0, 9], ['duerme', 1, 9], ['duerme', 2, 4], ['duerme', 3, 30], ['duerme', 2, 4]],
     desp: [['despierta', 0, 6], ['despierta', 1, 7], ['despierta', 2, 7], ['despierta', 3, 5]]
   };
-  const luVale = (st, pose) => !st.includes('v') && (!pose || pose in LU_POSE);
-  const luOk = (st, pose) => luVale(st, pose) && !!DIM[src(LU('habla'))];
   const luTiras = (st, pose, cam) => {
     if (pose) return ['habla', LU_POSE[pose][0]];
     const r = ['habla', 'anda'];
@@ -80,6 +78,27 @@ var ESC = (() => {
     if (/[fts]/.test(st) || cam === 'tiembla') r.push('emocion');
     return r;
   };
+  /* Resto de personajes de cuento con dos tiras de 4 fotogramas (COSMOLUCAS <dibujo>-p1 y <dibujo>-p2):
+     p1 = quieto, habla, anda (de lado, hacia la derecha), ríe · p2 = susto, triste, saluda, duerme (tumbado) */
+  const G_POSE = { quieto: ['p1', 0], habla: ['p1', 1], anda: ['p1', 2], rie: ['p1', 3], susto: ['p2', 0], triste: ['p2', 1], saluda: ['p2', 2], duerme: ['p2', 3] };
+  const G_SEQ = {
+    q: [['p1', 0, 40]],
+    h: [['p1', 0, 3], ['p1', 1, 5]],
+    f: [['p1', 3, 6], ['p1', 1, 4]],
+    a: [['p1', 1, 6], ['p1', 0, 4]],
+    t: [['p2', 1, 40]],
+    s: [['p1', 3, 40]],
+    susto: [['p2', 0, 40]],
+    d: [['p2', 3, 40]],
+    saluda: [['p2', 2, 9]]
+  };
+  /* un "kit" dice qué tiras tiene un personaje y cómo se usan */
+  const KIT_LUCAS = { id: LU, base: 'habla', pose: LU_POSE, seq: LU_SEQ, anda: n => ['anda', n % 4], tiras: luTiras, k: 500 / 480, alto: { duerme: 80 }, duermeAnim: 1 };
+  const kitG = img => ({ id: n => img + '-' + n, base: 'p1', pose: G_POSE, seq: G_SEQ, anda: () => ['p1', 2], tiras: (st, pose) => pose ? ['p1', G_POSE[pose][0]] : ['p1', 'p2'], k: 500 / 480, alto: {} });
+  PJ.lucas.kit = KIT_LUCAS;
+  ['noel', 'reno', 'melchor', 'gaspar', 'baltasar', 'fallera', 'calabacin', 'escobina'].forEach(k => { PJ[k].kit = kitG(PJ[k].img); });
+  const luVale = (d, st, pose) => !!d.kit && !st.includes('v') && (!pose || pose in d.kit.pose);
+  const luOk = (d, st, pose) => luVale(d, st, pose) && !!DIM[src(d.kit.id(d.kit.base))];
   const luClave = (st, cam) => st.includes('d') ? 'd' : st.includes('t') ? 't' : st.includes('h') ? 'h' : st.includes('f') ? 'f' : st.includes('a') ? 'a' : st.includes('s') ? 's' : cam === 'tiembla' ? 'susto' : 'q';
 
   /* ---------------- recursos nuevos (aún por generar) ----------------
@@ -147,8 +166,11 @@ var ESC = (() => {
     return out;
   }
   function imgsPj(d, st, pose, cam) {
+    if (d.kit && luVale(d, st, pose)) return [...d.kit.tiras(st, pose, cam).map(d.kit.id), ...imgsViejo(d, st, d.lucas ? null : pose)];   // al final van los dibujos antiguos, por si faltan las tiras
+    return imgsViejo(d, st, pose);
+  }
+  function imgsViejo(d, st, pose) {
     if (d.lucas) {
-      if (luVale(st, pose)) return [...luTiras(st, pose, cam).map(LU), lucasImg(pose && !(pose in LU_POSE) ? pose : st.includes('d') ? 'dormido' : st.includes('f') ? 'celebrando' : 'quieto')];   // el último es el dibujo antiguo, por si faltan las tiras
       const ps = pose || (st.includes('d') ? 'dormido' : st.includes('v') ? 'vuela' : st.includes('f') ? 'celebrando' : 'quieto'); return [lucasImg(ps)];
     }
     const r = [d.img]; if (d.triste && st.includes('t')) r.push(d.triste); if (d.vuelaImg && st.includes('v')) r.push(d.vuelaImg); return r;
@@ -257,6 +279,7 @@ var ESC = (() => {
 .esc-pj.lu-duerme.izq .esc-zzz{left:auto;right:16%}
 .esc-pj.en-cama.st-d .esc-in{transform:rotate(8deg);transform-origin:50% 60%}
 .esc-pj.en-cama .esc-sombra{display:none}
+.esc-pj.kg-duerme .esc-zzz{right:8%;top:28%}
 .esc-pj .robot{height:100%;width:auto}
 .esc-pj .robot>img{height:100%;width:auto}
 .esc-sombra{position:absolute;left:50%;bottom:-3%;width:70%;height:9%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(rgba(0,0,0,.55),transparent 70%);z-index:-1}
@@ -473,7 +496,7 @@ body:has(.fn-ov) .esc-gira{display:none!important}
   /* personajes */
   function nodoPj(S, id, st, pose) {
     const d = PJ[id]; if (!d) return null;
-    if (d.emo && FALTA.has(d.img)) return null;   // personaje nuevo aún sin dibujo: no se pinta
+    if (d.emo && FALTA.has(d.img) && !luOk(d, st, pose)) return null;   // personaje nuevo aún sin dibujo: no se pinta
     const e = h('div', 'esc-pj'); const inn = h('div', 'esc-in'); const flip = h('div', 'esc-flip'); inn.appendChild(flip); e.appendChild(inn);
     e._d = d; e._id = id;
     pintaPj(S, e, st, pose);
@@ -483,13 +506,13 @@ body:has(.fn-ov) .esc-gira{display:none!important}
   function pintaPj(S, e, st, pose) {
     const d = e._d, flip = e.querySelector('.esc-flip'); flip.innerHTML = '';
     e._lu = null; e._luC = null;
-    if (d.lucas && luOk(st, pose)) {   // Lucas de cuento: tiras animadas
-      e._lu = { hijos: {}, ped: {}, sq: null, i: 0, c: 0, n: 0, anda: 0, dir: 1, desp: 0, on: null };
+    if (luOk(d, st, pose)) {   // personaje de cuento con tiras de poses
+      e._lu = { hijos: {}, ped: {}, sq: null, i: 0, c: 0, n: 0, anda: 0, dir: 1, desp: 0, hola: 0, on: null };
       e._luPose = pose || null; e._fr = 0; e._spr = null; e._img = 'lu';
       e._luC = h('div', 'esc-lu'); flip.appendChild(e._luC); e._st = st; luTick(S, e); return;
     }
-    const imgs = imgsPj(d, st, pose); let im = imgs[imgs.length - 1];
-    if (FALTA.has(im) && !d.lucas) im = imgs[0];
+    const imgs = imgsViejo(d, st, pose); let im = imgs[imgs.length - 1];
+    if (FALTA.has(im)) im = imgs[0];
     e._img = im; e._fr = (d.triste && im === d.triste) ? 4 : (d.vuelaImg && im === d.vuelaImg) ? 0 : (d.fr || 0);
     if (d.emo && FALTA.has(im)) {
       const s = h('span', 'esc-emo-pj', d.emo); s.style.cssText = 'display:block;line-height:1;filter:drop-shadow(0 0 10px rgba(255,255,255,.6)) drop-shadow(0 8px 10px rgba(0,0,0,.4))';
@@ -534,26 +557,28 @@ body:has(.fn-ov) .esc-gira{display:none!important}
   }
   /* Lucas de cuento: un fotograma cada 170 ms según lo que esté haciendo */
   function luHijo(e, t) {
-    const L = e._lu; if (L.hijos[t]) return L.hijos[t];
-    const D = DIM[src(LU(t))]; if (!D) { if (!L.ped[t] && !FALTA.has(LU(t))) { L.ped[t] = 1; carga1(LU(t)); } return null; }
-    const s = h('div', 'esc-spr'); s.style.aspectRatio = (D.w / 4) + '/' + D.h; s.style.height = (t === 'duerme' ? 80 : 100) + '%';
-    s.style.backgroundImage = `url("${src(LU(t))}")`; s.style.backgroundSize = '400% 100%'; e._luC.appendChild(s); return (L.hijos[t] = s);
+    const L = e._lu, K = e._d.kit, id = K.id(t); if (L.hijos[t]) return L.hijos[t];
+    const D = DIM[src(id)]; if (!D) { if (!L.ped[t] && !FALTA.has(id)) { L.ped[t] = 1; carga1(id); } return null; }
+    const s = h('div', 'esc-spr'); s.style.aspectRatio = (D.w / 4) + '/' + D.h; s.style.height = (K.alto[t] || 100) + '%';
+    s.style.backgroundImage = `url("${src(id)}")`; s.style.backgroundSize = '400% 100%'; e._luC.appendChild(s); return (L.hijos[t] = s);
   }
   function luTick(S, e) {
-    const L = e._lu, st = e._st || ''; let paso;
-    if (e._luPose) paso = LU_POSE[e._luPose];
-    else if (L.anda > 0 && !st.includes('d')) { L.anda--; L.n++; paso = ['anda', L.n % 4]; }
+    const L = e._lu, K = e._d.kit, st = e._st || ''; let paso, anda = false;
+    if (e._luPose) paso = K.pose[e._luPose];
+    else if (L.anda > 0 && !st.includes('d')) { L.anda--; L.n++; paso = K.anda(L.n); anda = true; }
     else {
-      const k = L.desp ? 'desp' : luClave(st, e._cam);
+      const una = L.desp && K.seq.desp ? 'desp' : L.hola && K.seq.saluda && !/[dt]/.test(st) ? 'saluda' : null;   // secuencias que se hacen una vez: despertarse, saludar al llegar
+      if (!una) { L.desp = 0; L.hola = 0; }
+      const k = una || luClave(st, e._cam);
       if (k !== L.sq) { L.sq = k; L.i = 0; L.c = 0; }
-      const seq = LU_SEQ[k];
-      if (L.c >= seq[L.i][2]) { L.c = 0; L.i++; if (L.i >= seq.length) { L.i = 0; if (k === 'desp') { L.desp = 0; L.sq = null; return luTick(S, e); } } }
+      const seq = K.seq[k];
+      if (L.c >= seq[L.i][2]) { L.c = 0; L.i++; if (L.i >= seq.length) { L.i = 0; if (una) { L.desp = 0; L.hola = 0; L.sq = null; return luTick(S, e); } } }
       L.c++; paso = seq[L.i];
     }
-    let s = luHijo(e, paso[0]), f = paso[1]; if (!s) { s = luHijo(e, 'habla'); f = 0; if (!s) return; }
+    let s = luHijo(e, paso[0]), f = paso[1]; if (!s) { s = luHijo(e, K.base); f = 0; if (!s) return; }
     if (L.on !== s) { if (L.on) L.on.classList.remove('on'); s.classList.add('on'); L.on = s; }
     s.style.backgroundPosition = (f / 3 * 100) + '% 0';
-    s.classList.toggle('rev', paso[0] === 'anda' && (L.dir < 0) !== st.includes('<'));
+    s.classList.toggle('rev', anda && (L.dir < 0) !== st.includes('<'));
   }
   /* la cama del dormitorio dentro del dibujo de la sala (16:9, cover, 50% 60%): centro de Lucas tumbado y su tamaño */
   function camaPos(S) {
@@ -563,17 +588,17 @@ body:has(.fn-ov) .esc-gira{display:none!important}
   }
   function colocaPj(S, e, x, st) {
     const F = S.F || {}; const d = e._d; e._x = x; x = apretar(S, x);
-    const lu = !!e._lu, cama = lu && !e._luPose && st.includes('d') && F.sala === 'sala-dormitorio';   // en su cuarto, Lucas duerme encima de la cama
+    const lu = !!e._lu, cama = lu && d.lucas && !e._luPose && st.includes('d') && F.sala === 'sala-dormitorio';   // en su cuarto, Lucas duerme encima de la cama
     const grande = st.includes('g') ? 1.3 : st.includes('m') ? .7 : 1;
     const dormido = !lu && d.lucas && /dormido/.test(e._img || '') ? 1.35 : 1;
     const vert = S.el.clientHeight > S.el.clientWidth * .9 ? .78 : 1;
-    const alto = 50 * vert * (lu ? .854 : (d.h || 1)) * grande * dormido * (F.espacio && !F.superficie ? .9 : 1);
+    const alto = 50 * vert * (d.h || 1) * (lu ? d.kit.k : 1) * grande * dormido * (F.espacio && !F.superficie ? .9 : 1);
     const vuela = st.includes('v') || d.vuela || F.agua || (F.espacio && !F.superficie);
     const base = (F.piso || 5) + (vuela ? 14 : 0) + (st.includes('d') && !d.lucas ? 0 : 0);
     if (e.classList.contains('en-cama') !== cama) { e.style.transition = 'none'; requestAnimationFrame(() => requestAnimationFrame(() => { e.style.transition = ''; })); }   // a la cama (o fuera) sin deslizarse
     if (cama) { const c = camaPos(S); e.style.left = c.x + '%'; e.style.bottom = c.y + '%'; e.style.height = c.h + '%'; e.style.zIndex = '12'; }
     else { e.style.left = x + '%'; e.style.bottom = base + '%'; e.style.height = alto + '%'; e.style.zIndex = String(10 + Math.round(100 - base)); }
-    e.className = 'esc-pj' + (vuela ? ' vuela' : '') + (st.includes('<') && !cama ? ' izq' : '') + (lu && st.includes('d') ? ' lu-duerme' : '') + (cama ? ' en-cama' : '') + [...'hfatdsv'].filter(c => st.includes(c)).map(c => ' st-' + c).join('');
+    e.className = 'esc-pj' + (vuela ? ' vuela' : '') + (st.includes('<') && !cama ? ' izq' : '') + (lu && d.kit.duermeAnim && st.includes('d') ? ' lu-duerme' : '') + (lu && !d.kit.duermeAnim && st.includes('d') ? ' kg-duerme' : '') + (cama ? ' en-cama' : '') + [...'hfatdsv'].filter(c => st.includes(c)).map(c => ' st-' + c).join('');
     const zz = e.querySelector('.esc-zzz'); if (st.includes('d') && !zz) e.querySelector('.esc-in').appendChild(h('div', 'esc-zzz', '<b>Z</b><b>z</b><b>Z</b>')); else if (!st.includes('d') && zz) zz.remove();
     const aro = e.querySelector('.esc-habla-aro'); if (st.includes('h') && !aro) e.querySelector('.esc-in').appendChild(h('div', 'esc-habla-aro')); else if (!st.includes('h') && aro) aro.remove();
     e._st = st;
@@ -676,7 +701,7 @@ body:has(.fn-ov) .esc-gira{display:none!important}
     const F = FONDOS[esc.b] || FONDOS.dormitorio, luz = esc.l || (F.sala ? 'dia' : 'dia');
     const clave = esc.b + '|' + (F.sala ? '' : luz) + '|' + (esc.a || '');
     const cambia = clave !== S.fondoK;
-    { const fl = [...idsDe(esc)].filter(i => i.startsWith('cu-lucas-') && !DIM[src(i)] && !FALTA.has(i)); if (fl.length) await Promise.all(fl.map(carga1)); }
+    { const fl = [...idsDe(esc)].filter(i => /^cu-.*-(p1|p2)$|^cu-lucas-/.test(i) && !DIM[src(i)] && !FALTA.has(i)); if (fl.length) await Promise.all(fl.map(carga1)); }
     if (cambia && S.fondoK && !ops.sinTrans) { S.trans.classList.add('on'); await new Promise(r => setTimeout(r, 420)); Object.values(S.pjs).forEach(e => e.remove()); S.pjs = {}; Object.values(S.objs).forEach(e => e.remove()); S.objs = {}; S.parts = []; }
     if (cambia) { ponFondo(S, esc.b, luz, esc.a); S.fondoK = clave; }
     S.tinte.style.background = TINTES[luz] || 'none';
@@ -691,7 +716,7 @@ body:has(.fn-ov) .esc-gira{display:none!important}
       const [id, x0, st0, pose] = p; const st = st0 || ''; const x = x0 == null ? (100 / (lista.length + 1)) * (i + 1) : x0;
       const key = id + (lista.filter(q => q[0] === id).length > 1 ? '#' + i : '');
       let e = S.pjs[key];
-      if (e && e._d.lucas && luOk(st, pose)) {
+      if (e && luOk(e._d, st, pose)) {
         if (!e._lu) pintaPj(S, e, st, pose);
         else {
           e._luPose = pose || null;
@@ -707,7 +732,7 @@ body:has(.fn-ov) .esc-gira{display:none!important}
         colocaPj(S, e, x, st);
         const anim = st.includes('e') || (!cambia && S.fondoK) ? (x < 50 ? 'entra-izq' : 'entra-der') : 'entra';
         e.classList.add(anim); e.style.animationDelay = (i * .12) + 's';
-        if (e._lu && anim !== 'entra' && !st.includes('d')) { e._lu.anda = 7 + Math.round(i * .7); e._lu.dir = anim === 'entra-izq' ? 1 : -1; }   // entra andando
+        if (e._lu && anim !== 'entra' && !st.includes('d')) { e._lu.anda = 7 + Math.round(i * .7); e._lu.dir = anim === 'entra-izq' ? 1 : -1; e._lu.hola = st.includes('e') ? 1 : 0; }   // entra andando (y saluda si llega de fuera)
         setTimeout(() => e.classList.remove(anim), 1400 + i * 120);
       }
       e._cam = esc.c; colocaPj(S, e, x, st); nuevos[key] = e;
