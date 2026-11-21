@@ -146,6 +146,22 @@ var ESC = (() => {
     luna_sup: { espacio: 1, superficie: 1, piso: 14 }
   });
 
+  /* Dormitorios de otros personajes (COSMOLUCAS sala-cu-dorm-*). cama = [u, v, alto, giro]: centro de la cama dentro del dibujo
+     (0-1), alto del personaje tumbado y grados de giro. Solo duerme encima el dueño del cuarto, y solo si tiene tira de dormir. */
+  const DORM = { buho: [.2, .655, .4, 4], doctora: [.27, .675, .46, 2], chispita: [.19, .625, .34, 3], turbo: [.27, .685, .46, 2], max: [.27, .685, .46, 2],
+    chispa: [.27, .675, .46, 2], aqua: [.27, .675, .46, 2], luna: [.28, .685, .46, 2], nova: [.27, .69, .46, 2], blue: [.27, .675, .46, 2] };
+  Object.keys(DORM).forEach(k => { const c = DORM[k]; FONDOS['dorm_' + k] = { sala: 'sala-cu-dorm-' + k, piso: 7, de: k, cama: { u: c[0], v: c[1], alto: c[2], rot: c[3] } }; });
+  FONDOS.dormitorio.de = 'lucas'; FONDOS.dormitorio.cama = { u: .1875, v: .6856, alto: .40, rot: 8 };
+  /* si en un cuento el dormitorio nunca es el de Lucas (él no sale en esas escenas) y sale el dueño de otro cuarto, se usa su cuarto */
+  async function cuartos(cuento) {
+    const esc = (cuento.p || []).map(P => P.s).filter(s => s && s.b === 'dormitorio'); if (!esc.length) return;
+    if (esc.some(s => (s.p || []).some(p => p[0] === 'lucas'))) return;
+    const n = {}; esc.forEach(s => (s.p || []).forEach(p => { if (DORM[p[0]]) n[p[0]] = (n[p[0]] || 0) + 1; }));
+    const k = Object.keys(n).sort((a, b) => n[b] - n[a])[0]; if (!k) return;
+    const sala = FONDOS['dorm_' + k].sala; await carga1(sala); if (FALTA.has(sala)) return;
+    esc.forEach(s => { s.b = 'dorm_' + k; });
+  }
+
   /* ---------------- precarga ---------------- */
   const DIM = {}; const FALTA = new Set();
   function carga1(id) {
@@ -177,6 +193,7 @@ var ESC = (() => {
   }
   const lucasImg = ps => LUCAS_TL.includes(ps) ? 'lucas-' + ps : 'lcl:lucas/' + (ps in LUCAS_LCL ? ps.replace('capa', 'senala-capa') : 'senala');
   async function precarga(cuento, onProg) {
+    await cuartos(cuento);
     const ids = new Set(['lcl:luna']); (cuento.p || []).forEach(P => idsDe(P.s).forEach(i => ids.add(i)));
     (cuento.q || []).forEach(q => q.o.forEach(o => { const m = /^@(\S+)/.exec(o); if (m) ids.add(m[1].startsWith('pj:') ? null : m[1]); }));
     ids.delete(null);
@@ -277,7 +294,7 @@ var ESC = (() => {
 .esc-pj.lu-duerme.st-d .esc-in{animation:none}
 .esc-pj.lu-duerme .esc-zzz{right:auto;left:16%;top:6%}
 .esc-pj.lu-duerme.izq .esc-zzz{left:auto;right:16%}
-.esc-pj.en-cama.st-d .esc-in{transform:rotate(8deg);transform-origin:50% 60%}
+.esc-pj.en-cama.st-d .esc-in{transform:rotate(var(--giro,8deg));transform-origin:50% 60%}
 .esc-pj.en-cama .esc-sombra{display:none}
 .esc-pj.kg-duerme .esc-zzz{right:8%;top:28%}
 .esc-pj .robot{height:100%;width:auto}
@@ -582,13 +599,13 @@ body:has(.fn-ov) .esc-gira{display:none!important}
   }
   /* la cama del dormitorio dentro del dibujo de la sala (16:9, cover, 50% 60%): centro de Lucas tumbado y su tamaño */
   function camaPos(S) {
-    const H = S.el.clientHeight || 1, MW = Math.max(S.el.clientWidth, H * 1.6), a = MW / H, r = 16 / 9, u = .1875, v = .6856, alto = .40;
+    const H = S.el.clientHeight || 1, MW = Math.max(S.el.clientWidth, H * 1.6), a = MW / H, r = 16 / 9, C = (S.F || {}).cama || FONDOS.dormitorio.cama, u = C.u, v = C.v, alto = C.alto;
     if (a <= r) return { x: 100 * ((1 - r / a) / 2 + u * r / a), y: 100 * (1 - v), h: 100 * alto };
     const k = a / r; return { x: 100 * u, y: 100 * (1 - ((1 - k) * .6 + v * k)), h: 100 * alto * k };
   }
   function colocaPj(S, e, x, st) {
     const F = S.F || {}; const d = e._d; e._x = x; x = apretar(S, x);
-    const lu = !!e._lu, cama = lu && d.lucas && !e._luPose && st.includes('d') && F.sala === 'sala-dormitorio';   // en su cuarto, Lucas duerme encima de la cama
+    const lu = !!e._lu, cama = lu && !!d.kit.duermeAnim && !e._luPose && st.includes('d') && !!F.cama && F.de === e._id;   // en su cuarto, Lucas duerme encima de la cama
     const grande = st.includes('g') ? 1.3 : st.includes('m') ? .7 : 1;
     const dormido = !lu && d.lucas && /dormido/.test(e._img || '') ? 1.35 : 1;
     const vert = S.el.clientHeight > S.el.clientWidth * .9 ? .78 : 1;
@@ -596,7 +613,7 @@ body:has(.fn-ov) .esc-gira{display:none!important}
     const vuela = st.includes('v') || d.vuela || F.agua || (F.espacio && !F.superficie);
     const base = (F.piso || 5) + (vuela ? 14 : 0) + (st.includes('d') && !d.lucas ? 0 : 0);
     if (e.classList.contains('en-cama') !== cama) { e.style.transition = 'none'; requestAnimationFrame(() => requestAnimationFrame(() => { e.style.transition = ''; })); }   // a la cama (o fuera) sin deslizarse
-    if (cama) { const c = camaPos(S); e.style.left = c.x + '%'; e.style.bottom = c.y + '%'; e.style.height = c.h + '%'; e.style.zIndex = '12'; }
+    if (cama) { const c = camaPos(S); e.style.setProperty('--giro', (F.cama.rot || 0) + 'deg'); e.style.left = c.x + '%'; e.style.bottom = c.y + '%'; e.style.height = c.h + '%'; e.style.zIndex = '12'; }
     else { e.style.left = x + '%'; e.style.bottom = base + '%'; e.style.height = alto + '%'; e.style.zIndex = String(10 + Math.round(100 - base)); }
     e.className = 'esc-pj' + (vuela ? ' vuela' : '') + (st.includes('<') && !cama ? ' izq' : '') + (lu && d.kit.duermeAnim && st.includes('d') ? ' lu-duerme' : '') + (lu && !d.kit.duermeAnim && st.includes('d') ? ' kg-duerme' : '') + (cama ? ' en-cama' : '') + [...'hfatdsv'].filter(c => st.includes(c)).map(c => ' st-' + c).join('');
     const zz = e.querySelector('.esc-zzz'); if (st.includes('d') && !zz) e.querySelector('.esc-in').appendChild(h('div', 'esc-zzz', '<b>Z</b><b>z</b><b>Z</b>')); else if (!st.includes('d') && zz) zz.remove();
