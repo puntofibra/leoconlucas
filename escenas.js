@@ -152,12 +152,13 @@ var ESC = (() => {
     chispa: [.27, .675, .46, 2], aqua: [.27, .675, .46, 2], luna: [.28, .685, .46, 2], nova: [.27, .69, .46, 2], blue: [.27, .675, .46, 2] };
   Object.keys(DORM).forEach(k => { const c = DORM[k]; FONDOS['dorm_' + k] = { sala: 'sala-cu-dorm-' + k, piso: 7, de: k, cama: { u: c[0], v: c[1], alto: c[2], rot: c[3] } }; });
   FONDOS.dormitorio.de = 'lucas'; FONDOS.dormitorio.cama = { u: .1875, v: .6856, alto: .40, rot: 8 };
-  /* si en un cuento el dormitorio nunca es el de Lucas (él no sale en esas escenas) y sale el dueño de otro cuarto, se usa su cuarto */
+  /* ¿De quién es el dormitorio de un cuento? Del personaje con cuarto propio que más sale en las escenas de dormitorio
+     (a igualdad, el que va primero en la escena, que es el protagonista). Si gana Lucas, se queda su cuarto. */
   async function cuartos(cuento) {
     const esc = (cuento.p || []).map(P => P.s).filter(s => s && s.b === 'dormitorio'); if (!esc.length) return;
-    if (esc.some(s => (s.p || []).some(p => p[0] === 'lucas'))) return;
-    const n = {}; esc.forEach(s => (s.p || []).forEach(p => { if (DORM[p[0]]) n[p[0]] = (n[p[0]] || 0) + 1; }));
-    const k = Object.keys(n).sort((a, b) => n[b] - n[a])[0]; if (!k) return;
+    const n = {};
+    esc.forEach(s => (s.p || []).forEach((p, i) => { if (p[0] === 'lucas' || DORM[p[0]]) n[p[0]] = (n[p[0]] || 0) + 1 + (i === 0 ? .01 : 0); }));
+    const k = Object.keys(n).sort((a, b) => n[b] - n[a])[0]; if (!k || k === 'lucas') return;
     const sala = FONDOS['dorm_' + k].sala; await carga1(sala); if (FALTA.has(sala)) return;
     esc.forEach(s => { s.b = 'dorm_' + k; });
   }
