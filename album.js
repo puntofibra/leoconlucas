@@ -13,11 +13,11 @@
 
   const css = document.createElement('style');
   css.textContent = `
-  #pAlbum .album { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 10px; align-content: start;
+  #pAlbum .album { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); grid-auto-rows: max-content; gap: 10px; align-content: start;
     padding: 14px 12px 210px; border-radius: 26px; margin-top: 6px;
     background: radial-gradient(120% 80% at 50% 0%, rgba(80,120,255,.22), transparent 60%), linear-gradient(160deg, rgba(20,34,78,.92), rgba(30,14,60,.92));
     border: 2px solid rgba(140,200,255,.25); box-shadow: inset 0 0 40px rgba(0,0,0,.45), 0 10px 30px rgba(0,0,0,.4); }
-  .alb-h { position: relative; aspect-ratio: 1; border-radius: 20px; display: flex; align-items: center; justify-content: center; text-align: center;
+  .alb-h { position: relative; aspect-ratio: 1; min-width: 0; border-radius: 20px; display: flex; align-items: center; justify-content: center; text-align: center;
     background: rgba(255,255,255,.05); border: 3px dashed rgba(160,220,255,.35); transition: transform .2s, border-color .2s, background .2s; }
   .alb-h .hn { font-family: var(--f-lectura); font-weight: 700; font-size: 16px; line-height: 1.05; color: #dff2ff; padding: 4px; text-shadow: 0 2px 4px rgba(0,0,0,.6); overflow-wrap: normal; hyphens: none; }
   .alb-h.encima { border-color: var(--amarillo); background: rgba(255,210,63,.16); transform: scale(1.07); }
@@ -64,8 +64,16 @@
       h.onclick = () => { if (h.classList.contains('lleno')) { SFX.pop(); FX.chispas(h, 16); VOZ.decir(p.n); } };
       A.appendChild(h);
     });
-    pintaMonton();
+    pintaMonton(); filas();
   }
+  /* alto fijo de cada fila = ancho de la casilla: con muchas pegatinas el navegador
+     encogía las filas y las casillas se montaban unas encima de otras */
+  function filas() {
+    const A = $('#album'); if (!A) return;
+    const h = A.querySelector('.alb-h'); if (!h || !h.offsetWidth) return;
+    A.style.gridAutoRows = h.offsetWidth + 'px';
+  }
+  window.addEventListener('resize', () => { if ($('#pAlbum.activa')) { const A = $('#album'); A.style.gridAutoRows = ''; filas(); } });
   function lleno(h, p, i, recien) {
     h.className = 'alb-h lleno' + (recien ? ' recien' : '');
     h.style.setProperty('--g', giro(i) + 'deg'); h.style.setProperty('--d', (i % 7) * .6 + 's');
@@ -151,7 +159,7 @@
   }
 
   ON_PANTALLA.pAlbum = () => {
-    pinta(); const d = datos(), n = pendientes().length;
+    pinta(); requestAnimationFrame(filas); const d = datos(), n = pendientes().length;
     d.pegNueva = null;
     if (n) VOZ.decir(n === 1 ? 'Tienes una pegatina nueva. Arrástrala a su sitio. ¡Lee bien dónde va!' : `Tienes ${n} pegatinas para pegar. Arrástralas a su sitio. ¡Lee bien dónde va cada una!`);
     else VOZ.decir(`Tienes ${d.pegPuesta.length} pegatinas de ${PEGATINAS.length}. ¡A por todas!`);
