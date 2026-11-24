@@ -372,20 +372,56 @@ const VOZ = (() => {
     return out.length ? out : [{ t, off: 0 }];
   }
   let turno = 0;
+  /* Velocidad real de la voz (letras por segundo a velocidad 1), medida frase a frase.
+     Muchas voces de Android no avisan de cada palabra: entonces el resaltado se reparte
+     por tiempo con esta velocidad medida y se vuelve a sincronizar al empezar cada frase. */
+  let lps = +LS.get('vozLps', 0) || 14.5, avisaPalabras = false;
+  /* peso de cada palabra en tiempo: sus letras + pausa si lleva signo detrás */
+  const peso = w => w.replace(/[^\p{L}\p{N}]/gu, '').length + 1.2 + (/[,;:]$/.test(w) ? 3 : /[.!?…]["»)]?$/.test(w) ? 4.5 : 0);
   function decir(texto, opt = {}) {
     if (!ss || !texto || document.hidden) return Promise.resolve();
     if (!opt.cola) { ss.cancel(); turno++; }
     const mio = turno;
     const limpio = prepara(texto);
     const partes = trozos(limpio);
-    const hablaUno = ({ t, off }) => new Promise(res => {
+    /* nº de palabra (en el texto completo) donde empieza cada frase */
+    let acum = 0; partes.forEach(p => { p.pal0 = acum; p.pals = p.t.split(' ').filter(Boolean); acum += p.pals.length; });
+    const hablaUno = ({ t, off, pal0, pals }) => new Promise(res => {
       if (mio !== turno) { res(); return; }
       const u = new SpeechSynthesisUtterance(t);
       u.lang = (voz && voz.lang) || 'es-ES'; if (voz) u.voice = voz;
       u.rate = Math.min(1.3, (opt.rate || 1) * rate); u.pitch = opt.pitch || 1; u.volume = 1;
-      let hecho = false; const fin = () => { if (hecho) return; hecho = true; res(); };
-      u.onstart = () => habla(true); u.onend = fin; u.onerror = fin;
-      if (opt.onBoundary) u.onboundary = e => opt.onBoundary({ charIndex: e.charIndex + off, name: e.name });
+      const starts = []; { let q = 0; pals.forEach(w => { starts.push(q); q += w.length + 1; }); }
+      let tim = [], t0 = 0, ultima = -1, reales = false;
+      const marca = k => { if (k === ultima || mio !== turno || !opt.onBoundary) return; ultima = k; opt.onBoundary({ charIndex: off + starts[k], palabra: pal0 + k, name: 'word' }); };
+      const limpiaTim = () => { tim.forEach(clearTimeout); tim = []; };
+      let hecho = false; const fin = (ok) => {
+        if (hecho) return; hecho = true; limpiaTim();
+        /* aprende la velocidad real de esta voz con frases normales (no sílabas sueltas) */
+        if (ok === true && t0 && t.length >= 12) {
+          const seg = (performance.now() - t0) / 1000, l = t.length / (seg * u.rate);
+          if (l > 5 && l < 40) { lps = lps * .6 + l * .4; LS.set('vozLps', +lps.toFixed(2)); }
+        }
+        res();
+      };
+      u.onstart = () => {
+        habla(true); t0 = performance.now();
+        if (!opt.onBoundary) return;
+        marca(0);
+        if (avisaPalabras) return;             // esta voz avisa de cada palabra: se usa eso
+        /* reparto por tiempo: cada palabra según su peso y la velocidad medida */
+        const total = pals.reduce((a, w) => a + peso(w), 0) || 1;
+        const durMs = t.length / (lps * u.rate) * 1000;
+        let a = 0;
+        pals.forEach((w, k) => { if (k) tim.push(setTimeout(() => { if (!reales) marca(k); }, a / total * durMs)); a += peso(w); });
+      };
+      u.onend = () => fin(true); u.onerror = () => fin(false);
+      if (opt.onBoundary) u.onboundary = e => {
+        if (e.name && e.name !== 'word') return;
+        reales = true; avisaPalabras = true; limpiaTim();
+        const k = starts.findIndex((s0, i) => e.charIndex >= s0 && (i === starts.length - 1 || e.charIndex < starts[i + 1]));
+        if (k >= 0) marca(k);
+      };
       setTimeout(fin, 2500 + t.length * 160);   // seguridad si el navegador no avisa
       ss.speak(u);
     });
@@ -453,7 +489,7 @@ function desbloqueado(i) {
 function nivelActual() { let i = 0; while (i < PLANETAS.length - 1 && desbloqueado(i + 1)) i++; return i; }
 function aplicaAjustes() {
   const d = datos();
-  document.body.classList.toggle('mayus', !!d.aj.mayus);
+  document.body.classList.toggle('mayus', !!d.aj.mayus); requestAnimationFrame(() => ajustaOpts(true));
   VOZ.setRate(d.aj.lenta || NINO.edad <= 5 ? 0.85 : 0.95);
 }
 
@@ -935,6 +971,27 @@ function ajustaTextos(raiz) {
 addEventListener('resize', () => { if (pantallaActual === 'pJuego') ajustaTextos($('#escenario')); });
 /* ---------------- RENDERIZADORES ---------------- */
 const RENDER = {};
+/* Las palabras largas («helicóptero», «mariposa») no caben en los botones del móvil:
+   se reduce la letra de cada opción hasta que entra entera, sin cortarla nunca */
+function ajustaOpts(todo) {
+  document.querySelectorAll(todo ? '.opt .opt-txt' : '.opt .opt-txt:not([data-aj])').forEach(t => {
+    const b = t.closest('.opt'); if (!b || !b.offsetWidth) return;
+    t.dataset.aj = '1'; t.style.fontSize = '';
+    const unaPal = !/\s/.test(t.textContent.trim()); t.classList.toggle('una', unaPal);
+    const cs = getComputedStyle(b), libre = b.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 4;
+    let fs = parseFloat(getComputedStyle(t).fontSize), n = 0;
+    const ancho = () => { t.style.display = 'inline-block'; const w = t.scrollWidth; return w; };
+    while (ancho() > libre && fs > 13 && n++ < 40) { fs -= 1; t.style.fontSize = fs + 'px'; }
+  });
+}
+(() => {
+  let pend = false;
+  const pide = todo => { if (pend && !todo) return; pend = true; requestAnimationFrame(() => { pend = false; ajustaOpts(todo); }); };
+  new MutationObserver(() => pide(false)).observe(document.documentElement, { childList: true, subtree: true });
+  window.addEventListener('resize', () => pide(true));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => ajustaOpts(true));
+  if (document.fonts) document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', () => ajustaOpts(true));
+})();
 function opciones(lista, cls, contenido, esCorrecta, alAcertar) {
   const O = el('div', 'opciones ' + (cls || ''));
   lista.forEach(o => {
@@ -1221,10 +1278,8 @@ RENDER.cuento = (ej, E) => {
   const leer = async () => {
     if (leyendo) return; leyendo = true;
     const starts = []; let pos = 0; palabras.forEach(w => { starts.push(pos); pos += w.length + 1; });
-    let porBoundary = false; let k = 0;
-    const tim = setInterval(() => { if (porBoundary) return; spans.forEach(s => s.classList.remove('lee')); if (spans[k]) spans[k].classList.add('lee'); k++; }, 520 / (VOZ && .92));
-    await VOZ.decir(ej.c.x, { rate: .85, onBoundary: e => { porBoundary = true; const idx = starts.findIndex((s, i) => e.charIndex >= s && (i === starts.length - 1 || e.charIndex < starts[i + 1])); spans.forEach(s => s.classList.remove('lee')); if (spans[idx]) spans[idx].classList.add('lee'); } });
-    clearInterval(tim); spans.forEach(s => s.classList.remove('lee')); leyendo = false;
+    await VOZ.decir(ej.c.x, { rate: .85, onBoundary: e => { const idx = e.palabra != null ? e.palabra : starts.findIndex((s, i) => e.charIndex >= s && (i === starts.length - 1 || e.charIndex < starts[i + 1])); spans.forEach(s => s.classList.remove('lee')); if (spans[idx]) spans[idx].classList.add('lee'); } });
+    spans.forEach(s => s.classList.remove('lee')); leyendo = false;
   };
   bLee.onclick = () => { SFX.clic(); leer(); };
   bYa.onclick = () => { SFX.clic(); VOZ.callar(); preguntas(0); };
@@ -1954,7 +2009,7 @@ var CUENTO = (() => {
     const spans = [...document.querySelectorAll('#cuTexto span')], palabras = x.split(' ');
     const starts = []; let pos = 0; palabras.forEach(w => { starts.push(pos); pos += w.length + 1; });
     return VOZ.decir(x, { rate: .9, pitch: 1, onBoundary: e => {
-      const idx = starts.findIndex((st, i) => e.charIndex >= st && (i === starts.length - 1 || e.charIndex < starts[i + 1]));
+      const idx = e.palabra != null ? e.palabra : starts.findIndex((st, i) => e.charIndex >= st && (i === starts.length - 1 || e.charIndex < starts[i + 1]));
       spans.forEach(s => s.classList.remove('lee')); if (spans[idx]) { spans[idx].classList.add('lee'); const bx = spans[idx].parentElement; if (bx && bx.scrollHeight > bx.clientHeight + 4) { const t = spans[idx].offsetTop - bx.offsetTop; if (t < bx.scrollTop || t > bx.scrollTop + bx.clientHeight - 40) bx.scrollTop = t - 20; } }
     } });
   }
