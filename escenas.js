@@ -62,9 +62,9 @@ var ESC = (() => {
   /* secuencias: [tira, fotograma, duración en pasos de 170 ms] */
   const LU_SEQ = {
     q: [['habla', 0, 40]],
-    h: [['habla', 0, 3], ['habla', 1, 5], ['habla', 0, 2], ['habla', 3, 5], ['habla', 0, 3], ['habla', 2, 5]],
-    f: [['emocion', 0, 6], ['habla', 3, 4]],
-    a: [['habla', 2, 6], ['habla', 1, 5]],
+    h: [['habla', 0, 9], ['habla', 1, 5], ['habla', 0, 4], ['habla', 3, 5], ['habla', 0, 11], ['habla', 2, 5], ['habla', 0, 6]],
+    f: [['emocion', 0, 8], ['habla', 0, 6], ['habla', 3, 5], ['habla', 0, 7]],
+    a: [['habla', 2, 9], ['habla', 0, 5], ['habla', 1, 6], ['habla', 0, 6]],
     t: [['emocion', 1, 40]],
     s: [['emocion', 0, 40]],
     susto: [['emocion', 2, 40]],
@@ -221,13 +221,19 @@ var ESC = (() => {
   .cu-escena.esc-modo .cu-prog{grid-area:prog;justify-self:center}.cu-escena.esc-modo #cuEsc{grid-area:esc}
   .cu-escena.esc-modo .cu-texto{grid-area:txt;font-size:clamp(16px,2.2vw,26px);line-height:1.5;padding:12px 16px;max-height:66vh;overflow:auto;scroll-behavior:smooth}
   .cu-escena.esc-modo .fila-btns{grid-area:btn}.cu-escena.esc-modo .esc{max-height:78vh}}
-.esc-cam.kb{animation:escKB 14s ease-out forwards}
-.esc-cam.zoom{animation:escZoom 9s cubic-bezier(.2,.6,.3,1) forwards}
-.esc-cam.pan{animation:escPan 12s ease-in-out infinite alternate}
-.esc-cam.tiembla{animation:escTiembla .7s linear 2,escKB 14s ease-out forwards}
-@keyframes escKB{from{transform:scale(1.01)}to{transform:scale(1.06)}}
-@keyframes escZoom{from{transform:scale(1)}to{transform:scale(1.16)}}
-@keyframes escPan{from{transform:scale(1.1) translateX(-3.5%)}to{transform:scale(1.1) translateX(3.5%)}}
+.esc-cam.kb{animation:escKB 16s ease-out forwards}
+.esc-cam.kb2{animation:escKB2 16s ease-out forwards}
+.esc-cam.panl{animation:escPanL 17s ease-in-out forwards}
+.esc-cam.panr{animation:escPanR 17s ease-in-out forwards}
+.esc-cam.zoom{animation:escZoom 10s cubic-bezier(.2,.6,.3,1) forwards}
+.esc-cam.pan{animation:escPan 14s ease-in-out infinite alternate}
+.esc-cam.tiembla{animation:escTiembla .7s linear 2,escKB 16s ease-out forwards}
+@keyframes escKB{from{transform:scale(1.02)}to{transform:scale(1.13) translateY(-1.5%)}}
+@keyframes escKB2{from{transform:scale(1.13) translateY(-1.5%)}to{transform:scale(1.02)}}
+@keyframes escZoom{from{transform:scale(1)}to{transform:scale(1.19)}}
+@keyframes escPan{from{transform:scale(1.13) translateX(-5%)}to{transform:scale(1.13) translateX(5%)}}
+@keyframes escPanL{from{transform:scale(1.13) translateX(5%)}to{transform:scale(1.13) translateX(-5%)}}
+@keyframes escPanR{from{transform:scale(1.13) translateX(-5%)}to{transform:scale(1.13) translateX(5%)}}
 @keyframes escTiembla{0%,100%{transform:translate(0,0)}20%{transform:translate(-1.2%,.6%)}40%{transform:translate(1.1%,-.8%)}60%{transform:translate(-.8%,.9%)}80%{transform:translate(.9%,-.4%)}}
 .esc-fondo{position:absolute;inset:-2%;}
 .esc-sala{position:absolute;inset:0;background-size:cover;background-position:50% 60%}
@@ -562,14 +568,15 @@ body:has(.fn-ov) .esc-gira{display:none!important}
     Object.values(S.pjs).forEach(e => {
       if (e._lu) { luTick(S, e); return; }
       if (!e._fr) return; const st = e._st || '', n = S.frame + (e._sem || 0);
+      const m = Math.floor(n / 2);                           // medio ritmo (~340 ms/cambio): mas suave, menos disco rayado
       let f = 0;
-      if (e._fr === 2) f = (st.includes('h') || e._d.mueve) ? (n % 4 < 2 ? 0 : 1) : (n % 16 === 0 ? 1 : 0);
-      else if (st.includes('h')) f = [1, 0, 1, 2, 1, 0][n % 6];
-      else if (st.includes('f')) f = 3;
+      if (e._fr === 2) f = (st.includes('h') || e._d.mueve) ? [0, 0, 1, 0, 1, 0, 0, 0][m % 8] : (n % 24 === 0 ? 1 : 0);
+      else if (st.includes('h')) f = [0, 1, 0, 1, 0, 0, 2, 0, 0, 1, 0, 0, 0, 0][m % 14];
+      else if (st.includes('f')) f = [3, 3, 0, 3, 0, 0, 3, 0][m % 8];
       else if (st.includes('a')) f = 2;
-      else if (st.includes('t') && e._img === e._d.triste) f = n % 10 < 7 ? 0 : 1;
-      else if (e._d.vuela) f = [1, 2][Math.floor(n / 2) % 2];
-      else f = (n % 23 === 0 || n % 23 === 1) ? 1 : 0;      // de vez en cuando hace un gesto
+      else if (st.includes('t') && e._img === e._d.triste) f = m % 10 < 7 ? 0 : 1;
+      else if (e._d.vuela) f = [1, 2][Math.floor(n / 3) % 2];
+      else f = (n % 44 < 2) ? 1 : 0;
       marcoPj(e, f);
     });
   }
@@ -725,7 +732,9 @@ body:has(.fn-ov) .esc-gira{display:none!important}
     S.tinte.style.background = TINTES[luz] || 'none';
     /* cámara */
     S.cam.className = 'esc-cam'; void S.cam.offsetWidth;
-    S.cam.classList.add(reduce() ? 'x' : (esc.c || 'kb'));
+    /* camara mas viva: si la escena no indica movimiento, se va alternando (acercar, alejar, paneos, zoom) para que no se repita */
+    const CAM_DEF = ['kb', 'kb2', 'panr', 'kb', 'panl', 'zoom', 'kb2', 'panr'];
+    S.cam.classList.add(reduce() ? 'x' : (esc.c || CAM_DEF[(S.escN = (S.escN || 0) + 1) % CAM_DEF.length]));
     if (esc.c === 'foco' && esc.o && esc.o[0]) { S.cam.style.transformOrigin = (esc.o[0][1] || 50) + '% ' + (100 - (F.piso || 5) - (esc.o[0][2] || 0) - 8) + '%'; S.cam.classList.add('zoom'); }
     else S.cam.style.transformOrigin = '50% 60%';
     /* personajes */
