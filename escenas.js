@@ -180,7 +180,7 @@ var ESC = (() => {
     const A = e._pjc, m = A[e._pjcMov], nat = e._pjcNat || { w: 1, h: 1 }, sp = e._spr;
     const BH = sp.clientHeight, BW = sp.clientWidth; if (!BH) return;
     const fullH = BH / (m.y1 - m.y0), fullW = fullH * (nat.w / nat.h);
-    const c = m.cells[e._pjcF] || m.cells[0]; const cw = (c[1] - c[0]) * fullW, left = (BW - cw) / 2;
+    const c = m.c[e._pjcF] || m.c[0]; const cw = (c[1] - c[0]) * fullW, left = (BW - cw) / 2;
     const yTip = Hc * (BH / Hc) * 0.94;   // base de la figura
     const t = S.frame + (e._sem || 0);
     e._fuegoCan.forEach((fx, i) => {
