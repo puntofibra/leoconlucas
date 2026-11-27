@@ -152,6 +152,41 @@ var ESC = (() => {
     const spd = e._pjcMov === 'caminar' ? 1 : e._pjcMov === 'dormir' ? 4 : 3;
     e._pjcI = seq[Math.floor((S.frame + (e._sem || 0)) / spd) % seq.length] % m.n;
     pjcFrame(e, e._pjcI);
+    pjcFuego(e, S);
+  }
+  const PJC_FUEGO = { lucas: [0.14, 0.5, 0.86] };
+  function drawLlama(ctx, x, y, w, len) {
+    ctx.globalCompositeOperation = 'lighter';
+    const g = ctx.createLinearGradient(x, y, x, y + len);
+    g.addColorStop(0, 'rgba(255,255,255,0.95)'); g.addColorStop(0.25, 'rgba(255,225,95,0.9)');
+    g.addColorStop(0.6, 'rgba(255,120,30,0.6)'); g.addColorStop(1, 'rgba(255,60,0,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x - w / 2, y);
+    ctx.quadraticCurveTo(x - w * 0.35, y + len * 0.5, x, y + len);
+    ctx.quadraticCurveTo(x + w * 0.35, y + len * 0.5, x + w / 2, y); ctx.closePath(); ctx.fill();
+    const g2 = ctx.createLinearGradient(x, y, x, y + len * 0.6);
+    g2.addColorStop(0, 'rgba(255,255,255,0.9)'); g2.addColorStop(1, 'rgba(255,235,140,0)');
+    ctx.fillStyle = g2; ctx.beginPath(); ctx.moveTo(x - w * 0.22, y);
+    ctx.quadraticCurveTo(x, y + len * 0.4, x, y + len * 0.62);
+    ctx.quadraticCurveTo(x, y + len * 0.4, x + w * 0.22, y); ctx.closePath(); ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  function pjcFuego(e, S) {
+    const cv = e._fuego; if (!cv) return;
+    const ctx = cv.getContext('2d'); const W = cv.clientWidth, Hc = cv.clientHeight;
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(Hc * dpr); }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); if (W) ctx.clearRect(0, 0, W, Hc);
+    if (!W || e._pjcMov === 'dormir' || !e._fuegoCan) return;
+    const A = e._pjc, m = A[e._pjcMov], nat = e._pjcNat || { w: 1, h: 1 }, sp = e._spr;
+    const BH = sp.clientHeight, BW = sp.clientWidth; if (!BH) return;
+    const fullH = BH / (m.y1 - m.y0), fullW = fullH * (nat.w / nat.h);
+    const c = m.cells[e._pjcF] || m.cells[0]; const cw = (c[1] - c[0]) * fullW, left = (BW - cw) / 2;
+    const yTip = Hc * (BH / Hc) * 0.94;   // base de la figura
+    const t = S.frame + (e._sem || 0);
+    e._fuegoCan.forEach((fx, i) => {
+      const fl = 0.78 + 0.22 * Math.sin((t + i * 2) * 0.8) + 0.08 * Math.random();
+      drawLlama(ctx, left + fx * cw, yTip, Math.max(7, cw * 0.1), Hc * 0.26 * fl);
+    });
   }
 
   const luVale = (d, st, pose) => !!d.kit && !st.includes('v') && (!pose || pose in d.kit.pose);
@@ -347,7 +382,8 @@ var ESC = (() => {
 @keyframes escAro{0%{transform:translate(-50%,-50%) scale(.2);opacity:1}100%{transform:translate(-50%,-50%) scale(3.4);opacity:0}}
 .esc-pj{position:absolute;transform:translateX(-50%);transition:left 1.2s cubic-bezier(.45,0,.2,1),bottom 1s ease,height .8s ease,opacity .6s;z-index:2}
 .esc-pj .esc-in{height:100%;position:relative;transform-origin:50% 100%}
-.esc-pj .esc-flip{height:100%;transition:transform .5s}
+.esc-pj .esc-flip{height:100%;transition:transform .5s;position:relative}
+.pjc-fuego{position:absolute;left:0;top:0;width:100%;height:118%;pointer-events:none;z-index:-1}
 .esc-pj.izq .esc-flip{transform:scaleX(-1)}
 .esc-spr{height:100%;background-repeat:no-repeat;filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}
 .esc-pj img.esc-img{height:100%;width:auto;display:block;filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}
@@ -591,6 +627,8 @@ body:has(.fn-ov) .esc-gira{display:none!important}
     const _PJC = PJ_CUENTOS[e._id];
     if (_PJC && DIM[src(pjId(_PJC, 'respirar'))]) {
       e._pjc = _PJC; e._pjcMov = null; e._pjcWalk = e._pjcWalk || 0; e._pjcI = 0; e._fr = 0; e._img = 'pjc';
+      e._fuegoCan = PJC_FUEGO[e._id] || null; e._fuego = null;
+      if (e._fuegoCan) { const cv = h('canvas', 'pjc-fuego'); flip.appendChild(cv); e._fuego = cv; }
       const s = h('div', 'esc-spr pjc'); s.style.overflow = 'hidden'; flip.appendChild(s); e._spr = s;
       pjcRender(e, st); return;
     }
