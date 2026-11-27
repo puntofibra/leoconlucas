@@ -97,6 +97,63 @@ var ESC = (() => {
   const kitG = img => ({ id: n => img + '-' + n, base: 'p1', pose: G_POSE, seq: G_SEQ, anda: () => ['p1', 2], tiras: (st, pose) => pose ? ['p1', G_POSE[pose][0]] : ['p1', 'p2'], k: 500 / 480, alto: {} });
   PJ.lucas.kit = KIT_LUCAS;
   ['noel', 'reno', 'melchor', 'gaspar', 'baltasar', 'fallera', 'calabacin', 'escobina'].forEach(k => { PJ[k].kit = kitG(PJ[k].img); });
+  const PJ_CUENTOS = {
+    lucas:{a:'lucas',respirar:{n:6,y0:0.19,y1:0.8,c:[[0.0056,0.1633],[0.1722,0.33],[0.3389,0.4967],[0.5056,0.6633],[0.6744,0.8289],[0.8411,0.9956]]},caminar:{n:8,y0:0.2133,y1:0.77,c:[[0.0056,0.1289],[0.1378,0.25],[0.2589,0.3711],[0.3856,0.4956],[0.5122,0.6256],[0.6422,0.75],[0.7578,0.8656],[0.8767,0.9944]]},dormir:{n:6,y0:0.2633,y1:0.69,c:[[0.0056,0.1689],[0.1733,0.3322],[0.3367,0.49],[0.4956,0.6522],[0.66,0.8167],[0.8311,0.9967]]}},
+    reno:{a:'reno',respirar:{n:6,y0:0.06,y1:0.8433,c:[[0.0033,0.1667],[0.17,0.3333],[0.3378,0.4989],[0.5033,0.6667],[0.67,0.8322],[0.8367,1.0]]},caminar:{n:8,y0:0.2067,y1:0.77,c:[[0.0078,0.13],[0.1356,0.2544],[0.2611,0.3789],[0.3844,0.5022],[0.5022,0.6267],[0.6322,0.7478],[0.7522,0.87],[0.8789,0.9933]]},dormir:{n:6,y0:0.32,y1:0.7267,c:[[0.0022,0.1633],[0.1756,0.3267],[0.3267,0.4911],[0.4911,0.6567],[0.6567,0.8133],[0.8267,0.9967]]}},
+    noel:{a:'santa',respirar:{n:6,y0:0.0567,y1:0.8867,c:[[0.0133,0.1678],[0.18,0.3333],[0.3467,0.5],[0.5133,0.6667],[0.68,0.8333],[0.8467,1.0]]},caminar:{n:8,y0:0.2133,y1:0.79,c:[[0.0111,0.1211],[0.1367,0.2433],[0.2622,0.3656],[0.3878,0.4844],[0.5122,0.61],[0.6367,0.7356],[0.7589,0.86],[0.8833,0.9856]]},dormir:{n:6,y0:0.31,y1:0.6833,c:[[0.0011,0.1644],[0.1644,0.3222],[0.3222,0.4789],[0.4789,0.6433],[0.65,0.8133],[0.8256,0.9989]]}},
+    melchor:{a:'rey_morado',respirar:{n:6,y0:0.0233,y1:0.8967,c:[[0.0,0.1556],[0.17,0.3278],[0.3411,0.4989],[0.5111,0.6678],[0.6811,0.8378],[0.8511,1.0]]},caminar:{n:8,y0:0.1733,y1:0.8133,c:[[0.0033,0.1211],[0.1267,0.2456],[0.2522,0.3722],[0.3767,0.4956],[0.5022,0.6211],[0.6267,0.7456],[0.7522,0.8711],[0.8789,0.9967]]},dormir:{n:6,y0:0.3067,y1:0.6733,c:[[0.0044,0.1622],[0.1667,0.3256],[0.33,0.4889],[0.4967,0.6456],[0.65,0.8089],[0.82,0.9967]]}},
+    gaspar:{a:'rey_oro',respirar:{n:6,y0:0.01,y1:0.8967,c:[[0.0067,0.1611],[0.1744,0.3256],[0.3422,0.4933],[0.5089,0.66],[0.6756,0.8278],[0.8422,0.9944]]},caminar:{n:8,y0:0.1167,y1:0.85,c:[[0.0044,0.1267],[0.13,0.2567],[0.2567,0.3689],[0.3778,0.5022],[0.5022,0.6189],[0.6289,0.7433],[0.7489,0.8667],[0.8778,0.9911]]},dormir:{n:6,y0:0.28,y1:0.7233,c:[[0.0089,0.17],[0.1789,0.34],[0.3456,0.5],[0.5033,0.6567],[0.66,0.8167],[0.8311,0.9933]]}},
+    baltasar:{a:'rey_verde',respirar:{n:6,y0:0.0,y1:1.0,c:[[0.0,0.1733],[0.1733,0.3344],[0.3344,0.5056],[0.5056,0.6656],[0.6656,0.8311],[0.8311,1.0]]},caminar:{n:8,y0:0.19,y1:0.81,c:[[0.0089,0.1322],[0.1356,0.2567],[0.26,0.38],[0.3833,0.5033],[0.5089,0.6244],[0.63,0.7467],[0.7544,0.87],[0.88,0.9944]]},dormir:{n:6,y0:0.2933,y1:0.68,c:[[0.0067,0.1744],[0.1744,0.3411],[0.3411,0.5011],[0.5011,0.6633],[0.6633,0.8233],[0.8289,0.9933]]}},
+    fallera:{a:'fallera',respirar:{n:6,y0:0.0267,y1:0.9367,c:[[0.0056,0.1622],[0.1722,0.3289],[0.3389,0.4956],[0.5056,0.6622],[0.6722,0.8289],[0.8389,0.9967]]},caminar:{n:8,y0:0.1567,y1:0.8633,c:[[0.0022,0.1144],[0.1244,0.2367],[0.2489,0.3611],[0.3733,0.4856],[0.4989,0.6189],[0.6244,0.7389],[0.7489,0.8622],[0.8756,0.9889]]},dormir:{n:6,y0:0.26,y1:0.6767,c:[[0.0044,0.17],[0.17,0.3333],[0.3333,0.5],[0.5,0.6611],[0.6644,0.8278],[0.8367,0.9933]]}},
+    calabacin:{a:'calabaza',respirar:{n:6,y0:0.0767,y1:0.8233,c:[[0.0111,0.1667],[0.1778,0.3333],[0.3444,0.5],[0.5122,0.6667],[0.6789,0.8333],[0.8456,1.0]]},caminar:{n:8,y0:0.1767,y1:0.8433,c:[[0.01,0.12],[0.1322,0.2422],[0.2567,0.3667],[0.3778,0.4956],[0.5033,0.6122],[0.6289,0.7378],[0.7533,0.8633],[0.8789,0.9889]]},dormir:{n:6,y0:0.3233,y1:0.75,c:[[0.0033,0.1667],[0.1689,0.3267],[0.3289,0.4789],[0.48,0.6467],[0.6467,0.8089],[0.8233,1.0]]}},
+    escobina:{a:'bruja',respirar:{n:6,y0:0.0,y1:0.9167,c:[[0.0,0.1711],[0.1711,0.3367],[0.34,0.5044],[0.5067,0.67],[0.67,0.8356],[0.8356,1.0]]},caminar:{n:8,y0:0.1767,y1:0.7767,c:[[0.0044,0.1278],[0.13,0.2533],[0.2556,0.3778],[0.38,0.5033],[0.5044,0.6267],[0.63,0.7511],[0.7544,0.8767],[0.8789,1.0]]},dormir:{n:6,y0:0.2933,y1:0.6767,c:[[0.0033,0.1689],[0.1711,0.33],[0.3344,0.4867],[0.4867,0.6422],[0.6422,0.8167],[0.8167,0.9967]]}},
+    perrito:{a:'perrito',respirar:{n:6,y0:0.1633,y1:0.8033,c:[[0.0089,0.1722],[0.1767,0.34],[0.3444,0.5056],[0.5078,0.6667],[0.67,0.8278],[0.8311,0.9944]]},caminar:{n:8,y0:0.2567,y1:0.74,c:[[0.0078,0.1222],[0.1333,0.2478],[0.2589,0.3733],[0.3811,0.4989],[0.5122,0.6244],[0.6367,0.7478],[0.7589,0.8733],[0.8833,0.9956]]},dormir:{n:6,y0:0.2733,y1:0.72,c:[[0.0033,0.1689],[0.1733,0.3367],[0.3378,0.4978],[0.5,0.6567],[0.6633,0.82],[0.8233,0.9989]]}},
+    bombera:{a:'bombero',respirar:{n:6,y0:0.08,y1:0.88,c:[[0.0089,0.1633],[0.1756,0.3289],[0.3422,0.4933],[0.5078,0.66],[0.6744,0.8267],[0.84,0.9933]]},caminar:{n:8,y0:0.2033,y1:0.82,c:[[0.0056,0.1211],[0.13,0.2467],[0.2556,0.3711],[0.3811,0.4967],[0.5067,0.6211],[0.6322,0.7467],[0.7567,0.8711],[0.8811,0.9967]]},dormir:{n:6,y0:0.2633,y1:0.7,c:[[0.0078,0.1689],[0.1778,0.3344],[0.3456,0.5],[0.5056,0.6633],[0.6711,0.8222],[0.8311,0.99]]}},
+    granjera:{a:'granjero',respirar:{n:6,y0:0.1567,y1:0.7933,c:[[0.0067,0.1656],[0.1744,0.3333],[0.3411,0.4978],[0.5078,0.6667],[0.6744,0.8333],[0.8411,1.0]]},caminar:{n:8,y0:0.1867,y1:0.7933,c:[[0.0067,0.1289],[0.1322,0.2511],[0.2556,0.3744],[0.38,0.4989],[0.5044,0.6244],[0.6278,0.7489],[0.7522,0.8733],[0.8767,0.9978]]},dormir:{n:6,y0:0.1667,y1:0.6767,c:[[0.0056,0.1678],[0.17,0.3333],[0.3367,0.4967],[0.4967,0.6578],[0.6578,0.8122],[0.8233,0.9878]]}},
+    robot_blanco:{a:'robot_base',respirar:{n:6,y0:0.0333,y1:0.93,c:[[0.0156,0.1622],[0.1822,0.3256],[0.3489,0.4944],[0.5156,0.6622],[0.6811,0.8278],[0.8478,0.9956]]},caminar:{n:8,y0:0.1533,y1:0.85,c:[[0.0122,0.1111],[0.1378,0.2367],[0.2611,0.3622],[0.3811,0.4933],[0.5133,0.6122],[0.6389,0.7367],[0.7644,0.8622],[0.8889,0.9867]]},dormir:{n:6,y0:0.3267,y1:0.73,c:[[0.0122,0.1667],[0.1778,0.3311],[0.3344,0.4933],[0.4933,0.6444],[0.65,0.8122],[0.8278,0.99]]}},
+    robot_azul:{a:'robot_azul',respirar:{n:6,y0:0.14,y1:0.8033,c:[[0.0067,0.1644],[0.1744,0.3322],[0.3422,0.5],[0.5089,0.6656],[0.6767,0.8333],[0.8411,0.9989]]},caminar:{n:8,y0:0.18,y1:0.7867,c:[[0.0067,0.12],[0.1333,0.2444],[0.26,0.3722],[0.3856,0.4967],[0.51,0.6211],[0.6344,0.7456],[0.76,0.8711],[0.8844,0.9956]]},dormir:{n:6,y0:0.2667,y1:0.7,c:[[0.01,0.1622],[0.1789,0.3267],[0.3467,0.4889],[0.5056,0.6544],[0.6689,0.8233],[0.8378,0.99]]}},
+    cartero:{a:'repartidor',respirar:{n:6,y0:0.08,y1:0.86,c:[[0.0089,0.1589],[0.1767,0.3267],[0.3444,0.4933],[0.51,0.66],[0.6778,0.8267],[0.8433,0.9933]]},caminar:{n:8,y0:0.1967,y1:0.7767,c:[[0.0111,0.1178],[0.1389,0.2433],[0.2667,0.3711],[0.3911,0.4967],[0.5178,0.6211],[0.6422,0.7422],[0.7678,0.8678],[0.8933,0.9944]]},dormir:{n:6,y0:0.2967,y1:0.7,c:[[0.0022,0.1711],[0.1711,0.3356],[0.3356,0.4933],[0.4933,0.6578],[0.6578,0.8233],[0.83,0.9989]]}},
+    pulpito:{a:'pulpo',respirar:{n:6,y0:0.1433,y1:0.7933,c:[[0.0133,0.1656],[0.1811,0.3322],[0.3478,0.4944],[0.5111,0.66],[0.6744,0.8233],[0.8389,0.99]]},caminar:{n:8,y0:0.2067,y1:0.77,c:[[0.0111,0.1278],[0.1367,0.2511],[0.2622,0.3756],[0.3844,0.5],[0.51,0.6244],[0.6344,0.7489],[0.7589,0.8744],[0.8844,0.9989]]},dormir:{n:6,y0:0.2467,y1:0.7633,c:[[0.0067,0.1711],[0.1711,0.3344],[0.3344,0.4967],[0.5022,0.6511],[0.6611,0.8078],[0.8167,0.9933]]}},
+    robotita:{a:'robotita',respirar:{n:6,y0:0.0467,y1:0.9133,c:[[0.0078,0.1622],[0.1744,0.3289],[0.3411,0.4956],[0.5089,0.6622],[0.6744,0.8289],[0.8411,0.9956]]},caminar:{n:8,y0:0.1033,y1:0.8767,c:[[0.0078,0.1244],[0.1333,0.2489],[0.2589,0.3756],[0.3833,0.5],[0.5089,0.6256],[0.6333,0.75],[0.7589,0.8744],[0.8833,1.0]]},dormir:{n:6,y0:0.2767,y1:0.6733,c:[[0.0011,0.1656],[0.1656,0.3122],[0.3122,0.4711],[0.4711,0.6456],[0.6467,0.8167],[0.82,0.9978]]}},
+    mago:{a:'mago',respirar:{n:6,y0:0.1367,y1:0.78,c:[[0.0133,0.1689],[0.1811,0.3356],[0.3467,0.5011],[0.5122,0.6678],[0.68,0.8322],[0.8433,0.9989]]},caminar:{n:8,y0:0.2433,y1:0.7467,c:[[0.0089,0.1256],[0.1389,0.2511],[0.26,0.3744],[0.3822,0.5],[0.5056,0.6244],[0.63,0.7489],[0.7533,0.8733],[0.8789,0.9989]]},dormir:{n:6,y0:0.2867,y1:0.67,c:[[0.0089,0.17],[0.1778,0.3378],[0.3422,0.5033],[0.5078,0.6622],[0.6633,0.8244],[0.8322,0.9944]]}}
+  };
+
+  const pjId = (A, mov) => 'lcl:pj/' + A.a + '_' + mov;
+  const PJC_SEQ = { respirar: [0,0,1,1,2,2,3,3,4,4,5,5,4,4,3,3,2,2,1,1], dormir: [0,0,0,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,4,4,4,3,3,3,2,2,2,1,1,1], caminar: [0,1,2,3,4,5,6,7] };
+  const pjcMovDe = (st, walk) => st.includes('d') ? 'dormir' : (walk ? 'caminar' : 'respirar');
+  function pjcRender(e, st) {
+    const A = e._pjc; const mov = pjcMovDe(st, e._pjcWalk > 0);
+    if (mov !== e._pjcMov) {
+      e._pjcMov = mov; const m = A[mov]; const id = pjId(A, mov); const nat = DIM[src(id)] || { w: 1, h: 1 };
+      const avg = m.c.reduce((a, c) => a + (c[1] - c[0]), 0) / m.c.length;
+      e._spr.style.backgroundImage = `url("${src(id)}")`;
+      e._spr.style.aspectRatio = String((avg / (m.y1 - m.y0)) * (nat.w / nat.h));
+      e._pjcNat = nat; e._pjcF = -1;
+    }
+    pjcFrame(e, e._pjcI || 0);
+  }
+  function pjcFrame(e, f) {
+    const A = e._pjc, m = A[e._pjcMov]; if (!m || !e._spr) return;
+    const nat = e._pjcNat || DIM[src(pjId(A, e._pjcMov))] || { w: 1, h: 1 };
+    f = Math.max(0, Math.min(m.n - 1, f)); const c = m.c[f];
+    const H = e._spr.clientHeight, BW = e._spr.clientWidth; if (!H || !BW) { e._pjcF = -1; return; }
+    const fullH = H / (m.y1 - m.y0), fullW = fullH * (nat.w / nat.h), cw = (c[1] - c[0]) * fullW;
+    e._spr.style.backgroundSize = fullW + 'px ' + fullH + 'px';
+    e._spr.style.backgroundPosition = ((BW - cw) / 2 - c[0] * fullW) + 'px ' + (-(m.y0 * fullH)) + 'px';
+    e._pjcF = f;
+  }
+  function pjcTick(S, e) {
+    const st = e._st || '';
+    if (e._pjcWalk > 0) e._pjcWalk--;
+    const mov = pjcMovDe(st, e._pjcWalk > 0);
+    if (mov !== e._pjcMov) pjcRender(e, st);
+    const A = e._pjc, m = A[e._pjcMov]; if (!m) return;
+    const seq = PJC_SEQ[e._pjcMov] || [0];
+    const spd = e._pjcMov === 'caminar' ? 1 : e._pjcMov === 'dormir' ? 4 : 3;
+    e._pjcI = seq[Math.floor((S.frame + (e._sem || 0)) / spd) % seq.length] % m.n;
+    pjcFrame(e, e._pjcI);
+  }
+
   const luVale = (d, st, pose) => !!d.kit && !st.includes('v') && (!pose || pose in d.kit.pose);
   const luOk = (d, st, pose) => luVale(d, st, pose) && !!DIM[src(d.kit.id(d.kit.base))];
   const luClave = (st, cam) => st.includes('d') ? 'd' : st.includes('t') ? 't' : st.includes('h') ? 'h' : st.includes('f') ? 'f' : st.includes('a') ? 'a' : st.includes('s') ? 's' : cam === 'tiembla' ? 'susto' : 'q';
@@ -178,7 +235,7 @@ var ESC = (() => {
     const F = FONDOS[esc.b] || FONDOS.dormitorio;
     if (F.sala) out.add(F.sala); if (F.lejos) out.add(F.lejos); if (F.cerca) out.add(F.cerca); if (F.suelo) out.add(F.suelo);
     if (esc.a) out.add(esc.a);
-    (esc.p || []).forEach(p => { const d = PJ[p[0]]; if (!d) return; imgsPj(d, p[2] || '', p[3], esc.c).forEach(i => out.add(i)); });
+    (esc.p || []).forEach(p => { const d = PJ[p[0]]; if (!d) return; imgsPj(d, p[2] || '', p[3], esc.c).forEach(i => out.add(i)); const A = PJ_CUENTOS[p[0]]; if (A) ['respirar', 'caminar', 'dormir'].forEach(m => out.add(pjId(A, m))); });
     (esc.o || []).forEach(o => out.add(o[0]));
     return out;
   }
@@ -309,6 +366,7 @@ var ESC = (() => {
 .esc-sombra{position:absolute;left:50%;bottom:-3%;width:70%;height:9%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(rgba(0,0,0,.55),transparent 70%);z-index:-1}
 .esc-pj.st-v .esc-sombra,.esc-pj.vuela .esc-sombra{opacity:.35;transform:translateX(-50%) scale(.7)}
 .esc-pj .esc-in{animation:escRespira 3.6s ease-in-out infinite}
+.esc-pj.pjc .esc-in,.esc-pj.pjc.st-h .esc-in,.esc-pj.pjc.st-f .esc-in,.esc-pj.pjc.st-s .esc-in,.esc-pj.pjc.st-t .esc-in,.esc-pj.pjc.st-d .esc-in,.esc-pj.pjc.st-v .esc-in,.esc-pj.pjc.vuela .esc-in{animation:none!important}
 .esc-pj.vuela .esc-in,.esc-pj.st-v .esc-in{animation:escVuela 3s ease-in-out infinite}
 .esc-pj.st-h .esc-in{animation:escHabla .55s ease-in-out infinite}
 .esc-pj.st-s .esc-in{animation:escSalta .9s cubic-bezier(.3,0,.4,1) infinite}
@@ -530,6 +588,13 @@ body:has(.fn-ov) .esc-gira{display:none!important}
   function pintaPj(S, e, st, pose) {
     const d = e._d, flip = e.querySelector('.esc-flip'); flip.innerHTML = '';
     e._lu = null; e._luC = null;
+    const _PJC = PJ_CUENTOS[e._id];
+    if (_PJC && DIM[src(pjId(_PJC, 'respirar'))]) {
+      e._pjc = _PJC; e._pjcMov = null; e._pjcWalk = e._pjcWalk || 0; e._pjcI = 0; e._fr = 0; e._img = 'pjc';
+      const s = h('div', 'esc-spr pjc'); s.style.overflow = 'hidden'; flip.appendChild(s); e._spr = s;
+      pjcRender(e, st); return;
+    }
+    e._pjc = null;
     if (luOk(d, st, pose)) {   // personaje de cuento con tiras de poses
       e._lu = { hijos: {}, ped: {}, sq: null, i: 0, c: 0, n: 0, anda: 0, dir: 1, desp: 0, hola: 0, on: null };
       e._luPose = pose || null; e._fr = 0; e._spr = null; e._img = 'lu';
@@ -566,6 +631,7 @@ body:has(.fn-ov) .esc-gira{display:none!important}
   function animaSprites(S) {
     S.frame++;
     Object.values(S.pjs).forEach(e => {
+      if (e._pjc) { pjcTick(S, e); return; }
       if (e._lu) { luTick(S, e); return; }
       if (!e._fr) return; const st = e._st || '', n = S.frame + (e._sem || 0);
       const m = Math.floor(n / 2);                           // medio ritmo (~340 ms/cambio): mas suave, menos disco rayado
@@ -613,7 +679,7 @@ body:has(.fn-ov) .esc-gira{display:none!important}
   }
   function colocaPj(S, e, x, st) {
     const F = S.F || {}; const d = e._d; e._x = x; x = apretar(S, x);
-    const lu = !!e._lu, cama = lu && !!d.kit.duermeAnim && !e._luPose && st.includes('d') && !!F.cama && F.de === e._id;   // en su cuarto, Lucas duerme encima de la cama
+    const lu = !!e._lu, cama = ((lu && !!d.kit && !!d.kit.duermeAnim && !e._luPose) || !!e._pjc) && st.includes('d') && !!F.cama && F.de === e._id;   // en su cuarto, Lucas duerme encima de la cama
     const grande = st.includes('g') ? 1.3 : st.includes('m') ? .7 : 1;
     const dormido = !lu && d.lucas && /dormido/.test(e._img || '') ? 1.35 : 1;
     const vert = S.el.clientHeight > S.el.clientWidth * .9 ? .78 : 1;
@@ -623,7 +689,7 @@ body:has(.fn-ov) .esc-gira{display:none!important}
     if (e.classList.contains('en-cama') !== cama) { e.style.transition = 'none'; requestAnimationFrame(() => requestAnimationFrame(() => { e.style.transition = ''; })); }   // a la cama (o fuera) sin deslizarse
     if (cama) { const c = camaPos(S); e.style.setProperty('--giro', (F.cama.rot || 0) + 'deg'); e.style.left = c.x + '%'; e.style.bottom = c.y + '%'; e.style.height = c.h + '%'; e.style.zIndex = '12'; }
     else { e.style.left = x + '%'; e.style.bottom = base + '%'; e.style.height = alto + '%'; e.style.zIndex = String(10 + Math.round(100 - base)); }
-    e.className = 'esc-pj' + (vuela ? ' vuela' : '') + (st.includes('<') && !cama ? ' izq' : '') + (lu && d.kit.duermeAnim && st.includes('d') ? ' lu-duerme' : '') + (lu && !d.kit.duermeAnim && st.includes('d') ? ' kg-duerme' : '') + (cama ? ' en-cama' : '') + [...'hfatdsv'].filter(c => st.includes(c)).map(c => ' st-' + c).join('');
+    e.className = 'esc-pj' + (e._pjc ? ' pjc' : '') + (vuela ? ' vuela' : '') + (st.includes('<') && !cama ? ' izq' : '') + (lu && d.kit && d.kit.duermeAnim && st.includes('d') ? ' lu-duerme' : '') + (((lu && d.kit && !d.kit.duermeAnim) || e._pjc) && st.includes('d') && !cama ? ' kg-duerme' : '') + (cama ? ' en-cama' : '') + [...'hfatdsv'].filter(c => st.includes(c)).map(c => ' st-' + c).join('');
     const zz = e.querySelector('.esc-zzz'); if (st.includes('d') && !zz) e.querySelector('.esc-in').appendChild(h('div', 'esc-zzz', '<b>Z</b><b>z</b><b>Z</b>')); else if (!st.includes('d') && zz) zz.remove();
     const aro = e.querySelector('.esc-habla-aro'); if (st.includes('h') && !aro) e.querySelector('.esc-in').appendChild(h('div', 'esc-habla-aro')); else if (!st.includes('h') && aro) aro.remove();
     e._st = st;
@@ -726,7 +792,7 @@ body:has(.fn-ov) .esc-gira{display:none!important}
     const F = FONDOS[esc.b] || FONDOS.dormitorio, luz = esc.l || (F.sala ? 'dia' : 'dia');
     const clave = esc.b + '|' + (F.sala ? '' : luz) + '|' + (esc.a || '');
     const cambia = clave !== S.fondoK;
-    { const fl = [...idsDe(esc)].filter(i => /^cu-.*-(p1|p2)$|^cu-lucas-/.test(i) && !DIM[src(i)] && !FALTA.has(i)); if (fl.length) await Promise.all(fl.map(carga1)); }
+    { const fl = [...idsDe(esc)].filter(i => /^cu-.*-(p1|p2)$|^cu-lucas-|^lcl:pj\//.test(i) && !DIM[src(i)] && !FALTA.has(i)); if (fl.length) await Promise.all(fl.map(carga1)); }
     if (cambia && S.fondoK && !ops.sinTrans) { S.trans.classList.add('on'); await new Promise(r => setTimeout(r, 420)); Object.values(S.pjs).forEach(e => e.remove()); S.pjs = {}; Object.values(S.objs).forEach(e => e.remove()); S.objs = {}; S.parts = []; }
     if (cambia) { ponFondo(S, esc.b, luz, esc.a); S.fondoK = clave; }
     S.tinte.style.background = TINTES[luz] || 'none';
@@ -743,6 +809,7 @@ body:has(.fn-ov) .esc-gira{display:none!important}
       const [id, x0, st0, pose] = p; const st = st0 || ''; const x = x0 == null ? (100 / (lista.length + 1)) * (i + 1) : x0;
       const key = id + (lista.filter(q => q[0] === id).length > 1 ? '#' + i : '');
       let e = S.pjs[key];
+      if (e && e._pjc && e._x != null && Math.abs(x - e._x) >= 4 && !st.includes('d')) e._pjcWalk = 18;
       if (e && luOk(e._d, st, pose)) {
         if (!e._lu) pintaPj(S, e, st, pose);
         else {
