@@ -154,7 +154,7 @@ var ESC = (() => {
     pjcFrame(e, e._pjcI);
     pjcFuego(e, S);
   }
-  const PJC_FUEGO = { lucas: [0.14, 0.5, 0.86] };
+  const PJC_FUEGO = { lucas: [0.43, 0.57] };
   function drawLlama(ctx, x, y, w, len) {
     ctx.globalCompositeOperation = 'lighter';
     const g = ctx.createLinearGradient(x, y, x, y + len);
