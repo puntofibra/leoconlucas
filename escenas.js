@@ -935,5 +935,5 @@ body:has(.fn-ov) .esc-gira{display:none!important}
   }
   if (typeof document === 'undefined') {} else if (document.readyState !== 'loading') ponAvisoGiro(); else document.addEventListener('DOMContentLoaded', ponAvisoGiro);
 
-  return { src, crear, destruir, mostrar, precarga, portada, icono, esperaHorizontal, enVertical, PJ, FONDOS, NUEVOS, FALTA };
+  return { src, crear, destruir, mostrar, precarga, portada, icono, esperaHorizontal, enVertical, PJ, PJC: PJ_CUENTOS, FONDOS, NUEVOS, FALTA };
 })();

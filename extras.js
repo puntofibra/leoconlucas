@@ -62,6 +62,7 @@ ON_PANTALLA.pTaller = () => {
   if (!NINO) { ir('perfiles'); return; }
   const R = $('#tallerRobot'); R.innerHTML = robotHTML(NINO.color, 'vuela'); R.firstChild.dataset.fuerza = '1.6';
   pintaTaller();
+  if (!$('#talFotoBtn')) { const _tb = $('#talTabs'); if (_tb) { const _b = el('button', 'btn btn-foto', '📸 Hazte una foto con un personaje'); _b.id = 'talFotoBtn'; _b.style.cssText = 'width:100%;margin:6px 0 2px'; _b.onclick = () => { SFX.clic(); abrirPickerFotos(); }; _tb.parentNode.insertBefore(_b, _tb); } }
   requestAnimationFrame(() => decora(R.firstChild));
   VOZ.decir('¡Bienvenido a mi taller! Con tus chispas puedes comprarme mascotas, auras, estelas y fondos para el mapa.');
 };
@@ -613,3 +614,121 @@ var FOTO_NOCHE = (() => {
   }
   return { abrir };
 })();
+
+/* ---------------- FOTOS CON PERSONAJES (cámara trasera + sticker) ---------------- */
+function _fpLoadImg(u){ return new Promise(r => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => r(i); i.onerror = () => r(null); i.src = u; }); }
+async function _fpSticker(k){
+  const A = ESC.PJC && ESC.PJC[k]; if (!A) return null;
+  const img = await _fpLoadImg(ESC.src('lcl:pj/' + A.a + '_respirar')); if (!img) return null;
+  const W = img.naturalWidth, H = img.naturalHeight, m = A.respirar, c = m.c[0];
+  const sx = c[0]*W, sw = (c[1]-c[0])*W, sy = m.y0*H, sh = (m.y1-m.y0)*H;
+  const cv = document.createElement('canvas'); cv.width = Math.round(sw); cv.height = Math.round(sh);
+  cv.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+  try { return cv.toDataURL('image/png'); } catch(e){ return null; }
+}
+let _fpCSS = false;
+function _fpPonCSS(){ if (_fpCSS) return; _fpCSS = true; const s = document.createElement('style'); s.textContent = `
+.fp-pick{position:fixed;inset:0;z-index:6000;background:rgba(5,8,30,.92);display:flex;align-items:center;justify-content:center;padding:16px}
+.fp-pick-box{background:linear-gradient(160deg,#1a1f54,#0b0e2e);border:2px solid rgba(140,120,255,.5);border-radius:20px;padding:16px;max-width:560px;width:100%;max-height:86vh;overflow:auto;text-align:center}
+.fp-pick-box h2{color:#fff;font-family:'Fredoka',system-ui;margin:4px 0 12px}
+.fp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px}
+.fp-cand{background:rgba(255,255,255,.06);border:1.5px solid rgba(140,120,255,.35);border-radius:14px;padding:6px;cursor:pointer}
+.fp-cand .im{display:block;width:100%;height:84px;background-size:contain;background-position:center bottom;background-repeat:no-repeat}
+.fp-cand b{display:block;color:#cfd6ff;font:600 12px 'Fredoka',system-ui;margin-top:4px}
+.fp-pick-box .cerrar{margin-top:14px;background:#2a2f6a;color:#fff;border:0;border-radius:30px;padding:10px 22px;font:700 15px 'Fredoka',system-ui;cursor:pointer}
+.fp-ov{position:fixed;inset:0;z-index:6001;background:#000;overflow:hidden;touch-action:none}
+.fp-ov video,.fp-res{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+.fp-res{object-fit:contain}
+.fp-stk{position:absolute;width:40%;height:auto;touch-action:none;cursor:move;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5));user-select:none;-webkit-user-select:none}
+.fp-top{position:absolute;top:12px;right:12px;z-index:5}
+.fp-top button{width:46px;height:46px;border-radius:50%;border:0;background:rgba(0,0,0,.5);color:#fff;font-size:22px;cursor:pointer}
+.fp-ctrl{position:absolute;left:0;right:0;bottom:18px;display:flex;align-items:center;justify-content:center;gap:16px;z-index:5;padding:0 16px}
+.fp-shot{width:76px;height:76px;border-radius:50%;border:5px solid #fff;background:radial-gradient(circle,#ffd23f,#ff8a00);font-size:30px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+.fp-btn2{background:rgba(0,0,0,.55);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:30px;padding:12px 18px;font:700 15px 'Fredoka',system-ui;cursor:pointer}
+.fp-size{position:absolute;right:14px;top:50%;transform:translateY(-50%) rotate(270deg);transform-origin:center;width:160px;z-index:5}
+.fp-aviso{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font:600 17px 'Fredoka',system-ui;text-align:center;padding:30px}
+`; document.head.appendChild(s); }
+
+async function abrirPickerFotos(){
+  _fpPonCSS();
+  const ov = el('div', 'fp-pick');
+  ov.innerHTML = `<div class="fp-pick-box"><h2>📸 Elige un personaje</h2><div class="fp-grid" id="fpGrid"></div><button class="cerrar" id="fpPickX">Cerrar</button></div>`;
+  document.body.appendChild(ov);
+  ov.querySelector('#fpPickX').onclick = () => ov.remove();
+  const grid = ov.querySelector('#fpGrid');
+  const keys = ESC.PJC ? Object.keys(ESC.PJC) : [];
+  keys.forEach(k => {
+    const nom = (ESC.PJ[k] && ESC.PJ[k].nom) || (k.charAt(0).toUpperCase() + k.slice(1));
+    const b = el('button', 'fp-cand', `<span class="im" data-k="${k}"></span><b>${nom}</b>`);
+    grid.appendChild(b);
+    _fpSticker(k).then(u => { if (u) b.querySelector('.im').style.backgroundImage = `url("${u}")`; });
+    b.onclick = async () => { SFX.clic(); const u = await _fpSticker(k); ov.remove(); FOTO_PJ.abrir(u); };
+  });
+}
+
+var FOTO_PJ = (() => {
+  let ov = null, stream = null, video = null, stk = null, lastImg = null;
+  function pararStream(){ if (stream){ stream.getTracks().forEach(t => t.stop()); stream = null; } }
+  function cerrar(){ pararStream(); if (ov){ ov.remove(); ov = null; } }
+  function interactivo(stk, ov){
+    const pts = new Map(); let drag = false, ox, oy, sl, stp, pinch = 0, wStart = 0;
+    stk.addEventListener('pointerdown', e => { stk.setPointerCapture(e.pointerId); pts.set(e.pointerId, e);
+      if (pts.size === 1){ drag = true; const r = stk.getBoundingClientRect(); ox = e.clientX; oy = e.clientY; sl = r.left; stp = r.top; }
+      else if (pts.size === 2){ drag = false; const p = [...pts.values()]; pinch = Math.hypot(p[0].clientX-p[1].clientX, p[0].clientY-p[1].clientY); wStart = stk.getBoundingClientRect().width; } });
+    stk.addEventListener('pointermove', e => { if (!pts.has(e.pointerId)) return; pts.set(e.pointerId, e); const p = [...pts.values()];
+      if (pts.size >= 2){ const d = Math.hypot(p[0].clientX-p[1].clientX, p[0].clientY-p[1].clientY); const w = Math.max(50, Math.min(ov.clientWidth, wStart * d / (pinch||1))); stk.style.width = w + 'px'; }
+      else if (drag){ stk.style.left = (sl + e.clientX - ox) + 'px'; stk.style.top = (stp + e.clientY - oy) + 'px'; } });
+    const up = e => { pts.delete(e.pointerId); drag = pts.size === 1; };
+    stk.addEventListener('pointerup', up); stk.addEventListener('pointercancel', up);
+  }
+  async function abrir(imgUrl){
+    if (!imgUrl){ return; }
+    _fpPonCSS(); lastImg = imgUrl; cerrar();
+    ov = el('div', 'fp-ov');
+    ov.innerHTML = `<video id="fpVid" playsinline muted autoplay></video>
+      <img class="fp-stk" id="fpStk" src="${imgUrl}" alt="">
+      <input type="range" class="fp-size" id="fpSize" min="12" max="110" value="40">
+      <div class="fp-top"><button id="fpX">✕</button></div>
+      <div class="fp-ctrl"><button class="fp-shot" id="fpShot">📸</button></div>`;
+    document.body.appendChild(ov);
+    video = ov.querySelector('#fpVid'); stk = ov.querySelector('#fpStk');
+    ov.querySelector('#fpX').onclick = cerrar;
+    ov.querySelector('#fpShot').onclick = disparar;
+    ov.querySelector('#fpSize').oninput = e => { stk.style.width = e.target.value + '%'; };
+    stk.onload = () => { stk.style.left = (ov.clientWidth/2 - stk.clientWidth/2) + 'px'; stk.style.top = (ov.clientHeight*0.5 - stk.clientHeight/2) + 'px'; };
+    interactivo(stk, ov);
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 1600 } }, audio: false });
+      video.srcObject = stream; await video.play();
+    } catch(e){
+      try { stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false }); video.srcObject = stream; await video.play(); }
+      catch(e2){ ov.insertAdjacentHTML('beforeend', `<div class="fp-aviso">No he podido abrir la cámara.<br>Dale permiso de cámara al navegador e inténtalo otra vez.</div>`); }
+    }
+  }
+  async function disparar(){
+    if (!video || !video.videoWidth) return;
+    const vw = video.videoWidth, vh = video.videoHeight;
+    const cv = document.createElement('canvas'); cv.width = vw; cv.height = vh; const c = cv.getContext('2d');
+    c.drawImage(video, 0, 0, vw, vh);
+    const ovW = ov.clientWidth, ovH = ov.clientHeight, scale = Math.max(ovW/vw, ovH/vh);
+    const offX = (ovW - vw*scale)/2, offY = (ovH - vh*scale)/2;
+    const r = stk.getBoundingClientRect();
+    const X = (r.left - offX)/scale, Y = (r.top - offY)/scale, Wd = r.width/scale, Hd = r.height/scale;
+    try { c.drawImage(stk, X, Y, Wd, Hd); } catch(e){}
+    let blob = null; try { blob = await new Promise(res => cv.toBlob(res, 'image/jpeg', .92)); } catch(e){}
+    pararStream();
+    const url = cv.toDataURL('image/jpeg', .92);
+    ov.innerHTML = `<img class="fp-res" src="${url}" alt="">
+      <div class="fp-top"><button id="fpX2">✕</button></div>
+      <div class="fp-ctrl"><button class="fp-btn2" id="fpAgain">↺ Repetir</button><button class="fp-btn2" id="fpSave">⬇️ Guardar</button><button class="fp-shot" id="fpShare">📤</button></div>`;
+    ov.querySelector('#fpX2').onclick = cerrar;
+    ov.querySelector('#fpAgain').onclick = () => { const im = lastImg; cerrar(); FOTO_PJ.abrir(im); };
+    ov.querySelector('#fpSave').onclick = () => { const a = document.createElement('a'); a.href = url; a.download = 'foto-lucas.jpg'; a.click(); };
+    ov.querySelector('#fpShare').onclick = async () => {
+      if (blob && navigator.canShare){ try { const f = new File([blob], 'foto-lucas.jpg', { type: 'image/jpeg' }); if (navigator.canShare({ files: [f] })){ await navigator.share({ files: [f], title: 'Foto con Lucas' }); return; } } catch(e){ if (e && e.name === 'AbortError') return; } }
+      const a = document.createElement('a'); a.href = url; a.download = 'foto-lucas.jpg'; a.click();
+    };
+  }
+  return { abrir };
+})();
+
