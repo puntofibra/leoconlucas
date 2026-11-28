@@ -497,18 +497,36 @@ var FOTO_NOCHE = (() => {
     ctx.shadowBlur = 0; ctx.fillStyle = '#3a1d00'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, cx, cy + 2); ctx.restore();
   }
 
-  /* MARCO de la foto según la fecha (de momento el genérico todo el año; aquí irán Navidad y Halloween) */
-  function marcoHoy() { return 'img/marco-generico.png'; }
-  /* hueco transparente del marco genérico (en px del PNG de 941×1672) → se escala a 1080×1920 */
-  const KM = W / 941, HUECO = { x: 80 * KM, y: 288 * KM, w: 781 * KM, h: 1074 * KM };
+  /* MARCO de la foto según la fecha: 32 marcos temáticos, uno por día según la época */
+  const MARCOS = {'piscina':[0.086,0.1168,0.8259,0.7683],'halloween-luna':[0.0712,0.112,0.8395,0.7826],'esqui':[0.0829,0.1186,0.8183,0.776],'noche':[0.0946,0.1107,0.8077,0.7858],'deporte':[0.0999,0.122,0.796,0.7745],'fiesta':[0.0945,0.1186,0.7866,0.7802],'juguetes':[0.0946,0.1347,0.763,0.7677],'ciudad':[0.0786,0.1156,0.8342,0.7844],'selva':[0.0723,0.1089,0.8417,0.7882],'castillo':[0.084,0.1281,0.8278,0.7696],'granja':[0.0967,0.1567,0.7981,0.6256],'pirata':[0.0797,0.1866,0.8321,0.6148],'circo':[0.0521,0.1192,0.8916,0.7737],'dinos':[0.068,0.1221,0.8321,0.7732],'piscina-2':[0.086,0.1168,0.8259,0.7683],'arcoiris':[0.1031,0.1365,0.7683,0.7515],'submarino':[0.0786,0.1125,0.8278,0.778],'galaxia':[0.085,0.1118,0.8257,0.7781],'espacio':[0.0839,0.115,0.8291,0.7671],'halloween-dulces':[0.086,0.1102,0.8227,0.7808],'navidad-renos':[0.0744,0.1298,0.847,0.7506],'primavera':[0.0701,0.1149,0.8533,0.7828],'fallas':[0.0786,0.1287,0.8385,0.7534],'reyes':[0.0765,0.1268,0.8427,0.7554],'invierno':[0.0786,0.1292,0.8406,0.75],'fallas-bunuelos':[0.085,0.116,0.8289,0.7703],'otono':[0.0754,0.1114,0.8397,0.7844],'verano':[0.0765,0.1126,0.8215,0.779],'arcoiris-girasoles':[0.0755,0.124,0.8427,0.7587],'playa':[0.084,0.1179,0.831,0.7648],'navidad-adornos':[0.118,0.1196,0.762,0.7141],'navidad-trineo':[0.118,0.1394,0.763,0.634]};
+  const SEASON = (m, d) => {
+    if (m === 12) return ['navidad-renos', 'navidad-adornos', 'navidad-trineo', 'invierno', 'esqui', 'noche', 'galaxia'];
+    if (m === 1) return d <= 6 ? ['reyes', 'invierno', 'navidad-adornos', 'esqui'] : ['invierno', 'esqui', 'noche', 'galaxia', 'espacio'];
+    if (m === 2) return ['invierno', 'noche', 'espacio', 'galaxia', 'circo', 'deporte', 'castillo'];
+    if (m === 3) return ['fallas', 'fallas-bunuelos', 'primavera', 'arcoiris', 'selva'];
+    if (m === 4 || m === 5 || m === 6) return ['primavera', 'arcoiris', 'arcoiris-girasoles', 'selva', 'granja', 'playa', 'circo'];
+    if (m === 7 || m === 8) return ['verano', 'playa', 'piscina', 'piscina-2', 'arcoiris', 'submarino', 'pirata'];
+    if (m === 9) return ['otono', 'noche', 'espacio', 'castillo', 'dinos', 'juguetes', 'selva'];
+    if (m === 10) return ['halloween-luna', 'halloween-dulces', 'otono', 'noche', 'castillo'];
+    if (m === 11) return ['otono', 'noche', 'espacio', 'galaxia', 'dinos', 'juguetes', 'ciudad'];
+    return ['noche', 'espacio', 'galaxia'];
+  };
+  let marcoNom = 'noche', HUECO = { x: 0.09 * W, y: 0.11 * H, w: 0.81 * W, h: 0.78 * H };
+  function eligeMarco() {
+    const f = new Date(), m = f.getMonth() + 1, d = f.getDate();
+    let pool = SEASON(m, d).filter(n => MARCOS[n]); if (!pool.length) pool = Object.keys(MARCOS);
+    marcoNom = pool[(d - 1) % pool.length];
+    const hb = MARCOS[marcoNom]; HUECO = { x: hb[0] * W, y: hb[1] * H, w: hb[2] * W, h: hb[3] * H };
+    return 'img/marcos/' + marcoNom + '.png';
+  }
 
-  /* dibuja la foto completa (se usa para la vista previa en vivo y para la final) */
+  /* dibuja la foto completa (vista previa en vivo y final), adaptada al hueco del marco del día */
   function pinta(ctx, k) {
     ctx.save(); ctx.scale(k, k);
     ctx.fillStyle = '#050a1a'; ctx.fillRect(0, 0, W, H);
-    const Hx = HUECO, hayVideo = video && video.videoWidth;
+    const Hx = HUECO, hayVideo = video && video.videoWidth, R = n => Math.round(n);
     /* 1) foto del niño dentro del hueco (efecto espejo, como un selfie) */
-    ctx.save(); ctx.beginPath(); ctx.rect(Hx.x - 6, Hx.y - 6, Hx.w + 12, Hx.h + 12); ctx.clip();
+    ctx.save(); ctx.beginPath(); ctx.rect(Hx.x, Hx.y, Hx.w, Hx.h); ctx.clip();
     if (hayVideo) {
       const vw = video.videoWidth, vh = video.videoHeight, s = Math.max(Hx.w / vw, Hx.h / vh), dw = vw * s, dh = vh * s;
       ctx.translate(Hx.x * 2 + Hx.w, 0); ctx.scale(-1, 1);
@@ -517,28 +535,29 @@ var FOTO_NOCHE = (() => {
       const g = ctx.createRadialGradient(W / 2, Hx.y + Hx.h * .55, 40, W / 2, Hx.y + Hx.h * .55, Hx.h * .8); g.addColorStop(0, '#2b2380'); g.addColorStop(1, '#070b24');
       ctx.fillStyle = g; ctx.fillRect(Hx.x, Hx.y, Hx.w, Hx.h);
       ESTRELLAS.forEach(s => { ctx.globalAlpha = s.a; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(Hx.x + s.x / W * Hx.w, Hx.y + s.y / H * Hx.h * 3 % Hx.h, s.r, 0, 7); ctx.fill(); }); ctx.globalAlpha = 1;
-      if (dormido) { const dw = Hx.w * .8, dh = dw * dormido.height / dormido.width; ctx.drawImage(dormido, W / 2 - dw / 2, Hx.y + Hx.h * .62 - dh / 2, dw, dh); }
+      if (dormido) { const dw = Hx.w * .7, dh = dw * dormido.height / dormido.width; ctx.drawImage(dormido, W / 2 - dw / 2, Hx.y + Hx.h * .6 - dh / 2, dw, dh); }
     }
     ctx.restore();
-    /* 2) velo oscuro arriba de la foto para que se lea el texto */
-    let g = ctx.createLinearGradient(0, Hx.y, 0, Hx.y + 420); g.addColorStop(0, 'rgba(10,8,45,.88)'); g.addColorStop(.55, 'rgba(10,8,45,.45)'); g.addColorStop(1, 'rgba(10,8,45,0)');
-    ctx.fillStyle = g; ctx.fillRect(Hx.x, Hx.y, Hx.w, 420);
+    /* 2) velos oscuros (arriba y abajo de la foto) para que se lean los textos */
+    let gt = ctx.createLinearGradient(0, Hx.y, 0, Hx.y + Hx.h * .28); gt.addColorStop(0, 'rgba(10,8,45,.86)'); gt.addColorStop(1, 'rgba(10,8,45,0)');
+    ctx.fillStyle = gt; ctx.fillRect(Hx.x, Hx.y, Hx.w, Hx.h * .28);
+    let gb = ctx.createLinearGradient(0, Hx.y + Hx.h, 0, Hx.y + Hx.h * .7); gb.addColorStop(0, 'rgba(10,8,45,.88)'); gb.addColorStop(1, 'rgba(10,8,45,0)');
+    ctx.fillStyle = gb; ctx.fillRect(Hx.x, Hx.y + Hx.h * .7, Hx.w, Hx.h * .3);
     /* 3) el marco encima */
     if (marco) ctx.drawImage(marco, 0, 0, W, H);
     /* 4) textos de arriba (dentro de la foto) */
     ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-    const cx = Hx.x + Hx.w / 2, tw = Hx.w - 70;
-    texto(ctx, '¡Buenas noches!', cx, Hx.y + 120, '400 104px "Lilita One", sans-serif', tw, '#fff', 'rgba(139,92,255,1)', 32);
-    texto(ctx, info.frase, cx, Hx.y + 190, '600 40px Fredoka, sans-serif', tw, '#e9e4ff', 'rgba(0,0,0,.7)', 12);
-    pill(ctx, '⭐ ESTRELLA DE LA LECTURA', cx, Hx.y + 262);
-    ctx.globalAlpha = .8; texto(ctx, fechaTxt(), cx, Hx.y + 330, '500 26px Fredoka, sans-serif', tw, '#d6d0ff', 'rgba(0,0,0,.8)', 10); ctx.globalAlpha = 1;
-    /* 5) estrellas del cuento y textos en la banda de abajo (a la derecha del planeta) */
-    const bx = 745, bw = 600;
-    for (let j = 0; j < 10; j++) estrella(ctx, bx + (j - 4.5) * 58, 1678, 24, j < info.n);
-    ctx.textAlign = 'center';
-    texto(ctx, `${info.nombre} · ${info.n} de 10 estrellas`, bx, 1744, '700 44px Fredoka, sans-serif', bw, '#ffd23f', 'rgba(255,170,0,.6)', 16);
-    texto(ctx, `He leído «${info.titulo}»`, bx, 1786, '500 30px Fredoka, sans-serif', bw, '#fff', 'rgba(0,0,0,.7)', 8);
-    texto(ctx, 'Juega en puntofibra.github.io/leoconlucas', bx, 1828, '700 26px Fredoka, sans-serif', bw, '#17ff5f', 'rgba(23,255,95,.7)', 12);
+    const cx = Hx.x + Hx.w / 2, tw = Hx.w * .9;
+    texto(ctx, '¡Buenas noches!', cx, Hx.y + Hx.h * .085, '400 ' + R(Hx.w * .12) + 'px "Lilita One", sans-serif', tw, '#fff', 'rgba(139,92,255,1)', 30);
+    texto(ctx, info.frase, cx, Hx.y + Hx.h * .135, '600 ' + R(Hx.w * .05) + 'px Fredoka, sans-serif', tw, '#e9e4ff', 'rgba(0,0,0,.7)', 12);
+    pill(ctx, '⭐ ESTRELLA DE LA LECTURA', cx, Hx.y + Hx.h * .19);
+    ctx.globalAlpha = .85; texto(ctx, fechaTxt(), cx, Hx.y + Hx.h * .235, '500 ' + R(Hx.w * .034) + 'px Fredoka, sans-serif', tw, '#d6d0ff', 'rgba(0,0,0,.8)', 10); ctx.globalAlpha = 1;
+    /* 5) estrellas del cuento y textos en la banda de abajo (dentro de la foto) */
+    const sy = Hx.y + Hx.h * .865, sp = Hx.w * .082, ss = Hx.w * .036;
+    for (let j = 0; j < 10; j++) estrella(ctx, cx + (j - 4.5) * sp, sy, ss, j < info.n);
+    texto(ctx, `${info.nombre} · ${info.n} de 10 estrellas`, cx, Hx.y + Hx.h * .918, '700 ' + R(Hx.w * .055) + 'px Fredoka, sans-serif', tw, '#ffd23f', 'rgba(255,170,0,.6)', 16);
+    texto(ctx, `He leído «${info.titulo}»`, cx, Hx.y + Hx.h * .952, '500 ' + R(Hx.w * .04) + 'px Fredoka, sans-serif', tw, '#fff', 'rgba(0,0,0,.7)', 8);
+    texto(ctx, 'Juega en puntofibra.github.io/leoconlucas', cx, Hx.y + Hx.h * .984, '700 ' + R(Hx.w * .032) + 'px Fredoka, sans-serif', tw, '#17ff5f', 'rgba(23,255,95,.7)', 12);
     ctx.restore();
   }
 
@@ -552,7 +571,7 @@ var FOTO_NOCHE = (() => {
     info = { n, titulo: datosCuento.titulo || 'el cuento de hoy', nombre: NINO.nombre,
       frase: n >= 9 ? 'Ya he leído mi cuento… ¡y me voy a dormir!' : n >= 6 ? 'He estudiado mucho… ¡ahora a dormir!' : 'Hoy he leído mi cuento… ¡dulces sueños!' };
     final = null;
-    [marco, dormido] = await Promise.all([cargaImg(marcoHoy()), cargaImg('img/lucas/dormido.png')]);
+    [marco, dormido] = await Promise.all([cargaImg(eligeMarco()), cargaImg('img/lucas/dormido.png')]);
     try { await Promise.all([document.fonts.load('118px "Lilita One"'), document.fonts.load('700 50px Fredoka')]); } catch (e) {}
     ov = el('div', 'fn-ov');
     ov.innerHTML = `<button class="fn-cerrar" id="fnX">✕</button>
