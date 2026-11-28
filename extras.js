@@ -62,7 +62,6 @@ ON_PANTALLA.pTaller = () => {
   if (!NINO) { ir('perfiles'); return; }
   const R = $('#tallerRobot'); R.innerHTML = robotHTML(NINO.color, 'vuela'); R.firstChild.dataset.fuerza = '1.6';
   pintaTaller();
-  if (!$('#talFotoBtn')) { const _tb = $('#talTabs'); if (_tb) { const _b = el('button', 'btn btn-foto', '📸 Hazte una foto con un personaje'); _b.id = 'talFotoBtn'; _b.style.cssText = 'width:100%;margin:6px 0 2px'; _b.onclick = () => { SFX.clic(); abrirPickerFotos(); }; _tb.parentNode.insertBefore(_b, _tb); } }
   requestAnimationFrame(() => decora(R.firstChild));
   VOZ.decir('¡Bienvenido a mi taller! Con tus chispas puedes comprarme mascotas, auras, estelas y fondos para el mapa.');
 };
@@ -71,6 +70,7 @@ function pintaTaller() {
   $('#talChispas').textContent = d.chispas;
   $('#talTabs').innerHTML = Object.keys(TALLER).map(k => `<button class="tal-tab${k === talCat ? ' sel' : ''}" data-k="${k}">${TALLER[k].i} ${TALLER[k].t}</button>`).join('');
   $$('#talTabs .tal-tab').forEach(b => b.onclick = () => { SFX.clic(); talCat = b.dataset.k; pintaTaller(); });
+  { const fb = el('button', 'tal-tab', '📸 Fotos animadas'); fb.onclick = () => { SFX.clic(); abrirPickerFotos(); }; $('#talTabs').appendChild(fb); }
   const G = $('#talItems'); G.innerHTML = '';
   TALLER[talCat].items.forEach(it => {
     const tiene = t.own.includes(talCat + ':' + it.id), puesto = t[talCat] === it.id;
@@ -656,8 +656,8 @@ function _fpPonCSS(){ if (_fpCSS) return; _fpCSS = true; const s = document.crea
 .fp-cand b{display:block;color:#cfd6ff;font:600 12px 'Fredoka',system-ui;margin-top:4px}
 .fp-pick-box .cerrar{margin-top:14px;background:#2a2f6a;color:#fff;border:0;border-radius:30px;padding:10px 22px;font:700 15px 'Fredoka',system-ui;cursor:pointer}
 .fp-ov{position:fixed;inset:0;z-index:6001;background:#000;overflow:hidden;touch-action:none}
-.fp-ov video,.fp-res{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
-.fp-res{object-fit:contain}
+.fp-ov video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;transform-origin:center;transition:transform .05s}
+.fp-res{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
 .fp-stk{position:absolute;width:40%;height:auto;touch-action:none;cursor:move;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5));user-select:none;-webkit-user-select:none}
 .fp-top{position:absolute;top:12px;right:12px;z-index:5}
 .fp-top button{width:46px;height:46px;border-radius:50%;border:0;background:rgba(0,0,0,.5);color:#fff;font-size:22px;cursor:pointer}
@@ -689,16 +689,21 @@ var FOTO_PJ = (() => {
   let ov = null, stream = null, video = null, stk = null, lastImg = null;
   function pararStream(){ if (stream){ stream.getTracks().forEach(t => t.stop()); stream = null; } }
   function cerrar(){ pararStream(); if (ov){ ov.remove(); ov = null; } }
-  function interactivo(stk, ov){
-    const pts = new Map(); let drag = false, ox, oy, sl, stp, pinch = 0, wStart = 0;
-    stk.addEventListener('pointerdown', e => { stk.setPointerCapture(e.pointerId); pts.set(e.pointerId, e);
-      if (pts.size === 1){ drag = true; const r = stk.getBoundingClientRect(); ox = e.clientX; oy = e.clientY; sl = r.left; stp = r.top; }
-      else if (pts.size === 2){ drag = false; const p = [...pts.values()]; pinch = Math.hypot(p[0].clientX-p[1].clientX, p[0].clientY-p[1].clientY); wStart = stk.getBoundingClientRect().width; } });
-    stk.addEventListener('pointermove', e => { if (!pts.has(e.pointerId)) return; pts.set(e.pointerId, e); const p = [...pts.values()];
-      if (pts.size >= 2){ const d = Math.hypot(p[0].clientX-p[1].clientX, p[0].clientY-p[1].clientY); const w = Math.max(50, Math.min(ov.clientWidth, wStart * d / (pinch||1))); stk.style.width = w + 'px'; }
-      else if (drag){ stk.style.left = (sl + e.clientX - ox) + 'px'; stk.style.top = (stp + e.clientY - oy) + 'px'; } });
-    const up = e => { pts.delete(e.pointerId); drag = pts.size === 1; };
-    stk.addEventListener('pointerup', up); stk.addEventListener('pointercancel', up);
+  let camZoom = 1;
+  function interactivo(stk, ov, video){
+    // arrastrar el personaje (un dedo encima de él)
+    let drag = false, ox, oy, sl, stp, id = null;
+    stk.addEventListener('pointerdown', e => { e.stopPropagation(); stk.setPointerCapture(e.pointerId); id = e.pointerId; drag = true; const r = stk.getBoundingClientRect(); ox = e.clientX; oy = e.clientY; sl = r.left; stp = r.top; });
+    stk.addEventListener('pointermove', e => { if (!drag || e.pointerId !== id) return; stk.style.left = (sl + e.clientX - ox) + 'px'; stk.style.top = (stp + e.clientY - oy) + 'px'; });
+    const upS = e => { if (e.pointerId === id) { drag = false; id = null; } };
+    stk.addEventListener('pointerup', upS); stk.addEventListener('pointercancel', upS);
+    // pellizcar la pantalla (dos dedos) para acercar/alejar la cámara
+    const cp = new Map(); let base = 0, z0 = 1;
+    const dist = p => Math.hypot(p[0].clientX - p[1].clientX, p[0].clientY - p[1].clientY);
+    ov.addEventListener('pointerdown', e => { if (e.target === stk) return; cp.set(e.pointerId, e); if (cp.size === 2) { const p = [...cp.values()]; base = dist(p); z0 = camZoom; } });
+    ov.addEventListener('pointermove', e => { if (!cp.has(e.pointerId)) return; cp.set(e.pointerId, e); if (cp.size >= 2) { const p = [...cp.values()]; camZoom = Math.max(1, Math.min(4, z0 * dist(p) / (base || 1))); if (video) video.style.transform = 'scale(' + camZoom + ')'; } });
+    const cu = e => cp.delete(e.pointerId);
+    ov.addEventListener('pointerup', cu); ov.addEventListener('pointercancel', cu);
   }
   async function abrir(imgUrl){
     if (!imgUrl){ return; }
@@ -715,7 +720,7 @@ var FOTO_PJ = (() => {
     ov.querySelector('#fpShot').onclick = disparar;
     ov.querySelector('#fpSize').oninput = e => { stk.style.width = e.target.value + '%'; };
     stk.onload = () => { stk.style.left = (ov.clientWidth/2 - stk.clientWidth/2) + 'px'; stk.style.top = (ov.clientHeight*0.5 - stk.clientHeight/2) + 'px'; };
-    interactivo(stk, ov);
+    camZoom = 1; interactivo(stk, ov, video);
     try {
       stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 1600 } }, audio: false });
       video.srcObject = stream; await video.play();
@@ -727,13 +732,13 @@ var FOTO_PJ = (() => {
   async function disparar(){
     if (!video || !video.videoWidth) return;
     const vw = video.videoWidth, vh = video.videoHeight;
-    const cv = document.createElement('canvas'); cv.width = vw; cv.height = vh; const c = cv.getContext('2d');
-    c.drawImage(video, 0, 0, vw, vh);
-    const ovW = ov.clientWidth, ovH = ov.clientHeight, scale = Math.max(ovW/vw, ovH/vh);
-    const offX = (ovW - vw*scale)/2, offY = (ovH - vh*scale)/2;
-    const r = stk.getBoundingClientRect();
-    const X = (r.left - offX)/scale, Y = (r.top - offY)/scale, Wd = r.width/scale, Hd = r.height/scale;
-    try { c.drawImage(stk, X, Y, Wd, Hd); } catch(e){}
+    const ovW = ov.clientWidth, ovH = ov.clientHeight, dpr = Math.min(2, devicePixelRatio || 1);
+    const cv = document.createElement('canvas'); cv.width = Math.round(ovW * dpr); cv.height = Math.round(ovH * dpr); const c = cv.getContext('2d');
+    c.scale(dpr, dpr); c.fillStyle = '#000'; c.fillRect(0, 0, ovW, ovH);
+    const sc = Math.min(ovW / vw, ovH / vh) * camZoom, dw = vw * sc, dh = vh * sc, offX = (ovW - dw) / 2, offY = (ovH - dh) / 2;
+    c.drawImage(video, offX, offY, dw, dh);
+    const r = stk.getBoundingClientRect(), orc = ov.getBoundingClientRect();
+    try { c.drawImage(stk, r.left - orc.left, r.top - orc.top, r.width, r.height); } catch(e){}
     let blob = null; try { blob = await new Promise(res => cv.toBlob(res, 'image/jpeg', .92)); } catch(e){}
     pararStream();
     const url = cv.toDataURL('image/jpeg', .92);
